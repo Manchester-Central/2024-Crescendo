@@ -4,12 +4,19 @@
 
 package frc.robot;
 
+import com.chaos131.swerve.BaseSwerveDrive;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.SwerveDrive2022;
 
 public class RobotContainer {
+
+  private BaseSwerveDrive m_SwerveDrive = SwerveDrive2022.createSwerveDrive();
+
   public RobotContainer() {
     configureBindings();
+    
   }
 
   private void configureBindings() {}
