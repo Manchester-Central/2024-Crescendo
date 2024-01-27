@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.chaos131.swerve.BaseSwerveDrive;
+import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.AbsoluteEncoderConfig;
@@ -15,9 +16,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive2022 extends BaseSwerveDrive {
-	private SwerveDrive2022(SwerveConfigs configs) {
+	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs) {
 		
-		super(null, configs, null);
+		super( modules, configs, null);
 	}
 
 	public static SwerveDrive2022 createSwerveDrive() {
@@ -70,7 +71,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 
-
-		return new SwerveDrive2022(configs);
+        BaseSwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
+		return new SwerveDrive2022(modules, configs);
 	}
 }
