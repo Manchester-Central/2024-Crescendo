@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDValue;
 import com.chaos131.swerve.BaseSwerveDrive;
@@ -12,16 +14,18 @@ import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.DriveCo
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.SpeedControllerConfig;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive2022 extends BaseSwerveDrive {
-	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs) {
+	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
 		
-		super( modules, configs, null);
+		super( modules, configs, getRotation);
 	}
 
 	public static SwerveDrive2022 createSwerveDrive() {
@@ -94,6 +98,8 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		);
 
         BaseSwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
-		return new SwerveDrive2022(modules, configs);
+		var gyro = new AHRS(SPI.Port.kMXP);
+
+		return new SwerveDrive2022(modules, configs, ()-> gyro.getRotation2d());
 	}
 }
