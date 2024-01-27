@@ -19,5 +19,8 @@ public class SwerveDriveModule2022 extends TalonFxAndCancoderSwerveModule {
 		super.updateDashboard();
 		SmartDashboard.putNumber(getDSKey("absoluteAngleDegrees"), getAbsoluteAngle().getDegrees());
 		SmartDashboard.putNumber(getDSKey("motorAngleDegrees"), getEncoderAngle().getDegrees());
+		SmartDashboard.putNumber(getDSKey("currentMPS"), getEncoderVelocity_mps());
+		SmartDashboard.putNumber(getDSKey("targetMPS"), m_speedController.getClosedLoopReference().getValueAsDouble());
+
 	}
 }
