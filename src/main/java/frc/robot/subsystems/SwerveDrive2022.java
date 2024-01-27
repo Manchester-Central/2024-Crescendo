@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.chaos131.pid.PIDFValue;
+import com.chaos131.pid.PIDValue;
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
@@ -13,6 +15,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive2022 extends BaseSwerveDrive {
@@ -22,7 +25,26 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 	}
 
 	public static SwerveDrive2022 createSwerveDrive() {
-		var configs = new SwerveConfigs();
+		var configs = new SwerveConfigs()
+			//Set max Speeds
+			.setMaxRobotSpeed_mps(3.8)
+			.setMaxRobotRotation_radps(6.75)
+			//Translation PID settings
+			.setDefaultTranslationPIDValues(new PIDValue(1.0, 0.0, 0.0))
+			.setDefaultDriveToTargetTolerance(0.03)
+			//Rotation PID settings
+			.setDefaultRotationPIDValues(new PIDValue(0.017, 0.0001, 0.0))
+			.setDefaultRotationTolerance(Rotation2d.fromDegrees(3))
+			//Module PID settings
+			.setDefaultModuleAnglePIDValues(new PIDValue(48.0, 0.0, 0.0))
+			.setDefaultModuleVelocityPIDFValues(new PIDFValue(10.0, 0.0, 0.0, 3.35))
+			//field configs
+			.setDefaultAlliance(Alliance.Blue)
+			//Debug/sim
+			.setDebugMode(true)
+			.setUpdateFrequency_hz(20)
+			;
+			
 
 		var halfWidthMeters = -0.2957;
     	var halfLengthMeters = 0.32067;
