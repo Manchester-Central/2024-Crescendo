@@ -6,9 +6,9 @@
     },
     "windows": {
       "/SmartDashboard/SwerveDrive": {
-        "height": 9.144000053405762,
+        "height": 8.269278526306152,
         "image": ".\\assets\\2024-field.png",
-        "width": 17.90947723388672,
+        "width": 16.56962776184082,
         "window": {
           "visible": true
         }
