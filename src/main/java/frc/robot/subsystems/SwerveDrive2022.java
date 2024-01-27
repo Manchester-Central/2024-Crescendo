@@ -50,47 +50,47 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			;
 			
 
-		var halfWidthMeters = -0.2957;
+		var halfWidthMeters = 0.2957;
     	var halfLengthMeters = 0.32067;
 
 		var speedGearRatio = 7.80;
 		var driveWheelWidthMeters = 0.092;
 		var wheelCircumferenceMeters = driveWheelWidthMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
-		var absoluteEncoderDirection = SensorDirectionValue.Clockwise_Positive;
-		var driverModeClosedLoopRampRatePeriod = 0;
-        var driveToPositionClosedLoopRampRatePeriod = 0;
+		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
+		var driverModeClosedLoopRampRatePeriod = 0.05;
+        var driveToPositionClosedLoopRampRatePeriod = 0.65;
 		var angleMotorDirection = InvertedValue.Clockwise_Positive;
 		var leftSpeedMotorDirection = InvertedValue.CounterClockwise_Positive;
         var rightSpeedMotorDirection = InvertedValue.Clockwise_Positive;
 
-		var frontLeftModule = new TalonFxAndCancoderSwerveModule(
+		var frontLeftModule = new SwerveDriveModule2022(
 			"frontLeftModule",
-			new Translation2d(halfLengthMeters, -halfWidthMeters),
+			new Translation2d(halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(6, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(5, angleMotorDirection, angleGearRatio),
 			new AbsoluteEncoderConfig(22, absoluteEncoderDirection, Rotation2d.fromDegrees(109.2)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
-		var frontRightModule = new TalonFxAndCancoderSwerveModule(
+		var frontRightModule = new SwerveDriveModule2022(
 			"frontRightModule",
-			new Translation2d(halfLengthMeters, halfWidthMeters),
+			new Translation2d(halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(8, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(4, angleMotorDirection, angleGearRatio),
 			new AbsoluteEncoderConfig(21, absoluteEncoderDirection, Rotation2d.fromDegrees(5.9)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
-		var backLeftModule = new TalonFxAndCancoderSwerveModule(
+		var backLeftModule = new SwerveDriveModule2022(
 			"backLeftModule",
-			new Translation2d(-halfLengthMeters, -halfWidthMeters),
+			new Translation2d(-halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(3, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(7, angleMotorDirection, angleGearRatio),
 			new AbsoluteEncoderConfig(23, absoluteEncoderDirection, Rotation2d.fromDegrees(123.3)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
-		var backRightModule = new TalonFxAndCancoderSwerveModule(
+		var backRightModule = new SwerveDriveModule2022(
 			"backRightModule",
-			new Translation2d(-halfLengthMeters, halfWidthMeters),
+			new Translation2d(-halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(2, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(1, angleMotorDirection, angleGearRatio),
 			new AbsoluteEncoderConfig(20, absoluteEncoderDirection, Rotation2d.fromDegrees(-164)),
