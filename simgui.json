@@ -1,0 +1,21 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/SwerveDrive": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/SwerveDrive": {
+        "height": 8.210550308227539,
+        "image": ".\\assets\\2024-field.png",
+        "width": 16.541170120239258,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
