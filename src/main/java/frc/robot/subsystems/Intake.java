@@ -15,4 +15,16 @@ public class Intake extends SubsystemBase {
 
 		m_motor.getConfigurator().apply(m_config);
 	}
+
+	public void intake(){
+
+	}
+
+	public void spit(){
+
+	}
+
+	public void stop(){
+		
+	}
 }

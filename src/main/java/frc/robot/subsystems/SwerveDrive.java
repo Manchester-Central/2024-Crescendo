@@ -6,4 +6,25 @@ public class SwerveDrive extends SubsystemBase {
 	public SwerveDrive() {
 		//
 	}
+
+	public void moveFieldRelative(){
+
+	}
+
+	public void moveRobotRelative(){
+
+	}
+
+	public void xMode(){
+
+	}
+
+	public void angleZero(){
+
+	}
+
+	public void stop(){
+		
+	}
+
 }
