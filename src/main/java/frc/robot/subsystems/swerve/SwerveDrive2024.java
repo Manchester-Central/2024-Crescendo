@@ -20,13 +20,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-public class SwerveDrive2022 extends BaseSwerveDrive {
-	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
+public class SwerveDrive2024 extends BaseSwerveDrive {
+	private SwerveDrive2024(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
 
 		super(modules, configs, getRotation);
 	}
 
-	public static SwerveDrive2022 createSwerveDrive() {
+	public static SwerveDrive2024 createSwerveDrive() {
+		// TODO do all the configs
 		var configs = new SwerveConfigs()
 			// Set max Speeds
 			.setMaxRobotSpeed_mps(3.8)
@@ -60,7 +61,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		var leftSpeedMotorDirection = InvertedValue.CounterClockwise_Positive;
 		var rightSpeedMotorDirection = InvertedValue.Clockwise_Positive;
 
-		var frontLeftModule = new SwerveModule2022(
+		var frontLeftModule = new SwerveModule2024(
 			"frontLeftModule",
 			new Translation2d(halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(6, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
@@ -68,7 +69,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new AbsoluteEncoderConfig(22, absoluteEncoderDirection, Rotation2d.fromDegrees(109.2)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
-		var frontRightModule = new SwerveModule2022(
+		var frontRightModule = new SwerveModule2024(
 			"frontRightModule",
 			new Translation2d(halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(8, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
@@ -76,7 +77,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new AbsoluteEncoderConfig(21, absoluteEncoderDirection, Rotation2d.fromDegrees(5.9)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
-		var backLeftModule = new SwerveModule2022(
+		var backLeftModule = new SwerveModule2024(
 			"backLeftModule",
 			new Translation2d(-halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(3, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
@@ -84,7 +85,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new AbsoluteEncoderConfig(23, absoluteEncoderDirection, Rotation2d.fromDegrees(123.3)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
-		var backRightModule = new SwerveModule2022(
+		var backRightModule = new SwerveModule2024(
 			"backRightModule",
 			new Translation2d(-halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(2, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
@@ -96,6 +97,6 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		BaseSwerveModule[] modules = { frontLeftModule, frontRightModule, backLeftModule, backRightModule };
 		var gyro = new AHRS(SPI.Port.kMXP);
 
-		return new SwerveDrive2022(modules, configs, () -> gyro.getRotation2d());
+		return new SwerveDrive2024(modules, configs, () -> gyro.getRotation2d());
 	}
 }

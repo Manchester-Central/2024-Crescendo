@@ -12,13 +12,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
+import frc.robot.subsystems.swerve.SwerveDrive2024;
 
 public class RobotContainer {
 
   private Gamepad m_driver = new Gamepad(0);
   private Gamepad m_operator = new Gamepad(1);
 
-  private BaseSwerveDrive m_swerveDrive = SwerveDrive2022.createSwerveDrive();
+  private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
+    ? SwerveDrive2022.createSwerveDrive() 
+    : SwerveDrive2024.createSwerveDrive();
 
   public RobotContainer() {
     configureBindings();

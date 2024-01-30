@@ -5,13 +5,11 @@ import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwerveDriveModule2022 extends TalonFxAndCancoderSwerveModule {
-
-	public SwerveDriveModule2022(String name, Translation2d translation, SpeedControllerConfig speedControllerConfig,
+public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
+	public SwerveModule2024(String name, Translation2d translation, SpeedControllerConfig speedControllerConfig,
 			AngleControllerConfig angleControllerConfig, AbsoluteEncoderConfig absoluteEncoderConfig,
 			DriveConfig driveConfig) {
 		super(name, translation, speedControllerConfig, angleControllerConfig, absoluteEncoderConfig, driveConfig);
-
 	}
 	
 	@Override
