@@ -8,7 +8,6 @@ import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveDrive2022;
 
 public class DriverRelativeDrive extends Command {
   private Gamepad m_driver;

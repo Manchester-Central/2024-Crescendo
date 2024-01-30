@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule;
 

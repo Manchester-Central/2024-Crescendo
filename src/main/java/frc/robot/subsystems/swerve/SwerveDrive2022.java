@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
@@ -24,34 +24,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive2022 extends BaseSwerveDrive {
 	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
-		
-		super( modules, configs, getRotation);
+
+		super(modules, configs, getRotation);
 	}
 
 	public static SwerveDrive2022 createSwerveDrive() {
 		var configs = new SwerveConfigs()
-			//Set max Speeds
+			// Set max Speeds
 			.setMaxRobotSpeed_mps(3.8)
 			.setMaxRobotRotation_radps(6.75)
-			//Translation PID settings
+			// Translation PID settings
 			.setDefaultTranslationPIDValues(new PIDValue(1.0, 0.0, 0.0))
 			.setDefaultDriveToTargetTolerance(0.03)
-			//Rotation PID settings
+			// Rotation PID settings
 			.setDefaultRotationPIDValues(new PIDValue(0.017, 0.0001, 0.0))
 			.setDefaultRotationTolerance(Rotation2d.fromDegrees(3))
-			//Module PID settings
+			// Module PID settings
 			.setDefaultModuleAnglePIDValues(new PIDValue(48.0, 0.0, 0.0))
 			.setDefaultModuleVelocityPIDFValues(new PIDFValue(10.0, 0.0, 0.0, 3.35))
-			//field configs
+			// field configs
 			.setDefaultAlliance(Alliance.Blue)
-			//Debug/sim
+			// Debug/sim
 			.setDebugMode(true)
-			.setUpdateFrequency_hz(20)
-			;
-			
+			.setUpdateFrequency_hz(20);
 
 		var halfWidthMeters = 0.2957;
-    	var halfLengthMeters = 0.32067;
+		var halfLengthMeters = 0.32067;
 
 		var speedGearRatio = 7.80;
 		var driveWheelWidthMeters = 0.092;
@@ -59,10 +57,10 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
 		var driverModeClosedLoopRampRatePeriod = 0.05;
-        var driveToPositionClosedLoopRampRatePeriod = 0.65;
+		var driveToPositionClosedLoopRampRatePeriod = 0.65;
 		var angleMotorDirection = InvertedValue.Clockwise_Positive;
 		var leftSpeedMotorDirection = InvertedValue.CounterClockwise_Positive;
-        var rightSpeedMotorDirection = InvertedValue.Clockwise_Positive;
+		var rightSpeedMotorDirection = InvertedValue.Clockwise_Positive;
 
 		var frontLeftModule = new SwerveDriveModule2022(
 			"frontLeftModule",
@@ -97,9 +95,9 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 
-        BaseSwerveModule[] modules = {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
+		BaseSwerveModule[] modules = { frontLeftModule, frontRightModule, backLeftModule, backRightModule };
 		var gyro = new AHRS(SPI.Port.kMXP);
 
-		return new SwerveDrive2022(modules, configs, ()-> gyro.getRotation2d());
+		return new SwerveDrive2022(modules, configs, () -> gyro.getRotation2d());
 	}
 }
