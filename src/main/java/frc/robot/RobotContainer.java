@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DriverRelativeDrive;
+import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 
 public class RobotContainer {
@@ -27,7 +28,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
     m_driver.povUp().onTrue(new InstantCommand(()-> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(0))));
 

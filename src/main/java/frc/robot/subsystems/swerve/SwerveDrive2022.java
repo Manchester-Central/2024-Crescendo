@@ -68,7 +68,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new Translation2d(halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(6, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(5, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(22, absoluteEncoderDirection, Rotation2d.fromDegrees(107.58 /*109.2*/)),
+			new AbsoluteEncoderConfig(22, absoluteEncoderDirection, Rotation2d.fromDegrees(110.039 /*109.2*/)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 		var frontRightModule = new SwerveDriveModule2022(
@@ -76,7 +76,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new Translation2d(halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(8, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(4, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(21, absoluteEncoderDirection, Rotation2d.fromDegrees(6.77 /*5.9*/)),
+			new AbsoluteEncoderConfig(21, absoluteEncoderDirection, Rotation2d.fromDegrees(6.064 /*5.9*/)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		var backLeftModule = new SwerveDriveModule2022(
@@ -84,7 +84,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new Translation2d(-halfLengthMeters, halfWidthMeters),
 			new SpeedControllerConfig(3, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(7, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(23, absoluteEncoderDirection, Rotation2d.fromDegrees(125.60 /*123.3*/)),
+			new AbsoluteEncoderConfig(23, absoluteEncoderDirection, Rotation2d.fromDegrees(123.837 /*123.3*/)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		var backRightModule = new SwerveDriveModule2022(
@@ -92,7 +92,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			new Translation2d(-halfLengthMeters, -halfWidthMeters),
 			new SpeedControllerConfig(2, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(1, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(20, absoluteEncoderDirection, Rotation2d.fromDegrees(-163.04 /*-164*/)),
+			new AbsoluteEncoderConfig(20, absoluteEncoderDirection, Rotation2d.fromDegrees(-165.058 /*-164*/)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 
