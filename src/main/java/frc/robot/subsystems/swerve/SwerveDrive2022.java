@@ -57,7 +57,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		var wheelCircumferenceMeters = driveWheelWidthMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
-		var driverModeClosedLoopRampRatePeriod = 0.65;//0.05
+		var driverModeClosedLoopRampRatePeriod = 0.05;
 		var driveToPositionClosedLoopRampRatePeriod = 0.65;
 		var angleMotorDirection = InvertedValue.Clockwise_Positive;
 		var leftSpeedMotorDirection = InvertedValue.CounterClockwise_Positive;
