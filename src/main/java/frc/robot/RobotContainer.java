@@ -34,7 +34,7 @@ public class RobotContainer {
     m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
     m_driver.povUp().onTrue(new InstantCommand(()-> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(0))));
-    m_driver.b().whileTrue(new InstantCommand(()-> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Translation2d(1, 0), m_swerveDrive))) ;
+    m_driver.b().whileTrue(new InstantCommand(()-> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Translation2d(1, 0), m_swerveDrive)));
 
   }
 

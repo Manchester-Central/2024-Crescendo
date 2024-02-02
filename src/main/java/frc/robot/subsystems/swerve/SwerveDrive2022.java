@@ -38,7 +38,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 			.setDefaultTranslationPIDValues(new PIDValue(1.0, 0.0, 0.0))
 			.setDefaultDriveToTargetTolerance(0.03)
 			// Rotation PID settings
-			.setDefaultRotationPIDValues(new PIDValue(0.017, 0.0001, 0.0))
+			.setDefaultRotationPIDValues(new PIDValue(0.01, 0.0001, 0.0))
 			.setDefaultRotationTolerance(Rotation2d.fromDegrees(3))
 			// Module PID settings
 			.setDefaultModuleAnglePIDValues(new PIDValue(60.0, 2, 0.0))
@@ -57,7 +57,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 		var wheelCircumferenceMeters = driveWheelWidthMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
-		var driverModeClosedLoopRampRatePeriod = 0.05;
+		var driverModeClosedLoopRampRatePeriod = 0.65;//0.05
 		var driveToPositionClosedLoopRampRatePeriod = 0.65;
 		var angleMotorDirection = InvertedValue.Clockwise_Positive;
 		var leftSpeedMotorDirection = InvertedValue.CounterClockwise_Positive;
