@@ -5,15 +5,18 @@ import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Vision;
 
-public class DriveToLocation extends Command {
+public class DriveToRing extends Command {
 	private Translation2d m_targetLocation;
 	private BaseSwerveDrive m_swerveDrive;
+	private Vision m_vision;
 
-	public DriveToLocation(Translation2d location, BaseSwerveDrive swerveDrive) {
+	public DriveToRing(Translation2d location, BaseSwerveDrive swerveDrive, Vision vision) {
 		m_targetLocation = location;
 		m_swerveDrive = swerveDrive;
-		addRequirements(swerveDrive);
+		m_vision = vision;
+		addRequirements(swerveDrive, vision);
 	}
 
 	/** Runs when the command is first run, before execute. It is only run once. */
