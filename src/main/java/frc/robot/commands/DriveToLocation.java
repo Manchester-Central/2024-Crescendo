@@ -1,16 +1,20 @@
 package frc.robot.commands;
 
+import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.auto.AutoUtil;
 
 public class DriveToLocation extends Command {
-	private Translation2d m_targetLocation;
+	private Pose2d m_targetLocation;
 	private BaseSwerveDrive m_swerveDrive;
 
-	public DriveToLocation(Translation2d location, BaseSwerveDrive swerveDrive) {
+	public DriveToLocation(Pose2d location, BaseSwerveDrive swerveDrive) {
 		m_targetLocation = location;
 		m_swerveDrive = swerveDrive;
 		addRequirements(swerveDrive);
@@ -20,7 +24,17 @@ public class DriveToLocation extends Command {
 	public void initialize() {
 		m_swerveDrive.driveToPositionInit();
 		m_swerveDrive.resetPids();
-		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_swerveDrive.getOdometryRotation());
+		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_targetLocation.getRotation());
+	}
+
+	public static Command createAutoCommand(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive) {
+		// double translationTolerance = AutoUtil.getTranslationTolerance(parsedCommand);
+		// double maxPercentSpeed = AutoUtil.getMaxPercentSpeed(parsedCommand);
+		Pose2d pose = AutoUtil.getDrivePose(parsedCommand);
+		if(pose == null) {
+			return new InstantCommand();
+		}
+		return new DriveToLocation(pose, swerveDrive);
 	}
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */

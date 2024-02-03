@@ -6,12 +6,34 @@
     },
     "windows": {
       "/SmartDashboard/SwerveDrive": {
-        "height": 8.269278526306152,
+        "bottom": 1476,
+        "height": 8.210550308227539,
         "image": ".\\assets\\2024-field.png",
-        "width": 16.56962776184082,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "persistent": {
+      "SmartDashboard": {
+        "open": true,
+        "string[]##v_/SmartDashboard/Auto Steps": {
+          "open": true
+        }
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
       }
     }
   },

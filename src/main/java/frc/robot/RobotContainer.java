@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
+import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
@@ -24,6 +26,7 @@ public class RobotContainer {
 
   private Gamepad m_driver = new Gamepad(0);
   private Gamepad m_operator = new Gamepad(1);
+  private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
@@ -32,13 +35,16 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
+    m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
+    m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
   }
+  
 
   private void configureBindings() {
     m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(0))));
-    m_driver.b().whileTrue(new InstantCommand(() -> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Translation2d(1, 0), m_swerveDrive)));
+    m_driver.b().whileTrue(new InstantCommand(() -> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Pose2d(1, 0, Rotation2d.fromDegrees(0)), m_swerveDrive)));
     m_driver.leftTrigger().whileTrue(new StartEndCommand(
       () -> {
          BaseSwerveDrive.TranslationSpeedModifier = 0.5; 
@@ -52,6 +58,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_autoBuilder.createAutoCommand();
   }
 }
