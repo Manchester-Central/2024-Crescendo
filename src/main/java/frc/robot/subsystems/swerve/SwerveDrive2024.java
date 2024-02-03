@@ -30,7 +30,7 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 		// TODO do all the configs
 		var configs = new SwerveConfigs()
 			// Set max Speeds
-			.setMaxRobotSpeed_mps(3.8) //TODO confirm
+			.setMaxRobotSpeed_mps(5.66) 
 			.setMaxRobotRotation_radps(6.75) //TODO confirm
 			// Translation PID settings
 			.setDefaultTranslationPIDValues(new PIDValue(1.0, 0.0, 0.0)) //TODO confirm
@@ -47,8 +47,8 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 			.setDebugMode(true)
 			.setUpdateFrequency_hz(20);
 
-		var speedGearRatio = 7.80; //TODO confirm
-		var driveWheelDiameterMeters = 0.0991; //TODO confirm 3.9 inches?
+		var speedGearRatio = 5.5; 
+		var driveWheelDiameterMeters = 0.0991; 
 		var wheelCircumferenceMeters = driveWheelDiameterMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
