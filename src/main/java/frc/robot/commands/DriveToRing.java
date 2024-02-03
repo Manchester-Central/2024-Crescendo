@@ -16,7 +16,7 @@ public class DriveToRing extends Command {
 		m_targetLocation = location;
 		m_swerveDrive = swerveDrive;
 		m_vision = vision;
-		addRequirements(swerveDrive, vision);
+		addRequirements(swerveDrive);
 	}
 
 	/** Runs when the command is first run, before execute. It is only run once. */
