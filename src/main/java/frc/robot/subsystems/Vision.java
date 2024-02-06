@@ -44,5 +44,12 @@ public class Vision {
 	public int getPipeline() {
 		return (int) m_pipelineID.getInteger(-1);
 	}
+
+	public double getLatencySeconds() {
+		double[] defaultValues = {0, 0, 0, 0, 0, 0, 0};
+		double latencyMilliseconds = m_botpose.getDoubleArray(defaultValues)[6]; // The seventh element is latency in ms
+		double latencySeconds = latencyMilliseconds / 1000;
+		return latencySeconds;
+	}
 }
 

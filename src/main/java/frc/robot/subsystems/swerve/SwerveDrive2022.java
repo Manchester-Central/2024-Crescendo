@@ -18,6 +18,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Vision;
@@ -106,7 +107,7 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 	@Override
 	public void periodic() {
 		super.periodic();
-		addVisionMeasurement(m_vision.getPose());
+		addVisionMeasurement(m_vision.getPose(), Timer.getFPGATimestamp() - m_vision.getLatencySeconds());
 		SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
 	} 
 
