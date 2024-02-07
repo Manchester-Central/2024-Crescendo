@@ -21,4 +21,8 @@ public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
 		SmartDashboard.putNumber(getDSKey("targetMPS"), m_speedController.getClosedLoopReference().getValueAsDouble());
 
 	}
+
+	public void setPercentSpeed(double percentSpeed) {
+		m_speedController.set(percentSpeed);
+	}
 }

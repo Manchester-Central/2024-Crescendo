@@ -23,6 +23,7 @@ import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.subsystems.swerve.SwerveModule2024;
 
 public class RobotContainer {
 
@@ -61,6 +62,7 @@ public class RobotContainer {
       } 
     ));
     m_driver.rightBumper().whileTrue(new RunCommand(()-> m_Intake.runSpeed(0.3), m_Intake));
+    // m_driver.y().whileTrue(new RunCommand(() -> ((SwerveDrive2024)m_swerveDrive).testModuleSpeed(1.0), m_swerveDrive));
   }
 
   public Command getAutonomousCommand() {

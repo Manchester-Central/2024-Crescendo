@@ -102,4 +102,8 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 
 		return new SwerveDrive2024(modules, configs, () -> gyro.getRotation2d());
 	}
+
+	// public void testModuleSpeed(double percentSpeed) {
+	// 	forAllModules(module -> ((SwerveModule2024)module).setPercentSpeed(percentSpeed));
+	// }
 }
