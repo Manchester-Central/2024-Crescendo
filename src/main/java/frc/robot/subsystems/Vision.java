@@ -15,7 +15,7 @@ public class Vision {
 	private NetworkTable m_visionTable = NetworkTableInstance.getDefault().getTable("limelight");
 	private NetworkTableEntry m_botpose = m_visionTable.getEntry("botpose_wpiblue");
 	private NetworkTableEntry m_pipelineID = m_visionTable.getEntry("getpipe");
-	private Field2d m_field;
+	private Field2d m_field = new Field2d();
 
 	public Rotation3d gamepeiceFinder() {
 		return null;
@@ -33,7 +33,11 @@ public class Vision {
 	}
 
 	public void periodic() {
-		m_field.setRobotPose(getPose());
+		if(getPose() != null) {
+			m_field.setRobotPose(getPose());
+		} else {
+			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
+		}
 		SmartDashboard.putData("vision field", m_field);
 	}
 
