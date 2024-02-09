@@ -50,7 +50,7 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 			.setUpdateFrequency_hz(Constants.SimUpdateFrequency);
 
 		var speedGearRatio = 5.5; 
-		var driveWheelDiameterMeters = 0.0991; 
+		var driveWheelDiameterMeters = 0.1016; // 0.0991 
 		var wheelCircumferenceMeters = driveWheelDiameterMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;

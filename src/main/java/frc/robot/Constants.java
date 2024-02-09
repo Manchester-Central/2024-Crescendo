@@ -21,7 +21,7 @@ public class Constants {
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
 		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.017, 0.0001, 0.0);
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
-		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(48.0, 0.0, 0.0);
+		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
 	}	
 }

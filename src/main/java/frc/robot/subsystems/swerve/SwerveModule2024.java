@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -10,6 +11,8 @@ public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
 			AngleControllerConfig angleControllerConfig, AbsoluteEncoderConfig absoluteEncoderConfig,
 			DriveConfig driveConfig) {
 		super(name, translation, speedControllerConfig, angleControllerConfig, absoluteEncoderConfig, driveConfig);
+		m_speedController.setPosition(0);
+		// "I love dark mode" - Josh 02/08/2024
 	}
 	
 	@Override
@@ -19,7 +22,9 @@ public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
 		SmartDashboard.putNumber(getDSKey("motorAngleDegrees"), getEncoderAngle().getDegrees());
 		SmartDashboard.putNumber(getDSKey("currentMPS"), getEncoderVelocity_mps());
 		SmartDashboard.putNumber(getDSKey("targetMPS"), m_speedController.getClosedLoopReference().getValueAsDouble());
-
+		SmartDashboard.putNumber(getDSKey("targetDegrees"), m_angleController.getClosedLoopReference().getValueAsDouble());
+		SmartDashboard.putNumber(getDSKey("distanceTraveledMeters"), getEncoderDistance_m());
+		SmartDashboard.putNumber(getDSKey("errorAngleDegrees"), Rotation2d.fromRotations(m_angleController.getClosedLoopError().getValueAsDouble()).getDegrees());
 	}
 
 	public void setPercentSpeed(double percentSpeed) {
