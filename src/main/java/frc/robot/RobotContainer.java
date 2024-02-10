@@ -34,6 +34,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.subsystems.swerve.SwerveModule2024;
 
 public class RobotContainer {
 
@@ -61,6 +62,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Default commands
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    // m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher));
