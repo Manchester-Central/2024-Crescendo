@@ -42,6 +42,14 @@ public class Constants {
 		public static final int LiftA = 48;
 		public static final int LiftB = 49; 
 	}
+
+	public static class IOPorts {
+	
+		public static final int LiftBottomSensor = 0;
+		public static final int FeederSensorPrimary = 1;
+		public static final int FeederSensorSecondary = 2;
+	}
+
 	public static class SwerveConstants2024 {
 
 		public static final double MaxRobotSpeed_mps = 1.0; // 5.8
