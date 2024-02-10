@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
@@ -32,7 +33,7 @@ public class DropInAmp extends Command {
   @Override
   public void execute() {
     m_feeder.setFeederPower(-0.3);
-    m_lift.moveToHeight(Lift.DefaultAmpMeters);
+    m_lift.moveToHeight(LiftConstants.DefaultAmpMeters);
     m_launcher.setLauncherPower(0.0);
     m_launcher.setLauncherAngle(Rotation2d.fromDegrees(40));
   }

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
@@ -36,7 +37,7 @@ public class RunIntake extends Command {
   public void execute() {
     m_intake.setIntakePower(0.3);
     m_feeder.setFeederPower(0.3);
-    m_lift.moveToHeight(Lift.MinHeightMeters);
+    m_lift.moveToHeight(LiftConstants.MinHeightMeters);
     m_launcher.setLauncherPower(0.0);
     m_launcher.setLauncherAngle(Rotation2d.fromDegrees(20));
   }
