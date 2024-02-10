@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
 public class Feeder extends SubsystemBase {
+
+	CANSparkFlex m_feederMotor = new CANSparkFlex(42, MotorType.kBrushless);
 
 	private double simPower = 0;
 
@@ -17,6 +22,7 @@ public class Feeder extends SubsystemBase {
 	 */
 	public void setFeederPower(double power) {
 		simPower = power;
+		m_feederMotor.set(power);
 	}
 
 	/** 
@@ -26,7 +32,6 @@ public class Feeder extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return simPower;
 		}
-		// TODO: update with real value
-		return 0;
+		return m_feederMotor.get();
 	}
 }
