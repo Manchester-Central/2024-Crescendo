@@ -1,0 +1,8 @@
+auto test speaker?
+resetPosition?X=1.863&Y=5.617&Angle=180
+wait?TimeMs=1000
+drive?X=2.436&Y=5.617&Angle=180
+wait?TimeMs=1000
+drive?X=1.825&Y=5.617&Angle=180
+wait?TimeMs=1000
+drive?X=1.361&Y=5.617&Angle=180
