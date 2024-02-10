@@ -86,6 +86,7 @@ public class Constants {
 		public static final double MinHeightMeters = 0.35;
 		public static final double DefaultLaunchMeters = 0.6;
 		public static final double DefaultAmpMeters = 1.0;
+		public static final double DefaultHoldMeters = MinHeightMeters + 0.05;
 
 	}
 

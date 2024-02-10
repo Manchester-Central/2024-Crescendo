@@ -24,7 +24,13 @@ public class DefaultLiftCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(LiftConstants.MinHeightMeters);
+
+    if(!m_lift.hasSeenBottom()){
+      m_lift.setSpeed(-0.2);
+    } else {
+       m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

@@ -30,8 +30,10 @@ public class Lift extends SubsystemBase {
 	private TalonFXConfiguration m_liftAConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_liftBConfig = new TalonFXConfiguration();
 	private PositionVoltage m_positionVoltage = new PositionVoltage(0);
-
+	
 	private double simHeight = LiftConstants.MinHeightMeters;
+
+	private boolean m_hasSeenBottom = false;
 
 	public Lift() {
 
@@ -49,6 +51,11 @@ public class Lift extends SubsystemBase {
 
 		m_liftPidTuner = new PIDTuner("Lift", Constants.DebugMode, LiftConstants.LiftP, LiftConstants.LiftI,
 				LiftConstants.LiftD, this::tuneLiftPID);
+	}
+
+	public void setSpeed(double speed){
+		m_liftA.set(speed);
+		m_liftB.set(speed);
 	}
 
 	public void tuneLiftPID(PIDFValue pidValue) {
@@ -86,10 +93,19 @@ public class Lift extends SubsystemBase {
 	public boolean atBottom() {
 		return m_bottomSensor.get();
 	}
+	
+	public boolean hasSeenBottom(){
+		return m_hasSeenBottom;
+	}
 
 	@Override
 	public void periodic() {
 		super.periodic();
 		m_liftPidTuner.tune();
+		if(atBottom() && !hasSeenBottom()){
+			m_hasSeenBottom = true;
+			m_liftA.setPosition(LiftConstants.MinHeightMeters);
+			m_liftB.setPosition(LiftConstants.MinHeightMeters);
+		}
 	}
 }
