@@ -23,6 +23,7 @@ import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.subsystems.swerve.SwerveModule2024;
 
 public class RobotContainer {
 
@@ -45,7 +46,8 @@ public class RobotContainer {
   
 
   private void configureBindings() {
-    m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    // m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_Intake.setDefaultCommand(new RunCommand(()-> m_Intake.runSpeed(0.0), m_Intake));
     m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(0))));
@@ -61,6 +63,7 @@ public class RobotContainer {
       } 
     ));
     m_driver.rightBumper().whileTrue(new RunCommand(()-> m_Intake.runSpeed(0.3), m_Intake));
+    // m_driver.y().whileTrue(new RunCommand(() -> ((SwerveDrive2024)m_swerveDrive).testModuleSpeed(1.0), m_swerveDrive));
   }
 
   public Command getAutonomousCommand() {

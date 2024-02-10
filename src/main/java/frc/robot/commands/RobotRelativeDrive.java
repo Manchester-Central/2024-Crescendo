@@ -30,6 +30,8 @@ public class RobotRelativeDrive extends Command {
   @Override
   public void execute() {
     m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());
+    //m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), 0, 0);
+
   }
 
   // Called once the command ends or is interrupted.
