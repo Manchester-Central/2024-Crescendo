@@ -36,8 +36,8 @@ public class Constants {
 		public static final int Feeder = 44;
 
 		public static final int LauncherTilt = 45;
-		public static final int LauncherLeft = 46;
-		public static final	int LauncherRight = 47;
+		public static final int FlywheelLeft = 46;
+		public static final	int FlywheelRight = 47;
 
 		public static final int LiftA = 48;
 		public static final int LiftB = 49; 
@@ -55,8 +55,18 @@ public class Constants {
 	}	
 	public static class LauncherConstants {
 		public static final double TiltPotConversionFactor = 1;
+		public static final double TiltEncoderConversionFactor = 1;
+
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
 		public static final double TiltD = 0;
+
+		public static final double FlywheelEncoderConversionFactor = 1;
+		public static final double FlywheelP = 0;
+		public static final double FlywheelI = 0;
+		public static final double FlywheelD = 0;
+		public static final double FlywheelF = 0;
 	}
+
+	
 }
