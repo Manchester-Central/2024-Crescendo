@@ -34,6 +34,13 @@ public class Constants {
 		public static final int IntakeLower = 43;
 
 		public static final int Feeder = 44;
+
+		public static final int LauncherTilt = 45;
+		public static final int LauncherLeft = 46;
+		public static final	int LauncherRight = 47;
+
+		public static final int LiftA = 48;
+		public static final int LiftB = 49; 
 	}
 	public static class SwerveConstants2024 {
 

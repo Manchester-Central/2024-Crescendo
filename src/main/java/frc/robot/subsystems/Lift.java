@@ -1,9 +1,15 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.CANIdentifiers;
 
 public class Lift extends SubsystemBase {
+	private CANSparkFlex m_liftA = new CANSparkFlex(CANIdentifiers.LiftA, MotorType.kBrushless);
+	private CANSparkFlex m_liftB = new CANSparkFlex(CANIdentifiers.LiftB, MotorType.kBrushless);
 	// TODO: move to constants
 	public static final double MinHeightMeters = 0.35;
 	public static final double DefaultLaunchMeters = 0.6;

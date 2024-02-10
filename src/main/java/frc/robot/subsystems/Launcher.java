@@ -1,11 +1,18 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.CANIdentifiers;
 
 public class Launcher extends SubsystemBase {
 
+	private CANSparkFlex m_tiltController = new CANSparkFlex(CANIdentifiers.LauncherTilt, MotorType.kBrushless);
+	private CANSparkFlex m_launcherLeft = new CANSparkFlex(CANIdentifiers.LauncherLeft, MotorType.kBrushless);
+	private CANSparkFlex m_launcherRight = new CANSparkFlex(CANIdentifiers.LauncherRight, MotorType.kBrushless);
 	private Rotation2d simAngle = Rotation2d.fromDegrees(0);
 	private double simPower = 0;
 
