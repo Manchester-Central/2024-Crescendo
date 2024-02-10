@@ -13,6 +13,28 @@ public class Constants {
 	public static final double SimUpdateFrequency = 20.0;
 	public static final boolean Use2022Robot = false;
 
+	public static class CANIdentifiers {
+		public static final int FrontLeftSpeed = 30;
+		public static final int FrontLeftAngle = 31;
+		public static final int FrontLeftEncoder = 32;
+
+		public static final int FrontRightSpeed = 33;
+		public static final int FrontRightAngle = 34;
+		public static final int FrontRightEncoder = 35;
+
+		public static final int BackLeftSpeed = 36;
+		public static final int BackLeftAngle = 37;
+		public static final int BackLeftEncoder = 38;
+
+		public static final int BackRightSpeed = 39;
+		public static final int BackRightAngle = 40;
+		public static final int BackRightEncoder = 41;
+
+		public static final int IntakeUpper = 42;
+		public static final int IntakeLower = 43;
+
+		public static final int Feeder = 44;
+	}
 	public static class SwerveConstants2024 {
 
 		public static final double MaxRobotSpeed_mps = 1.0; // 5.8

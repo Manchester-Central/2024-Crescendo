@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
+import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.SwerveConstants2024;
 
 public class SwerveDrive2024 extends BaseSwerveDrive {
@@ -66,36 +67,36 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 		var frontLeftModule = new SwerveModule2024(
 			"frontLeftModule",
 			new Translation2d(frontLengthDistance, frontLengthDistance),
-			new SpeedControllerConfig(30, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(31, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(32, absoluteEncoderDirection, Rotation2d.fromDegrees(-26.02)),
+			new SpeedControllerConfig(CANIdentifiers.FrontLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.FrontLeftAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-26.02)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var frontRightModule = new SwerveModule2024(
 			"frontRightModule",
 			new Translation2d(frontLengthDistance, -frontLengthDistance),
-			new SpeedControllerConfig(33, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(34, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(35, absoluteEncoderDirection, Rotation2d.fromDegrees(-15.03)),
+			new SpeedControllerConfig(CANIdentifiers.FrontRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.FrontRightAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-15.03)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var backLeftModule = new SwerveModule2024(
 			"backLeftModule",
 			new Translation2d(-backLengthDistance, backLengthDistance),
-			new SpeedControllerConfig(36, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(37, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(38, absoluteEncoderDirection, Rotation2d.fromDegrees(42.45)),
+			new SpeedControllerConfig(CANIdentifiers.BackLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.BackLeftAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(42.45)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var backRightModule = new SwerveModule2024(
 			"backRightModule",
 			new Translation2d(-backLengthDistance, -backLengthDistance),
-			new SpeedControllerConfig(39, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(40, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(41, absoluteEncoderDirection, Rotation2d.fromDegrees(63.9)),
+			new SpeedControllerConfig(CANIdentifiers.BackRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.BackRightAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(63.9)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 

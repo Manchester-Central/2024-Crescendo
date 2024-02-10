@@ -5,10 +5,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.CANIdentifiers;
 
 public class Feeder extends SubsystemBase {
 
-	CANSparkFlex m_feederMotor = new CANSparkFlex(42, MotorType.kBrushless);
+	CANSparkFlex m_feederMotor = new CANSparkFlex(CANIdentifiers.Feeder, MotorType.kBrushless);
 
 	private double simPower = 0;
 

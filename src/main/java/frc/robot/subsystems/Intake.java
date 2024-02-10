@@ -8,11 +8,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.CANIdentifiers;
 
 public class Intake extends SubsystemBase {
 
-	CANSparkMax m_intakeUpper = new CANSparkMax(42, MotorType.kBrushless);
-	CANSparkMax m_intakeLower = new CANSparkMax(43, MotorType.kBrushless);
+	CANSparkMax m_intakeUpper = new CANSparkMax(CANIdentifiers.IntakeUpper, MotorType.kBrushless);
+	CANSparkMax m_intakeLower = new CANSparkMax(CANIdentifiers.IntakeLower, MotorType.kBrushless);
 
 	private double simPower = 0;
 
