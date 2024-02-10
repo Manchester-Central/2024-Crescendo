@@ -25,6 +25,12 @@ public class Vision {
 	 */
 	public enum Mode {
 		APRIL_TAGS, RETROREFLECTIVE
+  }
+  
+	private Field2d m_field = new Field2d();
+
+	public Rotation3d gamepeiceFinder() {
+		return null;
 	}
 
 	private Mode m_mode = Mode.APRIL_TAGS; // By default we just using the limelight for localization
@@ -49,7 +55,11 @@ public class Vision {
 	}
 
 	public void periodic() {
-		m_field.setRobotPose(getPose());
+		if(getPose() != null) {
+			m_field.setRobotPose(getPose());
+		} else {
+			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
+		}
 		SmartDashboard.putData("vision field", m_field);
 	}
 

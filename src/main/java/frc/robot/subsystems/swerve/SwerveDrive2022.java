@@ -107,7 +107,10 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 	@Override
 	public void periodic() {
 		super.periodic();
-		addVisionMeasurement(m_vision.getPose(), Timer.getFPGATimestamp() - m_vision.getLatencySeconds());
+		m_vision.periodic();
+		if(m_vision.getPose() != null) {
+			addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+		}
 		SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
 	} 
 
