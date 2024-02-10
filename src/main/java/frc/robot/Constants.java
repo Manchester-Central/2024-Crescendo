@@ -53,4 +53,10 @@ public class Constants {
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
 	}	
+	public static class LauncherConstants {
+		public static final double TiltPotConversionFactor = 1;
+		public static final double TiltP = 0;
+		public static final double TiltI = 0;
+		public static final double TiltD = 0;
+	}
 }
