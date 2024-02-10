@@ -3,12 +3,15 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.IOPorts;
 
 public class Feeder extends SubsystemBase {
-
+	public DigitalInput m_feederSensorPrimary = new DigitalInput(IOPorts.FeederSensorPrimary);
+	public DigitalInput m_feederSensorSecondary = new DigitalInput(IOPorts.FeederSensorSecondary);
 	CANSparkFlex m_feederMotor = new CANSparkFlex(CANIdentifiers.Feeder, MotorType.kBrushless);
 
 	private double simPower = 0;
@@ -24,6 +27,14 @@ public class Feeder extends SubsystemBase {
 	public void setFeederPower(double power) {
 		simPower = power;
 		m_feederMotor.set(power);
+	}
+
+	public boolean hasNoteAtPrimary(){
+		return m_feederSensorPrimary.get();
+	}
+	
+	public boolean hasNoteAtSecondary(){
+		return m_feederSensorSecondary.get();
 	}
 
 	/** 

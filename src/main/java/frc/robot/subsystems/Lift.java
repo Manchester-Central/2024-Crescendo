@@ -14,13 +14,16 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.IOPorts;
 import frc.robot.Constants.LiftConstants;
 
 public class Lift extends SubsystemBase {
+	private DigitalInput m_bottomSensor = new DigitalInput(IOPorts.LiftBottomSensor);
 	private TalonFX m_liftA = new TalonFX(CANIdentifiers.LiftA);
 	private TalonFX m_liftB = new TalonFX(CANIdentifiers.LiftB);
 	private PIDTuner m_liftPidTuner;
@@ -78,6 +81,10 @@ public class Lift extends SubsystemBase {
 			return simHeight;
 		}
 		return m_liftA.getPosition().getValueAsDouble();
+	}
+
+	public boolean atBottom() {
+		return m_bottomSensor.get();
 	}
 
 	@Override

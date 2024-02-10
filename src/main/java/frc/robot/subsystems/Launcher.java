@@ -108,7 +108,7 @@ public class Launcher extends SubsystemBase {
 	public void tuneTiltPID(PIDFValue pidValue){
         m_tiltController.getPIDController().setP(pidValue.P);
         m_tiltController.getPIDController().setI(pidValue.I);        
-        m_tiltController.getPIDController().setD(pidValue.D);
+        m_tiltController.getPIDControer().setD(pidValue.D);
     }
 
 	public void tuneFlywheelPID(PIDFValue pidValue) {
