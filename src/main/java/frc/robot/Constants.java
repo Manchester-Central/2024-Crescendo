@@ -53,6 +53,7 @@ public class Constants {
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
 	}	
+
 	public static class LauncherConstants {
 		public static final double TiltPotConversionFactor = 1;
 		public static final double TiltEncoderConversionFactor = 1;
@@ -66,6 +67,18 @@ public class Constants {
 		public static final double FlywheelI = 0;
 		public static final double FlywheelD = 0;
 		public static final double FlywheelF = 0;
+	}
+
+	public static class LiftConstants {
+		public static final double LiftEncoderConversionFactor = 1;
+		public static final double LiftP = 0;
+		public static final double LiftI = 0;
+		public static final double LiftD = 0;
+
+		public static final double MinHeightMeters = 0.35;
+		public static final double DefaultLaunchMeters = 0.6;
+		public static final double DefaultAmpMeters = 1.0;
+
 	}
 
 	

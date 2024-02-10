@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Lift;
 
 public class DefaultLiftCommand extends Command {
@@ -23,7 +24,7 @@ public class DefaultLiftCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(Lift.MinHeightMeters);
+    m_lift.moveToHeight(LiftConstants.MinHeightMeters);
   }
 
   // Called once the command ends or is interrupted.
