@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
 
-public class Vision {
+public class Vision extends SubsystemBase {
 	private NetworkTable m_visionTable = NetworkTableInstance.getDefault().getTable("limelight");
 	private NetworkTableEntry m_botpose = m_visionTable.getEntry("botpose_wpiblue");
 	private NetworkTableEntry m_pipelineID = m_visionTable.getEntry("getpipe");
-	private Field2d m_field;
+	private NetworkTableEntry m_tx = m_visionTable.getEntry("tx");
 	
 	/**
 	 * Represents which mode the robot is in
@@ -24,16 +23,14 @@ public class Vision {
 	 * Targeting - the current limelight pipeline uses CV to find targets (notes) on the field
 	 */
 	public enum Mode {
-		APRIL_TAGS, RETROREFLECTIVE
+		BLUE_APRIL_TAGS,
+		RED_APRIL_TAGS,
+		RETROREFLECTIVE
   }
   
 	private Field2d m_field = new Field2d();
 
-	public Rotation3d gamepeiceFinder() {
-		return null;
-	}
-
-	private Mode m_mode = Mode.APRIL_TAGS; // By default we just using the limelight for localization
+	private Mode m_mode = Mode.RED_APRIL_TAGS; // By default we just using the limelight for localization
 
 	/**
 	 * 
@@ -41,16 +38,16 @@ public class Vision {
 	 * it should be ignored in calculations
 	 */
 	public Pose2d getPose() {
-		if(m_mode != Mode.APRIL_TAGS) {
+		if(m_mode != Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
 		}
-		double[] defaults = null;
+		double[] defaults = {0, 0, 0, 0, 0, 0, 0};
 		double[] values = m_botpose.getDoubleArray(defaults);
 		// If the limelight is returning bad values, return null
 		if(values[0] == 0 && values[1] == 0) { 
 			return null;
 		} else {
-		return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));
+			return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));
 		}
 	}
 
@@ -63,15 +60,6 @@ public class Vision {
 		SmartDashboard.putData("vision field", m_field);
 	}
 
-	public void setPipeline(int pipeline) {
-		m_pipelineID.setInteger(pipeline);
-		for(int aprilTagPipeline : VisionConstants.AprilTagPipelines) {
-			if(pipeline == aprilTagPipeline) {
-				setMode(Mode.APRIL_TAGS);
-			}
-		}
-	}
-
 	/**
 	 * @return The current limelight pipeline. -1 is returned if no value is received from m_pipelineID
 	 */
@@ -80,7 +68,9 @@ public class Vision {
 	}
 
 	public void setMode(Mode mode) {
+		System.out.println(mode.ordinal());
 		m_mode = mode;
+		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
 	}
 
 	public double getLatencySeconds() {
@@ -88,6 +78,13 @@ public class Vision {
 		double latencyMilliseconds = m_botpose.getDoubleArray(defaultValues)[6]; // The seventh element is latency in ms
 		double latencySeconds = latencyMilliseconds / 1000;
 		return latencySeconds;
+	}
+
+	public Double noteDetection(){
+		setMode(Mode.RETROREFLECTIVE);
+		double temptx = m_tx.getDouble(-100);
+		if(temptx < -90) return null;
+		return temptx;
 	}
 }
 

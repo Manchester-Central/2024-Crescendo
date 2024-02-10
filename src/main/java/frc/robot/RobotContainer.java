@@ -20,7 +20,9 @@ import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
+import frc.robot.commands.auto.tracker;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
 
@@ -30,16 +32,18 @@ public class RobotContainer {
   private Gamepad m_operator = new Gamepad(1);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
-  private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
+  /* private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
-    
+    */
+  private SwerveDrive2022 m_swerveDrive = SwerveDrive2022.createSwerveDrive();
+  private Vision m_vision = new Vision();
 
   private Intake m_Intake = new Intake();
 
   public RobotContainer() {
     configureBindings();
-
+    m_swerveDrive.setVision(m_vision); 
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
   }
@@ -62,6 +66,8 @@ public class RobotContainer {
       } 
     ));
     m_driver.rightBumper().whileTrue(new RunCommand(()-> m_Intake.runSpeed(0.3), m_Intake));
+    m_driver.x().whileTrue(new tracker(m_swerveDrive, m_vision).repeatedly());
+
   }
 
   public Command getAutonomousCommand() {
