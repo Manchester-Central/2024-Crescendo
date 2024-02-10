@@ -29,8 +29,8 @@ public class RobotRelativeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());
-    m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), 0, 0);
+    m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());
+    //m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), 0, 0);
 
   }
 
