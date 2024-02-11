@@ -8,29 +8,59 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.VisionConstants;
 
 
 public class Vision extends SubsystemBase {
-	private NetworkTable m_visionTable = NetworkTableInstance.getDefault().getTable("limelight");
-	private NetworkTableEntry m_botpose = m_visionTable.getEntry("botpose_wpiblue");
-	private NetworkTableEntry m_pipelineID = m_visionTable.getEntry("getpipe");
-	private NetworkTableEntry m_tx = m_visionTable.getEntry("tx");
+	private NetworkTable m_visionTable;
+	private NetworkTableEntry m_botpose;
+	private NetworkTableEntry m_pipelineID;
+
+	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
+	private NetworkTableEntry m_tx;
+	private NetworkTableEntry m_ty;
 	
 	/**
-	 * Represents which mode the robot is in
-	 * Localization - the current limelight pipeline uses april tags to find the current botpose
-	 * Targeting - the current limelight pipeline uses CV to find targets (notes) on the field
+	 * Represents which mode the robot is in.
+	 * 
+	 * <p>BLUE_APRIL_TAGS - The pipeline corresponding to the tags on the BLUE side of the field.
+	 * <p>RED_APRIL_TAGS - The pipeline corresponding to the tags on the RED side of the field.
+	 * <p>RETROREFLECTIVE - The pipeline used for finding notes on the field.
+	 * This is typically for intake cameras, which may not be the forward camera.
 	 */
 	public enum Mode {
 		BLUE_APRIL_TAGS,
 		RED_APRIL_TAGS,
 		RETROREFLECTIVE
-  }
-  
+	}
+
 	private Field2d m_field = new Field2d();
 
-	private Mode m_mode = Mode.RED_APRIL_TAGS; // By default we just using the limelight for localization
+	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
+
+	/**
+	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
+	 * Make sure the limelight device has a distinct static IP and network tables name.
+	 * 
+	 * @param tablename - String of the device name.
+	 */
+	public Vision(String tablename) {
+		m_visionTable = NetworkTableInstance.getDefault().getTable(tablename);
+		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
+		m_pipelineID = m_visionTable.getEntry("getpipe");
+		m_tx = m_visionTable.getEntry("tx");
+		m_ty = m_visionTable.getEntry("ty");
+	}
+
+	/**
+	 * Overloaded for convenience to be able to set the initial mode/state.
+	 * 
+	 * @param tablename - String of the device name.
+	 * @param initialState - Whichever state (ie, side of the field) the robot is initializing on.
+	 */
+	public Vision(String tablename, Mode initialState) {
+		this(tablename);
+		m_mode = initialState;
+	} 
 
 	/**
 	 * 
@@ -38,7 +68,7 @@ public class Vision extends SubsystemBase {
 	 * it should be ignored in calculations
 	 */
 	public Pose2d getPose() {
-		if(m_mode != Mode.RETROREFLECTIVE) {
+		if(m_mode == Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
 		}
 		double[] defaults = {0, 0, 0, 0, 0, 0, 0};
@@ -61,16 +91,25 @@ public class Vision extends SubsystemBase {
 	}
 
 	/**
-	 * @return The current limelight pipeline. -1 is returned if no value is received from m_pipelineID
+	 * Pulls the current limelight pipeline number from network tables.
+	 * 
+	 * @return -1 is returned if no value is received from m_pipelineID
 	 */
-	public int getPipeline() {
-		return (int) m_pipelineID.getInteger(-1);
+	public long getPipeline() {
+		return m_pipelineID.getInteger(-1);
 	}
 
-	public void setMode(Mode mode) {
-		System.out.println(mode.ordinal());
+	/**
+	 * Changes the internal state machine, and updates the limelight to use the specified 
+	 * 
+	 * @param mode - The Mode to switch to (BLUE_APRIL_TAGS, RED_APRIL_TAGS, RETROREFLECTIVE)
+	 * @return - Returns itself for chaining
+	 */
+	public Vision setMode(Mode mode) {
 		m_mode = mode;
 		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
+
+		return this;
 	}
 
 	public double getLatencySeconds() {
@@ -80,11 +119,23 @@ public class Vision extends SubsystemBase {
 		return latencySeconds;
 	}
 
-	public Double noteDetection(){
-		setMode(Mode.RETROREFLECTIVE);
-		double temptx = m_tx.getDouble(-100);
+	/**
+	 * On the first attempt to detect a note from a different pipeline, it will have to tell the limelight to swap back.
+	 * In an effort to reduce bad values leaking into the system, we reject any values that might be there since AprilTags
+	 * still return valid tx and ty values.
+	 * 
+	 * <p>NOTE: (pun intended) that latency in the system could still introduce incorrect values that are ordinarily valid.
+	 * This needs further research, but may not be a problem in practice. Or maybe we just remove values above the horizon?
+	 * 
+	 * @return - The azimuth angle in degrees where +theta is to the right (typically opposite from robot drive)
+	 */
+	public Double getNoteAzimuth() {
+		if (m_mode != Mode.RETROREFLECTIVE) {
+			setMode(Mode.RETROREFLECTIVE);
+			return null;
+		}
+		Double temptx = m_tx.getDouble(-100);
 		if(temptx < -90) return null;
 		return temptx;
 	}
 }
-

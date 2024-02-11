@@ -20,9 +20,10 @@ import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
-import frc.robot.commands.auto.tracker;
+import frc.robot.commands.auto.AimForNote;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.Mode;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
 
@@ -37,9 +38,10 @@ public class RobotContainer {
     : SwerveDrive2024.createSwerveDrive();
     */
   private SwerveDrive2022 m_swerveDrive = SwerveDrive2022.createSwerveDrive();
-  private Vision m_vision = new Vision();
-
+  private Vision m_vision = new Vision("limelight");
   private Intake m_Intake = new Intake();
+
+  private final double m_midfieldLine = 5.0; // todo, fix me
 
   public RobotContainer() {
     configureBindings();
@@ -51,6 +53,10 @@ public class RobotContainer {
 
   private void configureBindings() {
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    m_vision.setDefaultCommand(new InstantCommand(() -> {
+      if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
+      else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
+    }));
     m_Intake.setDefaultCommand(new RunCommand(()-> m_Intake.runSpeed(0.0), m_Intake));
     m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(0))));
@@ -66,7 +72,7 @@ public class RobotContainer {
       } 
     ));
     m_driver.rightBumper().whileTrue(new RunCommand(()-> m_Intake.runSpeed(0.3), m_Intake));
-    m_driver.x().whileTrue(new tracker(m_swerveDrive, m_vision).repeatedly());
+    m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
 
   }
 
