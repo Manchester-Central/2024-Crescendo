@@ -9,8 +9,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAnalogSensor.Mode;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -27,8 +28,17 @@ public class Launcher extends SubsystemBase {
 	private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
 	private PIDTuner m_tiltPIDTuner;
 
-	private Rotation2d simAngle = Rotation2d.fromDegrees(0);
-	private double simPower = 0;
+	// Angle Sim
+	private Rotation2d m_simAngle = Rotation2d.fromDegrees(0);
+	private double m_simAnglePower = 0;
+	private double m_simMaxDegreesChangePerLoop = 1;
+	private PIDController m_simAnglePid = new PIDController(1, 0, 0);
+
+	// Flywheel sim
+	private double m_simFlywheelRPM = 0;
+	private double m_simFlywheelPower = 0;
+	private double m_simMaxFlywheelPowerChangePerLoop = 0.05;
+	private PIDController m_simFlywheelPid = new PIDController(1, 0, 0);
 
 	public Launcher() {
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
@@ -53,17 +63,25 @@ public class Launcher extends SubsystemBase {
 	 * @param angle the target angle to move to
 	 */
 	public void setLauncherAngle(Rotation2d angle) {
-		simAngle = angle;
+		if (Robot.isSimulation()) {
+			m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), angle.getDegrees()), -1.0, 1.0);
+		}
 		m_tiltController.getPIDController().setReference(angle.getDegrees(), ControlType.kPosition);
 	}
 
 	public void setLauncherRPM(double speedRPM) {
-		simPower = speedRPM;
+		if (Robot.isSimulation()) {
+			// Slowly adjust the power to make the simulator show the launcher getting up to speed
+			m_simFlywheelPower += MathUtil.clamp(m_simFlywheelPid.calculate(m_simFlywheelRPM, speedRPM), -m_simMaxFlywheelPowerChangePerLoop, m_simMaxFlywheelPowerChangePerLoop);
+		}
 		m_flywheelLeft.getPIDController().setReference(speedRPM, ControlType.kVelocity);
 		m_flywheelRight.getPIDController().setReference(speedRPM, ControlType.kVelocity);
 	}
 
 	public double getLauncherRPM() {
+		if (Robot.isSimulation()) {
+			return m_simFlywheelRPM;
+		}
 		return m_flywheelRight.getEncoder().getVelocity();
 	}
 
@@ -72,7 +90,7 @@ public class Launcher extends SubsystemBase {
 	 */
 	public Rotation2d getCurrentAngle() {
 		if (Robot.isSimulation()) {
-			return simAngle;
+			return m_simAngle;
 		}
 		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
 	}
@@ -82,7 +100,9 @@ public class Launcher extends SubsystemBase {
 	 * @param power the duty cycle [-1, 1] power to run at
 	 */
 	public void setLauncherPower(double power) {
-		simPower = power;
+		if (Robot.isSimulation()) {
+			m_simFlywheelPower = power;
+		}
 		m_flywheelLeft.set(power);
 		m_flywheelRight.set(power);
 	}
@@ -92,7 +112,7 @@ public class Launcher extends SubsystemBase {
 	 */
 	public double getCurrentLauncherPower() {
 		if (Robot.isSimulation()) {
-			return simPower;
+			return m_simFlywheelPower;
 		}
 		return m_flywheelRight.get();
 	}
@@ -127,5 +147,10 @@ public class Launcher extends SubsystemBase {
 		super.periodic();
 		m_tiltPIDTuner.tune();
 		m_flywheelPidTuner.tune();
+
+		if (Robot.isSimulation()) {
+			m_simAngle = m_simAngle.plus(Rotation2d.fromDegrees(m_simAnglePower * m_simMaxDegreesChangePerLoop));
+			m_simFlywheelRPM = m_simFlywheelPower * LauncherConstants.MaxRPM;
+		}
 	}
 }
