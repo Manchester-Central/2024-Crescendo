@@ -75,6 +75,8 @@ public class Constants {
 		public static final double FlywheelI = 0;
 		public static final double FlywheelD = 0;
 		public static final double FlywheelF = 0;
+
+		public static final double MaxRPM = 1000; // TODO: Change
 	}
 
 	public static class LiftConstants {
