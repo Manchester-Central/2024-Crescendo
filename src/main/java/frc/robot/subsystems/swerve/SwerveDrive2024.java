@@ -19,6 +19,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants;
+import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.SwerveConstants2024;
 
 public class SwerveDrive2024 extends BaseSwerveDrive {
 	private SwerveDrive2024(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
@@ -30,25 +33,25 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 		// TODO do all the configs
 		var configs = new SwerveConfigs()
 			// Set max Speeds
-			.setMaxRobotSpeed_mps(5.66) 
-			.setMaxRobotRotation_radps(6.75) //TODO confirm
+			.setMaxRobotSpeed_mps(SwerveConstants2024.MaxRobotSpeed_mps) 
+			.setMaxRobotRotation_radps(SwerveConstants2024.MaxRobotRotation_radps) //TODO confirm
 			// Translation PID settings
-			.setDefaultTranslationPIDValues(new PIDValue(1.0, 0.0, 0.0)) //TODO confirm
-			.setDefaultDriveToTargetTolerance(0.03) 
+			.setDefaultTranslationPIDValues(SwerveConstants2024.DefaultTranslationPIDValues) //TODO confirm
+			.setDefaultDriveToTargetTolerance(SwerveConstants2024.DefaultDriveToTargetTolerance_m) 
 			// Rotation PID settings
-			.setDefaultRotationPIDValues(new PIDValue(0.017, 0.0001, 0.0)) //TODO confirm
-			.setDefaultRotationTolerance(Rotation2d.fromDegrees(3))
+			.setDefaultRotationPIDValues(SwerveConstants2024.DefaultRotationPIDValues) //TODO confirm
+			.setDefaultRotationTolerance(SwerveConstants2024.DefaultRotationTolerance)
 			// Module PID settings
-			.setDefaultModuleAnglePIDValues(new PIDValue(48.0, 0.0, 0.0)) //TODO confirm
-			.setDefaultModuleVelocityPIDFValues(new PIDFValue(10.0, 0.0, 0.0, 3.35)) //TODO confirm
+			.setDefaultModuleAnglePIDValues(SwerveConstants2024.DefaultModuleAnglePIDValue) //TODO confirm
+			.setDefaultModuleVelocityPIDFValues(SwerveConstants2024.DefaultModuleVelocityPIDFValues) //TODO confirm
 			// field configs
-			.setDefaultAlliance(Alliance.Blue) 
+			.setDefaultAlliance(Constants.DefaultAlliance) 
 			// Debug/sim
-			.setDebugMode(true)
-			.setUpdateFrequency_hz(20);
+			.setDebugMode(Constants.DebugMode)
+			.setUpdateFrequency_hz(Constants.SimUpdateFrequency);
 
 		var speedGearRatio = 5.5; 
-		var driveWheelDiameterMeters = 0.0991; 
+		var driveWheelDiameterMeters = 0.1016; // 0.0991 
 		var wheelCircumferenceMeters = driveWheelDiameterMeters * Math.PI;
 		var angleGearRatio = 144.0 / 14.0;
 		var absoluteEncoderDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -64,36 +67,36 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 		var frontLeftModule = new SwerveModule2024(
 			"frontLeftModule",
 			new Translation2d(frontLengthDistance, frontLengthDistance),
-			new SpeedControllerConfig(30, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(31, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(32, absoluteEncoderDirection, Rotation2d.fromDegrees(-17.66)),
+			new SpeedControllerConfig(CANIdentifiers.FrontLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.FrontLeftAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-26.02)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var frontRightModule = new SwerveModule2024(
 			"frontRightModule",
 			new Translation2d(frontLengthDistance, -frontLengthDistance),
-			new SpeedControllerConfig(33, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(34, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(35, absoluteEncoderDirection, Rotation2d.fromDegrees(-12.832)),
+			new SpeedControllerConfig(CANIdentifiers.FrontRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.FrontRightAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-15.03)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var backLeftModule = new SwerveModule2024(
 			"backLeftModule",
 			new Translation2d(-backLengthDistance, backLengthDistance),
-			new SpeedControllerConfig(36, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(37, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(38, absoluteEncoderDirection, Rotation2d.fromDegrees(42.802)),
+			new SpeedControllerConfig(CANIdentifiers.BackLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.BackLeftAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(42.45)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
 		var backRightModule = new SwerveModule2024(
 			"backRightModule",
 			new Translation2d(-backLengthDistance, -backLengthDistance),
-			new SpeedControllerConfig(39, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
-			new AngleControllerConfig(40, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(41, absoluteEncoderDirection, Rotation2d.fromDegrees(67.587)),
+			new SpeedControllerConfig(CANIdentifiers.BackRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
+			new AngleControllerConfig(CANIdentifiers.BackRightAngle, angleMotorDirection, angleGearRatio),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(63.9)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 
@@ -102,4 +105,8 @@ public class SwerveDrive2024 extends BaseSwerveDrive {
 
 		return new SwerveDrive2024(modules, configs, () -> gyro.getRotation2d());
 	}
+
+	// public void testModuleSpeed(double percentSpeed) {
+	// 	forAllModules(module -> ((SwerveModule2024)module).setPercentSpeed(percentSpeed));
+	// }
 }

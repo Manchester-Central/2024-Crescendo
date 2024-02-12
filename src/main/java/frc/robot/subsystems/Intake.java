@@ -7,19 +7,37 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.Constants.CANIdentifiers;
 
 public class Intake extends SubsystemBase {
-	
-	CANSparkMax m_intakeUpper = new CANSparkMax(42,MotorType.kBrushless);
-	CANSparkMax m_intakeLower = new CANSparkMax(43,MotorType.kBrushless);
-	public Intake() {
-		//m_motor = new TalonFX(0);
-		//m_config = new TalonFXConfiguration();
 
-		//m_motor.getConfigurator().apply(m_config);
+	CANSparkMax m_intakeUpper = new CANSparkMax(CANIdentifiers.IntakeUpper, MotorType.kBrushless);
+	CANSparkMax m_intakeLower = new CANSparkMax(CANIdentifiers.IntakeLower, MotorType.kBrushless);
+
+	private double simPower = 0;
+
+	public Intake() {
+
 	}
-	public void runSpeed(double speed){
-		m_intakeUpper.set(speed);
-		m_intakeLower.set(speed);
+
+	/**
+	 * Sets the run power
+	 * @param power the duty cycle [-1, 1] power to run at
+	 */
+	public void setIntakePower(double power) {
+		simPower = power;
+		m_intakeUpper.set(power);
+		m_intakeLower.set(power);
+	}
+
+	/** 
+	 * Gets the current duty cycle power [-1, 1] of the intake
+	 */
+	public double getCurrentIntakePower() {
+		if(Robot.isSimulation()) {
+			return simPower;
+		}
+		return m_intakeUpper.get();
 	}
 }
