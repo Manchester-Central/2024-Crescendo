@@ -1,34 +1,35 @@
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
 import com.chaos131.swerve.BaseSwerveDrive;
-import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Vision;
 
-public class DriveToRing extends Command {
-	private Translation2d m_targetLocation;
+public class AimForNote extends Command {
 	private BaseSwerveDrive m_swerveDrive;
 	private Vision m_vision;
 
-	public DriveToRing(Translation2d location, BaseSwerveDrive swerveDrive, Vision vision) {
-		m_targetLocation = location;
+	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision){
 		m_swerveDrive = swerveDrive;
 		m_vision = vision;
 		addRequirements(swerveDrive, vision);
 	}
 
-	/** Runs when the command is first run, before execute. It is only run once. */
 	public void initialize() {
-		m_swerveDrive.driveToPositionInit();
-		m_swerveDrive.resetPids();
-		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_swerveDrive.getOdometryRotation());
+		// 
 	}
+
+	
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		m_swerveDrive.moveToTarget(0.5);
+		Double tx = m_vision.getNoteAzimuth();
+		if(tx == null) return;
+
+		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
+		// TODO: Drive into the note until it is intaken (intook?)
+		m_swerveDrive.moveFieldRelativeAngle(0, 0, noteAngle, 0.6);
 	}
 
 	/**
@@ -41,8 +42,7 @@ public class DriveToRing extends Command {
 	 * @param interrupted whether the command was interrupted/canceled
 	 */
 	public void end(boolean interrupted) {
-		m_swerveDrive.resetPids();
-		m_swerveDrive.stop();
+		//
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class DriveToRing extends Command {
 	 *
 	 * @return whether the command has finished.
 	 */
-	public boolean isFinished() {
-		return m_swerveDrive.atTarget();
+	public boolean isFinished(){
+		return false;
 	}
 }

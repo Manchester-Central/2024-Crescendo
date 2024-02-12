@@ -7,6 +7,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
+	public static final boolean Use2022Robot = true;
+
+	public static class VisionConstants {
+		public static final int[] AprilTagPipelines = {0, 1, 2};
 
 	public static final boolean DebugMode = true;
 	public static final Alliance DefaultAlliance = Alliance.Blue;
@@ -89,6 +93,4 @@ public class Constants {
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.05;
 
 	}
-
-	
 }

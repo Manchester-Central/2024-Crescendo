@@ -20,8 +20,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Vision;
 
 public class SwerveDrive2022 extends BaseSwerveDrive {
+	private Vision m_vision;
 	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
 
 		super(modules, configs, getRotation);
@@ -104,9 +106,16 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 	@Override
 	public void periodic() {
 		super.periodic();
+		m_vision.periodic();
+		if(m_vision.getPose() != null) {
+			addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+		}
 		SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
+	}
 
-	} 
+	public void setVision(Vision system) {
+		m_vision = system;
+	}
 
 
 }
