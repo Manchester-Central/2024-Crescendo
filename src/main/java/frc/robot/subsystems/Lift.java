@@ -79,6 +79,7 @@ public class Lift extends SubsystemBase {
 	 */
 	public void moveToHeight(double heightMeters) {
 		if (!hasSeenBottom()) {
+			m_simPower = 0;
 			// If we haven't seen the bottom, don't allow Closed-loop control
 			return;
 		}
