@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
@@ -33,10 +32,12 @@ public class Launch extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_feeder.setFeederPower(0.3);
     m_lift.moveToHeight(LiftConstants.DefaultLaunchMeters);
     m_launcher.setLauncherRPM(LauncherConstants.MaxRPM); // TODO: value should be determined from limelight/odometry
-    m_launcher.setLauncherAngle(Rotation2d.fromDegrees(10)); // TODO: value should be determined from limelight/odometry
+    m_launcher.setLauncherAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
+    if (m_lift.atTargetHeight(LiftConstants.DefaultLaunchMeters) && m_launcher.atTargetAngle(LauncherConstants.BumperShotAngle) && m_launcher.atTargetRPM(LauncherConstants.MaxRPM)) {
+      m_feeder.setFeederPower(0.3);
+    }
   }
 
   // Called once the command ends or is interrupted.

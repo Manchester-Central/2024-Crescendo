@@ -73,7 +73,9 @@ public class Constants {
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(20);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(40);
+		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 
+		public static final double LauncherToleranceRPM = 50;
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
 		public static final double FlywheelI = 0;
