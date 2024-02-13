@@ -5,14 +5,17 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.auto.AutoUtil;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.swerve.SwerveDrive2024;
 
 public class SpeakerFocus extends Command {
 	private Pose2d m_targetLocation;
+	private Translation2d m_speakerLocation;
 	private BaseSwerveDrive m_swerveDrive;
 	private Vision m_vision;
 
@@ -20,6 +23,7 @@ public class SpeakerFocus extends Command {
 		m_targetLocation = location;
 		m_swerveDrive = swerveDrive;
 		m_vision = vision;
+		m_speakerLocation = new Translation2d(-0.0381, 5.547868);
 		addRequirements(swerveDrive, vision);
 	}
 
@@ -29,10 +33,17 @@ public class SpeakerFocus extends Command {
 		m_swerveDrive.resetPids();
 		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_targetLocation.getRotation());
 	}
-
+		//"No .png" -Colin 2024
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		m_swerveDrive.moveToTarget(0.5);
+		// m_swerveDrive.moveToTarget(0.5);
+		Translation2d robotPosition = m_swerveDrive.getPose().getTranslation();
+		Translation2d distance = robotPosition.minus(m_speakerLocation);
+		Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan(distance.getY()/distance.getX()));
+		Rotation2d currentAngle = m_swerveDrive.getPose().getRotation();
+		Rotation2d angleDifference = targetAngle.minus(currentAngle);
+		m_swerveDrive.moveFieldRelativeAngle(0.2, 0.2, angleDifference, 0.6);
+		// "I need bed please" - Anthony 2024
 	}
 
 	/**
@@ -58,4 +69,5 @@ public class SpeakerFocus extends Command {
 	public boolean isFinished() {
 		return m_swerveDrive.atTarget();
 	}
+
 }
