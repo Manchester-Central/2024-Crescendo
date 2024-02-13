@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDValue;
-import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.AbsoluteEncoderConfig;
@@ -17,13 +16,10 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Vision;
+import edu.wpi.first.wpilibj.SPI;
 
-public class SwerveDrive2022 extends BaseSwerveDrive {
-	private Vision m_vision;
+public class SwerveDrive2022 extends SwerveDrive {
 	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
 
 		super(modules, configs, getRotation);
@@ -101,21 +97,5 @@ public class SwerveDrive2022 extends BaseSwerveDrive {
 
 		return new SwerveDrive2022(modules, configs, () -> gyro.getRotation2d());
 	}
-
-
-	@Override
-	public void periodic() {
-		super.periodic();
-		m_vision.periodic();
-		if(m_vision.getPose() != null) {
-			addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
-		}
-		SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
-	}
-
-	public void setVision(Vision system) {
-		m_vision = system;
-	}
-
 
 }
