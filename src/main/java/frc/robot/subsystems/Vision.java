@@ -8,12 +8,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
+import org.json.*;
+	
 public class Vision extends SubsystemBase {
 	private NetworkTable m_visionTable;
 	private NetworkTableEntry m_botpose;
 	private NetworkTableEntry m_pipelineID;
+	private NetworkTableEntry m_json;
 
 	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
 	private NetworkTableEntry m_tx;
@@ -49,6 +50,7 @@ public class Vision extends SubsystemBase {
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
+		m_json = m_visionTable.getEntry("json");
 	}
 
 	/**
@@ -80,7 +82,7 @@ public class Vision extends SubsystemBase {
 			return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));
 		}
 	}
-
+	@Override
 	public void periodic() {
 		if(getPose() != null) {
 			m_field.setRobotPose(getPose());
@@ -88,6 +90,7 @@ public class Vision extends SubsystemBase {
 			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
 		}
 		SmartDashboard.putData("vision field", m_field);
+		SmartDashboard.putString("readJSON", m_json.getString("no value received"));
 	}
 
 	/**

@@ -84,6 +84,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'com.chaos131:shared:2024.0.24'
+    implementation 'org.json:json:20171018'
 }
 
 test {
