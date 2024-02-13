@@ -3,6 +3,8 @@ package frc.robot.commands;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.FieldPose2024;
 
@@ -20,20 +22,17 @@ public class SpeakerFocus extends Command {
 	public void initialize() {
 		m_swerveDrive.resetPids();
 	}
+
 		//"No .png" -Colin 2024
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		// var speakerLocation = FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation();
 		// Translation2d robotPosition = m_swerveDrive.getPose().getTranslation();
-		// Translation2d distance = robotPosition.minus(speakerLocation);
-		// Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan(distance.getY()/distance.getX())).plus(Rotation2d.fromDegrees(180)); // 180 for blue - 0 for red?
-		// m_swerveDrive.moveFieldRelativeAngle(m_driver.getLeftY(), -m_driver.getLeftX(), targetAngle, 0.6);
-		// "I need bed please" - Anthony 2024
-
-		var speakerLocation = FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation();
-		var robotPosition = m_swerveDrive.getPose().getTranslation();
-		var targetAngle = speakerLocation.minus(robotPosition).getAngle();
-		m_swerveDrive.moveFieldRelativeAngle(m_driver.getLeftY(), -m_driver.getLeftX(), targetAngle, 0.6);
+		// Translation2d distance = robotPosition.minus(m_speakerLocation);
+		// Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan(distance.getY()/distance.getX()));
+		// Rotation2d currentAngle = m_swerveDrive.getPose().getRotation();
+		// Rotation2d angleDifference = targetAngle.minus(currentAngle);
+		// m_swerveDrive.moveFieldRelativeAngle(0.2, 0.2, angleDifference, 0.6);
+		// // "I need bed please" - Anthony 2024
 	}
 
 	/**
