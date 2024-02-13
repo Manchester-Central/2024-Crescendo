@@ -85,6 +85,10 @@ public class Launcher extends SubsystemBase {
 		return m_flywheelRight.getEncoder().getVelocity();
 	}
 
+	public boolean atTargetRPM(double targetRPM) {
+		return Math.abs(getLauncherRPM() - targetRPM) <= LauncherConstants.LauncherToleranceRPM;
+	}
+
 	/**
 	 * Gets the current angle of the launcher
 	 */
