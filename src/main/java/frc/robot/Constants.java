@@ -72,6 +72,7 @@ public class Constants {
 		public static final double TiltD = 0;
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(20);
+		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(40);
 
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
