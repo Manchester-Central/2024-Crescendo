@@ -70,10 +70,10 @@ public class RobotContainer {
   private void configureBindings() {
     // Default commands
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
-    m_vision.setDefaultCommand(new InstantCommand(() -> {
-      if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
-      else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
-    }));
+    // m_vision.setDefaultCommand(new InstantCommand(() -> {
+    //   if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
+    //   else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
+    // }));
     // m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift));
@@ -94,7 +94,6 @@ public class RobotContainer {
          BaseSwerveDrive.RotationSpeedModifier = 1.0;
       } 
     ));
-    m_driver.rightBumper().whileTrue(new RunCommand(()-> m_Intake.runSpeed(0.3), m_Intake));
     m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
 
     // Operator

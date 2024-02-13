@@ -11,12 +11,12 @@ public class Constants {
 
 	public static class VisionConstants {
 		public static final int[] AprilTagPipelines = {0, 1, 2};
+	}
 
 	public static final boolean DebugMode = true;
 	public static final Alliance DefaultAlliance = Alliance.Blue;
 	public static final double SimUpdateFrequency = 20.0;
-	public static final boolean Use2022Robot = false;
-
+	
 	public static class CANIdentifiers {
 		public static final int FrontLeftSpeed = 30;
 		public static final int FrontLeftAngle = 31;
