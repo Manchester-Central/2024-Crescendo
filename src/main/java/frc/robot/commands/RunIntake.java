@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -35,11 +36,14 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setIntakePower(0.3);
-    m_feeder.setFeederPower(0.3);
-    m_lift.moveToHeight(LiftConstants.MinHeightMeters);
+    m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
     m_launcher.setLauncherPower(0.0);
-    m_launcher.setLauncherAngle(Rotation2d.fromDegrees(20));
+    m_launcher.setLauncherAngle(LauncherConstants.IntakeAngle);
+    if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
+      m_intake.setIntakePower(0.3);
+    }    
+
+    m_feeder.grabAndHoldPiece(0.3);
   }
 
   // Called once the command ends or is interrupted.

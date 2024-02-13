@@ -54,12 +54,16 @@ public class Lift extends SubsystemBase {
 				LiftConstants.LiftD, this::tuneLiftPID);
 	}
 
-	public void setSpeed(double speed){
+	public void setSpeed(double speed) {
 		if (Robot.isSimulation()) {
 			m_simPower = speed;
 		}
 		m_liftA.set(speed);
 		m_liftB.set(speed);
+	}
+
+	public boolean atTargetHeight(double targetHeight) {
+		return Math.abs(getCurrentHeightMeters() - targetHeight) <= LiftConstants.LiftToleranceMeters;
 	}
 
 	public void tuneLiftPID(PIDFValue pidValue) {

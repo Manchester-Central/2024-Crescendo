@@ -6,12 +6,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.IOPorts;
 
 public class Feeder extends SubsystemBase {
-	public DigitalInput m_feederSensorPrimary = new DigitalInput(IOPorts.FeederSensorPrimary);
-	public DigitalInput m_feederSensorSecondary = new DigitalInput(IOPorts.FeederSensorSecondary);
+	private DigitalInput m_feederSensorPrimary = new DigitalInput(IOPorts.FeederSensorPrimary);
+	private DigitalInput m_feederSensorSecondary = new DigitalInput(IOPorts.FeederSensorSecondary);
 	CANSparkFlex m_feederMotor = new CANSparkFlex(CANIdentifiers.Feeder, MotorType.kBrushless);
 
 	private double simPower = 0;
@@ -30,10 +31,26 @@ public class Feeder extends SubsystemBase {
 	}
 
 	public boolean hasNoteAtPrimary(){
+		if (Robot.isSimulation()) {
+			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
+		}
 		return m_feederSensorPrimary.get();
 	}
 	
+	public void grabAndHoldPiece(double grabSpeed) {
+		if (hasNoteAtSecondary()) {
+			setFeederPower(-0.1);
+		} else if(hasNoteAtPrimary()) {
+			setFeederPower(0);
+		} else {
+			setFeederPower(grabSpeed);
+		}
+	}
+
 	public boolean hasNoteAtSecondary(){
+		if (Robot.isSimulation()) {
+			return RobotContainer.SimKeyboard.a().getAsBoolean(); //z on keyboard 0
+		}
 		return m_feederSensorSecondary.get();
 	}
 

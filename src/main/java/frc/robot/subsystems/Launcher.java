@@ -95,6 +95,10 @@ public class Launcher extends SubsystemBase {
 		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
 	}
 
+	public boolean atTargetAngle(Rotation2d targetAngle) {
+		return Math.abs(getCurrentAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
+	}
+
 	/**
 	 * Sets the run power
 	 * @param power the duty cycle [-1, 1] power to run at

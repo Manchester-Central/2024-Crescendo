@@ -22,8 +22,8 @@ public class DefaultFeederCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_feeder.setFeederPower(0.0);
+  public void execute() { 
+    m_feeder.grabAndHoldPiece(0.1);
   }
 
   // Called once the command ends or is interrupted.

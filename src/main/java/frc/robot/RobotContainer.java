@@ -10,12 +10,9 @@ import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
@@ -26,7 +23,6 @@ import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.DropInAmp;
 import frc.robot.commands.Launch;
 import frc.robot.commands.ResetPosition;
-import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -34,12 +30,12 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
-import frc.robot.subsystems.swerve.SwerveModule2024;
 
 public class RobotContainer {
 
   private Gamepad m_driver = new Gamepad(0);
   private Gamepad m_operator = new Gamepad(1);
+  public static Gamepad SimKeyboard = new Gamepad(2);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
@@ -94,13 +90,15 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherPower]
+    // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherPower, atFeederPrimary, atFeederSecondary]
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
       m_launcher.getCurrentAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
+      m_feeder.hasNoteAtPrimary() ? 1 : 0, 
+      m_feeder.hasNoteAtSecondary() ? 1 : 0
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
   }
