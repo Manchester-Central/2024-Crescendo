@@ -71,16 +71,24 @@ public class Constants {
 	public static class LauncherConstants {
 		public static final double TiltPotConversionFactor = 1;
 		public static final double TiltEncoderConversionFactor = 1;
+		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
 		public static final double TiltD = 0;
 
+		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(20);
+		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(40);
+		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
+
+		public static final double LauncherToleranceRPM = 50;
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
 		public static final double FlywheelI = 0;
 		public static final double FlywheelD = 0;
 		public static final double FlywheelF = 0;
+
+		public static final double MaxRPM = 1000; // TODO: Change
 	}
 
 	public static class LiftConstants {
@@ -88,11 +96,13 @@ public class Constants {
 		public static final double LiftP = 0;
 		public static final double LiftI = 0;
 		public static final double LiftD = 0;
+		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.35;
 		public static final double DefaultLaunchMeters = 0.6;
 		public static final double DefaultAmpMeters = 1.0;
-		public static final double DefaultHoldMeters = MinHeightMeters + 0.05;
+		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
+		public static final double IntakeHeightMeters = 0.4;
 
 	}
 }
