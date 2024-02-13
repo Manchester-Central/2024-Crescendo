@@ -2,9 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
-import com.chaos131.pid.PIDFValue;
-import com.chaos131.pid.PIDValue;
-import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.AbsoluteEncoderConfig;
@@ -18,12 +15,11 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.SwerveConstants2024;
 
-public class SwerveDrive2024 extends BaseSwerveDrive {
+public class SwerveDrive2024 extends SwerveDrive {
 	private SwerveDrive2024(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
 
 		super(modules, configs, getRotation);

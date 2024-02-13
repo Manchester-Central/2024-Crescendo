@@ -18,18 +18,27 @@ import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultLauncherCommand;
 import frc.robot.commands.DefaultLiftCommand;
+import frc.robot.commands.DefaultVisionCommand;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.DropInAmp;
 import frc.robot.commands.Launch;
 import frc.robot.commands.ResetPosition;
+import frc.robot.commands.RobotRelativeDrive;
+import frc.robot.commands.auto.AimForNote;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.Mode;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
@@ -38,18 +47,20 @@ public class RobotContainer {
   public static Gamepad SimKeyboard = new Gamepad(2);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
-  private BaseSwerveDrive m_swerveDrive = Constants.Use2022Robot 
+  private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
+  private Vision m_vision = new Vision("limelight");
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
   private Launcher m_launcher = new Launcher();
 
+  private final double m_midfieldLine = FieldPose2024.FieldWidthMeters / 2; // todo, fix me
+
   public RobotContainer() {
     configureBindings();
-
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
   }
@@ -57,7 +68,12 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Default commands
+    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+   /*  m_vision.setDefaultCommand(new InstantCommand(() -> {
+      if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
+      else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
+    }));*/
     // m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift));
@@ -78,7 +94,9 @@ public class RobotContainer {
          BaseSwerveDrive.RotationSpeedModifier = 1.0;
       } 
     ));
-
+   // m_driver.rightBumper().whileTrue(new RunCommand(()-> m_intake.runSpeed(0.3), m_intake));
+    // m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
+    m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     // Operator
     m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));

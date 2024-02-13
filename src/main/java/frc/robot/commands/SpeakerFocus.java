@@ -1,34 +1,38 @@
 package frc.robot.commands;
 
+import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
-import com.fasterxml.jackson.databind.JsonSerializable.Base;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Vision;
+import frc.robot.util.FieldPose2024;
 
-public class DriveToRing extends Command {
-	private Translation2d m_targetLocation;
+public class SpeakerFocus extends Command {
 	private BaseSwerveDrive m_swerveDrive;
-	private Vision m_vision;
+	private Gamepad m_driver;
 
-	public DriveToRing(Translation2d location, BaseSwerveDrive swerveDrive, Vision vision) {
-		m_targetLocation = location;
+	public SpeakerFocus(BaseSwerveDrive swerveDrive, Gamepad driver) {
 		m_swerveDrive = swerveDrive;
-		m_vision = vision;
-		addRequirements(swerveDrive, vision);
+		m_driver = driver;
+		addRequirements(swerveDrive);
 	}
 
 	/** Runs when the command is first run, before execute. It is only run once. */
 	public void initialize() {
-		m_swerveDrive.driveToPositionInit();
 		m_swerveDrive.resetPids();
-		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_swerveDrive.getOdometryRotation());
 	}
 
+		//"No .png" -Colin 2024
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		m_swerveDrive.moveToTarget(0.5);
+		// Translation2d robotPosition = m_swerveDrive.getPose().getTranslation();
+		// Translation2d distance = robotPosition.minus(m_speakerLocation);
+		// Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan(distance.getY()/distance.getX()));
+		// Rotation2d currentAngle = m_swerveDrive.getPose().getRotation();
+		// Rotation2d angleDifference = targetAngle.minus(currentAngle);
+		// m_swerveDrive.moveFieldRelativeAngle(0.2, 0.2, angleDifference, 0.6);
+		// // "I need bed please" - Anthony 2024
 	}
 
 	/**
@@ -52,6 +56,7 @@ public class DriveToRing extends Command {
 	 * @return whether the command has finished.
 	 */
 	public boolean isFinished() {
-		return m_swerveDrive.atTarget();
+		return false;
 	}
+
 }
