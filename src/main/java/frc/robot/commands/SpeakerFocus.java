@@ -26,12 +26,11 @@ public class SpeakerFocus extends Command {
 		//"No .png" -Colin 2024
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		// Translation2d robotPosition = m_swerveDrive.getPose().getTranslation();
-		// Translation2d distance = robotPosition.minus(m_speakerLocation);
-		// Rotation2d targetAngle = Rotation2d.fromRadians(Math.atan(distance.getY()/distance.getX()));
-		// Rotation2d currentAngle = m_swerveDrive.getPose().getRotation();
-		// Rotation2d angleDifference = targetAngle.minus(currentAngle);
-		// m_swerveDrive.moveFieldRelativeAngle(0.2, 0.2, angleDifference, 0.6);
+		Translation2d robotPosition = m_swerveDrive.getPose().getTranslation();
+		Translation2d speakerLocation = FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation();
+		Translation2d distance = speakerLocation.minus(robotPosition);
+		Rotation2d targetAngle = distance.getAngle();
+		m_swerveDrive.moveFieldRelativeAngle(m_driver.getLeftY(), -m_driver.getLeftX(), targetAngle, 0.6);
 		// // "I need bed please" - Anthony 2024
 	}
 
