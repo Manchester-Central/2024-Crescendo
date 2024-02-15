@@ -45,8 +45,8 @@ public class Constants {
 		public static final int FlywheelLeft = 46;
 		public static final	int FlywheelRight = 47;
 
-		public static final int LiftA = 48;
-		public static final int LiftB = 49; 
+		public static final int LiftLeft = 48;
+		public static final int LiftRight = 49; 
 	}
 
 	public static class IOPorts {
@@ -92,7 +92,7 @@ public class Constants {
 	}
 
 	public static class LiftConstants {
-		public static final double LiftEncoderConversionFactor = 1;
+		public static final double LiftEncoderConversionFactor = 71.81;
 		public static final double LiftP = 0;
 		public static final double LiftI = 0;
 		public static final double LiftD = 0;

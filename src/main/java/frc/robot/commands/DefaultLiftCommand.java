@@ -4,16 +4,20 @@
 
 package frc.robot.commands;
 
+import com.chaos131.gamepads.Gamepad;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Lift;
 
 public class DefaultLiftCommand extends Command {
   private Lift m_lift;
+  private Gamepad m_operator;
 
   /** Creates a new DefaultLiftCommand. */
-  public DefaultLiftCommand(Lift lift) {
+  public DefaultLiftCommand(Lift lift, Gamepad operator) {
     m_lift = lift;
+    m_operator = operator;
     addRequirements(lift);
   }
 
@@ -24,12 +28,12 @@ public class DefaultLiftCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if(!m_lift.hasSeenBottom()){
-      m_lift.setSpeed(-0.2);
-    } else {
-       m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
-    }
+    m_lift.setSpeed(m_operator.getRightY() * 0.15);
+    // if(!m_lift.hasSeenBottom()){
+    //   m_lift.setSpeed(-0.2);
+    //} else {
+    //    m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
+    // }
     
   }
 
