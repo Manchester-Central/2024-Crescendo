@@ -5,6 +5,7 @@ import com.chaos131.auto.ParsedCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
+import frc.robot.util.FieldPose2024;
 
 public class AutoUtil {
     public static double ParseDouble(String stringToParse, double defaultValue) {
@@ -36,6 +37,14 @@ public class AutoUtil {
      * @param parsedCommand the auto script step
      */
     public static Pose2d getDrivePose(ParsedCommand parsedCommand) {
+        var poseName = parsedCommand.getArgument("drivePose");
+        if(poseName != null && FieldPose2024.DrivePoses.containsKey(poseName)){
+            return FieldPose2024.DrivePoses.get(poseName).getCurrentAlliancePose();
+        }else if(poseName != null){
+            return null; //If the drive pose we don't know about = do nothing
+        }
+
+
         double x_meters = AutoUtil.ParseDouble(parsedCommand.getArgument("x"), 0.0);
         double y_meters = AutoUtil.ParseDouble(parsedCommand.getArgument("y"), 0.0);
         double angle_degrees = AutoUtil.ParseDouble(parsedCommand.getArgument("angle"), 0.0);
