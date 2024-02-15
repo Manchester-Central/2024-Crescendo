@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
@@ -33,8 +34,10 @@ public class Lift extends SubsystemBase {
 	private double m_simPower = 0;
 	private double m_simMaxMetersChangePerLoop = 0.1;
 	private PIDController m_simPid = new PIDController(1, 0, 0);
+	
 
 	private boolean m_hasSeenBottom = false;
+	private double m_targetHeightMeters = 0; 
 
 	public Lift() {
 
@@ -82,6 +85,7 @@ public class Lift extends SubsystemBase {
 	 * @param heightMeters the height to move to
 	 */
 	public void moveToHeight(double heightMeters) {
+		m_targetHeightMeters = heightMeters;
 		if (!hasSeenBottom()) {
 			m_simPower = 0;
 			// If we haven't seen the bottom, don't allow Closed-loop control
@@ -130,5 +134,13 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			m_simHeight += m_simPower * m_simMaxMetersChangePerLoop;
 		}
+
+		SmartDashboard.putBoolean("Lift/AtBottom", atBottom());
+		SmartDashboard.putBoolean("Lift/SeenBottom", hasSeenBottom());
+
+		SmartDashboard.putNumber("Lift/CurrentHeightMeters", getCurrentHeightMeters());
+		SmartDashboard.putNumber("Lift/AHeight", m_liftA.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("Lift/BHeight", m_liftB.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("Lift/TargetHeightMeters", m_targetHeightMeters);
 	}
 }

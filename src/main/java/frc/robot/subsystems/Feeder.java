@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -62,5 +63,14 @@ public class Feeder extends SubsystemBase {
 			return simPower;
 		}
 		return m_feederMotor.get();
+	}
+	
+	@Override
+	public void periodic() {
+		super.periodic();
+		SmartDashboard.putBoolean("Feeder/HasNoteAtPrimary", hasNoteAtPrimary());
+		SmartDashboard.putBoolean("Feeder/HasNoteAtSecondary", hasNoteAtSecondary());
+
+		SmartDashboard.putNumber("Feeder/MotorPosition", m_feederMotor.getEncoder().getPosition());
 	}
 }

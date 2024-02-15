@@ -12,6 +12,7 @@ import com.revrobotics.SparkAnalogSensor.Mode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -28,11 +29,16 @@ public class Launcher extends SubsystemBase {
 	private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
 	private PIDTuner m_tiltPIDTuner;
 
+	//Target values
+	private double m_targetRPM = 0;
+	private Rotation2d m_targetAngle = Rotation2d.fromDegrees(0);
+
 	// Angle Sim
 	private Rotation2d m_simAngle = Rotation2d.fromDegrees(0);
 	private double m_simAnglePower = 0;
 	private double m_simMaxDegreesChangePerLoop = 1;
 	private PIDController m_simAnglePid = new PIDController(1, 0, 0);
+
 
 	// Flywheel sim
 	private double m_simFlywheelRPM = 0;
@@ -63,6 +69,7 @@ public class Launcher extends SubsystemBase {
 	 * @param angle the target angle to move to
 	 */
 	public void setLauncherAngle(Rotation2d angle) {
+		m_targetAngle = angle;
 		if (Robot.isSimulation()) {
 			m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), angle.getDegrees()), -1.0, 1.0);
 		}
@@ -70,6 +77,8 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public void setLauncherRPM(double speedRPM) {
+		m_targetRPM = speedRPM;
+
 		if (Robot.isSimulation()) {
 			// Slowly adjust the power to make the simulator show the launcher getting up to speed
 			m_simFlywheelPower += MathUtil.clamp(m_simFlywheelPid.calculate(m_simFlywheelRPM, speedRPM), -m_simMaxFlywheelPowerChangePerLoop, m_simMaxFlywheelPowerChangePerLoop);
@@ -160,5 +169,13 @@ public class Launcher extends SubsystemBase {
 			m_simAngle = m_simAngle.plus(Rotation2d.fromDegrees(m_simAnglePower * m_simMaxDegreesChangePerLoop));
 			m_simFlywheelRPM = m_simFlywheelPower * LauncherConstants.MaxRPM;
 		}
+
+		SmartDashboard.putNumber("Launcher/LeftRPM", m_flywheelLeft.getEncoder().getVelocity());
+		SmartDashboard.putNumber("Launcher/RightRPM", m_flywheelRight.getEncoder().getVelocity());
+		SmartDashboard.putNumber("Launcher/AngleDegrees", getCurrentAngle().getDegrees());
+		SmartDashboard.putNumber("Launcher/AbsAngleDegrees", getAbsoluteTiltAngle().getDegrees());
+		SmartDashboard.putNumber("Launcher/TargetRPM", m_targetRPM);
+		SmartDashboard.putNumber("Launcher/TargetAngleDegrees", m_targetAngle.getDegrees());
+
 	}
 }
