@@ -23,11 +23,11 @@ import frc.robot.Robot;
 
 public class Lift extends SubsystemBase {
 	private DigitalInput m_bottomSensor = new DigitalInput(IOPorts.LiftBottomSensor);
-	private TalonFX m_liftA = new TalonFX(CANIdentifiers.LiftA);
-	private TalonFX m_liftB = new TalonFX(CANIdentifiers.LiftB);
+	private TalonFX m_liftLeft = new TalonFX(CANIdentifiers.LiftLeft);
+	private TalonFX m_liftRight = new TalonFX(CANIdentifiers.LiftRight);
 	private PIDTuner m_liftPidTuner;
-	private TalonFXConfiguration m_liftAConfig = new TalonFXConfiguration();
-	private TalonFXConfiguration m_liftBConfig = new TalonFXConfiguration();
+	private TalonFXConfiguration m_liftLeftConfig = new TalonFXConfiguration();
+	private TalonFXConfiguration m_liftRightConfig = new TalonFXConfiguration();
 	private PositionVoltage m_positionVoltage = new PositionVoltage(0);
 	
 	private double m_simHeight = LiftConstants.MinHeightMeters + 0.5; // Start off higher so we can see the lift move down
@@ -41,17 +41,17 @@ public class Lift extends SubsystemBase {
 
 	public Lift() {
 
-		m_liftAConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-		m_liftAConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-		m_liftAConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-		m_liftAConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
-		m_liftA.getConfigurator().apply(m_liftAConfig);
+		m_liftLeftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+		m_liftLeftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_liftLeftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+		m_liftLeftConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
+		m_liftLeft.getConfigurator().apply(m_liftLeftConfig);
 		
-		m_liftBConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-		m_liftBConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-		m_liftBConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-		m_liftBConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
-		m_liftB.getConfigurator().apply(m_liftBConfig);
+		m_liftRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+		m_liftRightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		m_liftRightConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+		m_liftRightConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
+		m_liftRight.getConfigurator().apply(m_liftRightConfig);
 
 		m_liftPidTuner = new PIDTuner("Lift", Constants.DebugMode, LiftConstants.LiftP, LiftConstants.LiftI,
 				LiftConstants.LiftD, this::tuneLiftPID);
@@ -61,8 +61,8 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			m_simPower = speed;
 		}
-		m_liftA.set(speed);
-		m_liftB.set(speed);
+		m_liftLeft.set(speed);
+		m_liftRight.set(speed);
 	}
 
 	public boolean atTargetHeight(double targetHeight) {
@@ -74,10 +74,10 @@ public class Lift extends SubsystemBase {
 		slot0.kP = pidValue.P;
 		slot0.kI = pidValue.I;
 		slot0.kD = pidValue.D;
-		m_liftAConfig.Slot0 = slot0;
-		m_liftBConfig.Slot0 = slot0;
-		m_liftA.getConfigurator().apply(m_liftAConfig.Slot0);
-		m_liftB.getConfigurator().apply(m_liftBConfig.Slot0);
+		m_liftLeftConfig.Slot0 = slot0;
+		m_liftRightConfig.Slot0 = slot0;
+		m_liftLeft.getConfigurator().apply(m_liftLeftConfig.Slot0);
+		m_liftRight.getConfigurator().apply(m_liftRightConfig.Slot0);
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class Lift extends SubsystemBase {
 			m_simPower = MathUtil.clamp(m_simPid.calculate(m_simHeight, heightMeters), -1.0, 1.0);
 		}
 		m_positionVoltage.Slot = 0;
-		m_liftA.setControl(m_positionVoltage.withPosition(heightMeters));
-		m_liftB.setControl(m_positionVoltage.withPosition(heightMeters));
+		m_liftLeft.setControl(m_positionVoltage.withPosition(heightMeters));
+		m_liftRight.setControl(m_positionVoltage.withPosition(heightMeters));
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return m_simHeight;
 		}
-		return m_liftA.getPosition().getValueAsDouble();
+		return m_liftLeft.getPosition().getValueAsDouble();
 	}
 
 	public boolean atBottom() {
@@ -127,8 +127,8 @@ public class Lift extends SubsystemBase {
 		m_liftPidTuner.tune();
 		if (atBottom() && !hasSeenBottom()){
 			m_hasSeenBottom = true;
-			m_liftA.setPosition(LiftConstants.MinHeightMeters);
-			m_liftB.setPosition(LiftConstants.MinHeightMeters);
+			m_liftLeft.setPosition(LiftConstants.MinHeightMeters);
+			m_liftRight.setPosition(LiftConstants.MinHeightMeters);
 		}
 
 		if (Robot.isSimulation()) {
@@ -139,8 +139,8 @@ public class Lift extends SubsystemBase {
 		SmartDashboard.putBoolean("Lift/SeenBottom", hasSeenBottom());
 
 		SmartDashboard.putNumber("Lift/CurrentHeightMeters", getCurrentHeightMeters());
-		SmartDashboard.putNumber("Lift/AHeight", m_liftA.getPosition().getValueAsDouble());
-		SmartDashboard.putNumber("Lift/BHeight", m_liftB.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("Lift/LeftHeight", m_liftLeft.getPosition().getValueAsDouble());
+		SmartDashboard.putNumber("Lift/RightHeight", m_liftRight.getPosition().getValueAsDouble());
 		SmartDashboard.putNumber("Lift/TargetHeightMeters", m_targetHeightMeters);
 	}
 }
