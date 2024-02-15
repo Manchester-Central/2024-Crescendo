@@ -62,6 +62,7 @@ public class RobotContainer {
   private final double m_midfieldLine = FieldPose2024.FieldWidthMeters / 2; // todo, fix me
 
   public RobotContainer() {
+    m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
