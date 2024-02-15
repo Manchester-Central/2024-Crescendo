@@ -36,6 +36,8 @@ public class FieldPose2024 extends MirroredDrivePose {
     // ID 16 and 11, this is the side of the stage that faces the source (with the blue robot rotation of course)
     public static final FieldPose2024 StageSource   = new FieldPose2024("StageSource", new Pose2d(4.641, 3.713, Rotation2d.fromDegrees(240)));
 
+     // The April Tag point at the Amp, accounting for robot orientation but not robot size as it tries to interact with the Amp
+    public static final FieldPose2024 TestStart     = new FieldPose2024("TestStart", new Pose2d(2, 3, Rotation2d.fromDegrees(0)));
 
     public FieldPose2024(String name, Pose2d bluePose) {
         super(FieldWidthMeters, DefaultAlliance, name, bluePose);
