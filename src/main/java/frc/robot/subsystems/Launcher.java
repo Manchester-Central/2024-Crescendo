@@ -171,9 +171,9 @@ public class Launcher extends SubsystemBase {
 		}
 
 		SmartDashboard.putNumber("Launcher/LeftRPM", m_flywheelLeft.getEncoder().getVelocity());
-		SmartDashboard.putNumber("Laucher/RightRPM", m_flywheelRight.getEncoder().getVelocity());
-		SmartDashboard.putNumber("Laucher/AngleDegrees", getCurrentAngle().getDegrees());
-		SmartDashboard.putNumber("Laucher/AbsAngleDegrees", getAbsoluteTiltAngle().getDegrees());
+		SmartDashboard.putNumber("Launcher/RightRPM", m_flywheelRight.getEncoder().getVelocity());
+		SmartDashboard.putNumber("Launcher/AngleDegrees", getCurrentAngle().getDegrees());
+		SmartDashboard.putNumber("Launcher/AbsAngleDegrees", getAbsoluteTiltAngle().getDegrees());
 		SmartDashboard.putNumber("Launcher/TargetRPM", m_targetRPM);
 		SmartDashboard.putNumber("Launcher/TargetAngleDegrees", m_targetAngle.getDegrees());
 
