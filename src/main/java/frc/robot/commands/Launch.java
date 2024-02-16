@@ -4,10 +4,14 @@
 
 package frc.robot.commands;
 
+import com.chaos131.auto.ParsedCommand;
+import com.chaos131.swerve.BaseSwerveDrive;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
@@ -40,9 +44,15 @@ public class Launch extends Command {
     }
   }
 
+  public static Command createAutoCommand(ParsedCommand parsedCommand, Lift lift, Launcher launcher, Feeder feeder){
+    return new Launch(lift, launcher, feeder);
+  }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_launcher.setLauncherPower(0);
+  }
 
   // Returns true when the command should end.
   @Override

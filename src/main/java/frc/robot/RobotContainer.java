@@ -49,9 +49,9 @@ public class RobotContainer {
   public static Gamepad SimKeyboard = new Gamepad(2);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
-  /*private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
+  private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
-    : SwerveDrive2024.createSwerveDrive();*/
+    : SwerveDrive2024.createSwerveDrive();
 
   private Vision m_vision = new Vision("limelight");
   private Intake m_intake = new Intake();
@@ -62,17 +62,19 @@ public class RobotContainer {
   private final double m_midfieldLine = FieldPose2024.FieldWidthMeters / 2; // todo, fix me
 
   public RobotContainer() {
-    // m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
-    configureBindings();
-    // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
-    // m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
+     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
+     configureBindings();
+     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
+     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
+     m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder));
+     m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
   }
   
 
   private void configureBindings() {
     // Default commands
-    // m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
-    // m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+     m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
+     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
    /*  m_vision.setDefaultCommand(new InstantCommand(() -> {
       if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
       else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
@@ -85,7 +87,7 @@ public class RobotContainer {
 
     // Driver
     // m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
-    // m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
     // m_driver.b().whileTrue(new InstantCommand(() -> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Pose2d(1, 0, Rotation2d.fromDegrees(0)), m_swerveDrive)));
     m_driver.leftTrigger().whileTrue(new StartEndCommand(
       () -> {
@@ -99,7 +101,7 @@ public class RobotContainer {
     ));
    // m_driver.rightBumper().whileTrue(new RunCommand(()-> m_intake.runSpeed(0.3), m_intake));
     // m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
-    // m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
+    m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     // Operator
     // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
