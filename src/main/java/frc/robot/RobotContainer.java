@@ -25,6 +25,7 @@ import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.DropInAmp;
 import frc.robot.commands.Launch;
+import frc.robot.commands.Outtake;
 import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.commands.auto.AimForNote;
@@ -74,24 +75,9 @@ public class RobotContainer {
   
 
   private void configureBindings() {
-    // Default commands
-     m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
-     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
-   /*  m_vision.setDefaultCommand(new InstantCommand(() -> {
-      if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
-      else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
-    }));*/
-    // m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
-    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
-    m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
-    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
-
-    // Driver
-    // m_driver.a().onTrue(new InstantCommand(() -> m_swerveDrive.recalibrateModules()));
-    m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    // m_driver.b().whileTrue(new InstantCommand(() -> m_swerveDrive.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))).andThen( new DriveToLocation(new Pose2d(1, 0, Rotation2d.fromDegrees(0)), m_swerveDrive)));
-    m_driver.leftTrigger().whileTrue(new StartEndCommand(
+    var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
+    var driverRelativeDrive = new DriverRelativeDrive(m_driver, m_swerveDrive);
+    var slowCommand = new StartEndCommand(
       () -> {
          BaseSwerveDrive.TranslationSpeedModifier = 0.5; 
          BaseSwerveDrive.RotationSpeedModifier = 0.5;
@@ -99,11 +85,41 @@ public class RobotContainer {
       () -> {
          BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
          BaseSwerveDrive.RotationSpeedModifier = 1.0;
-      } 
-    ));
-   // m_driver.rightBumper().whileTrue(new RunCommand(()-> m_intake.runSpeed(0.3), m_intake));
-    // m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
+      }
+    );
+    var frozoneSlowCommand = new StartEndCommand(
+      () -> {
+         BaseSwerveDrive.TranslationSpeedModifier = 0.25; 
+         BaseSwerveDrive.RotationSpeedModifier = 0.25;
+      },      
+      () -> {
+         BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
+         BaseSwerveDrive.RotationSpeedModifier = 1.0;
+      }
+    );
+
+    // Default commands
+    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
+    m_swerveDrive.setDefaultCommand(driverRelativeDrive);
+    // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
+    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
+    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
+
+    // Driver
+    m_driver.back().onTrue(robotRelativeDrive);
+    m_driver.start().onTrue(driverRelativeDrive);
+
+    m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    
     m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
+    m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
+    m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
+
+    m_driver.leftStick().whileTrue(slowCommand);
+    m_driver.rightStick().whileTrue(frozoneSlowCommand);
+
     // Operator
     // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
