@@ -117,6 +117,11 @@ public class RobotContainer {
     m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
+    m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
+    m_driver.leftTrigger().whileTrue(slowCommand);
+    m_driver.rightBumper().whileTrue(frozoneSlowCommand);
+    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
+
     m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
