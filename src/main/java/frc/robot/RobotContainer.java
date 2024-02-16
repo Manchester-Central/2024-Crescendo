@@ -45,7 +45,7 @@ import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
-  private Gamepad m_driver = new Gamepad(0);
+  private Gamepad m_driver = new Gamepad(0,0.2,0.2);
   private Gamepad m_operator = new Gamepad(1);
   public static Gamepad SimKeyboard = new Gamepad(2);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
