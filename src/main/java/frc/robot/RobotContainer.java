@@ -44,14 +44,14 @@ import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
-  private Gamepad m_driver = new Gamepad(0);
-  private Gamepad m_operator = new Gamepad(1);
-  public static Gamepad SimKeyboard = new Gamepad(2);
+  private Gamepad m_driver = new Gamepad(0,0.2);
+  private Gamepad m_operator = new Gamepad(1,0.2);
+  public static Gamepad SimKeyboard = new Gamepad(2,0.2);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
-  /*private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
+  private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
-    : SwerveDrive2024.createSwerveDrive();*/
+    : SwerveDrive2024.createSwerveDrive();
 
   private Vision m_vision = new Vision("limelight");
   private Intake m_intake = new Intake();
@@ -62,7 +62,7 @@ public class RobotContainer {
   private final double m_midfieldLine = FieldPose2024.FieldWidthMeters / 2; // todo, fix me
 
   public RobotContainer() {
-    // m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
+    m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
     // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     // m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
@@ -72,11 +72,8 @@ public class RobotContainer {
   private void configureBindings() {
     // Default commands
     // m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
-    // m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
-   /*  m_vision.setDefaultCommand(new InstantCommand(() -> {
-      if (m_swerveDrive.getPose().getX() < m_midfieldLine) { m_vision.setMode(Mode.BLUE_APRIL_TAGS); }
-      else { m_vision.setMode(Mode.RED_APRIL_TAGS); }
-    }));*/
+     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+  
     // m_swerveDrive.setDefaultCommand(new RobotRelativeDrive(m_driver, m_swerveDrive));
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
