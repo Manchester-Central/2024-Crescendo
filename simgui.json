@@ -11,7 +11,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/SwerveDrive": "Field2d"
+      "/SmartDashboard/SwerveDrive": "Field2d",
+      "/SmartDashboard/vision field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/SwerveDrive": {
