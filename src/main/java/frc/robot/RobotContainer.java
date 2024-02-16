@@ -28,6 +28,7 @@ import frc.robot.commands.Launch;
 import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
 import frc.robot.commands.auto.AimForNote;
+import frc.robot.commands.auto.AutoUtil;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.Mode;
@@ -68,6 +69,7 @@ public class RobotContainer {
      m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
      m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder));
      m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
+     m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
   }
   
 
