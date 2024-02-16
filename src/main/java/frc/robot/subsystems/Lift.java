@@ -61,6 +61,19 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			m_simPower = speed;
 		}
+
+		if (!hasSeenBottom()){
+			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
+		}
+
+		if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
+			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeed, 0);
+		}
+
+		if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
+			speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
+		}
+
 		m_liftLeft.set(speed);
 		m_liftRight.set(speed);
 	}
@@ -91,6 +104,8 @@ public class Lift extends SubsystemBase {
 			// If we haven't seen the bottom, don't allow Closed-loop control
 			return;
 		}
+
+		heightMeters = MathUtil.clamp(heightMeters, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
 
 		if (Robot.isSimulation()) {
 			m_simPower = MathUtil.clamp(m_simPid.calculate(m_simHeight, heightMeters), -1.0, 1.0);
