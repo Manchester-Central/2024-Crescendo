@@ -65,12 +65,10 @@ public class Lift extends SubsystemBase {
 		if (!hasSeenBottom()){
 			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
 		}
-
-		if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
+		else if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
 			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeed, 0);
 		}
-
-		if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
+		else if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
 			speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
 		}
 
