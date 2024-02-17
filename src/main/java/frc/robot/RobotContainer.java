@@ -24,6 +24,7 @@ import frc.robot.commands.DefaultVisionCommand;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.DropInAmp;
+import frc.robot.commands.FireIntoAmp;
 import frc.robot.commands.Launch;
 import frc.robot.commands.LiftClimbAndPull;
 import frc.robot.commands.ResetPosition;
@@ -99,6 +100,7 @@ public class RobotContainer {
     // m_driver.x().whileTrue(new AimForNote(m_swerveDrive, m_vision).repeatedly());
     // m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
       m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
+      m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
     // Operator
     // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
