@@ -104,5 +104,7 @@ public class Constants {
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.4;
 
+		public static final double StartClimbHeight = 1;
+
 	}
 }
