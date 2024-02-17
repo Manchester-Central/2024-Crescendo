@@ -104,7 +104,7 @@ public class RobotContainer {
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
-    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher));
+    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
 
     // Driver

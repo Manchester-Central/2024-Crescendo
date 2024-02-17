@@ -41,7 +41,7 @@ public class Outtake extends Command {
   public void execute() {
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
     m_launcher.setLauncherPower(0.0);
-    m_launcher.setLauncherAngle(LauncherConstants.IntakeAngle);
+    m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
       m_intake.setIntakePower(-0.3);
       m_feeder.setFeederPower(-0.3);
