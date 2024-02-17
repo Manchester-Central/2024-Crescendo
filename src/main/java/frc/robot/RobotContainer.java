@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultLauncherCommand;
@@ -82,20 +83,23 @@ public class RobotContainer {
       m_feeder.setFeederPower(0);
     }, m_launcher, m_feeder));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
+
+    SwerveDrive2024.TranslationSpeedModifier = SwerveConstants2024.DefaultRobotPercentSpeed;
+    SwerveDrive2024.RotationSpeedModifier = SwerveConstants2024.DefaultRobotPercentSpeed;
   }
   
 
   private void configureBindings() {
     var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
     var driverRelativeDrive = new DriverRelativeDrive(m_driver, m_swerveDrive);
-    var slowCommand = new StartEndCommand(
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 0.5; 
-         BaseSwerveDrive.RotationSpeedModifier = 0.5;
-      },      
+    var fastCommand = new StartEndCommand(
       () -> {
          BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
          BaseSwerveDrive.RotationSpeedModifier = 1.0;
+      },      
+      () -> {
+         BaseSwerveDrive.TranslationSpeedModifier = 0.65; 
+         BaseSwerveDrive.RotationSpeedModifier = 0.65;
       }
     );
     var frozoneSlowCommand = new StartEndCommand(
@@ -131,11 +135,11 @@ public class RobotContainer {
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.leftTrigger().whileTrue(slowCommand);
+    m_driver.leftTrigger().whileTrue(fastCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
     //m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
 
-    m_driver.leftStick().whileTrue(slowCommand);
+    m_driver.leftStick().whileTrue(fastCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
     // Operator
@@ -169,8 +173,10 @@ public class RobotContainer {
     m_operator.rightBumper().whileTrue(new RunCommand(()-> {
       m_launcher.setLauncherPower(1.0);
     }, m_launcher));
-  }
 
+    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.maxLiftSpeed = 0.1, () -> DefaultLiftCommand.maxLiftSpeed = 1));
+  }
+  
   public Command getAutonomousCommand() {
     return m_autoBuilder.createAutoCommand();
   }

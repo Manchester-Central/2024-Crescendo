@@ -64,6 +64,8 @@ public class Constants {
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
+		public static final double DefaultRobotPercentSpeed = 0.65;
+		
 	}	
 
 	public static class LauncherConstants {
