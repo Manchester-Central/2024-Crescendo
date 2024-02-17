@@ -99,7 +99,7 @@ public class Constants {
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
-		public static final double MaxHeightMeters = 0.793; // max height is 0.768
+		public static final double MaxHeightMeters = 0.793 - 0.05; // max height is 0.768
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;

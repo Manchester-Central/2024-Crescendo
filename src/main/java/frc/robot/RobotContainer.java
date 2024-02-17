@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
@@ -114,13 +115,13 @@ public class RobotContainer {
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
     
     m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
-    m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
+    //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
+    //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     m_driver.leftTrigger().whileTrue(slowCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
-    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
+    //m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
 
     m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
@@ -129,6 +130,22 @@ public class RobotContainer {
     // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
     // m_operator.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
+
+    m_operator.leftTrigger().whileTrue(new RunCommand(()-> {
+      m_intake.setIntakePower(0.7);
+      m_feeder.setFeederPower(0.7);
+    }, m_intake, m_feeder));
+
+     m_operator.rightTrigger().whileTrue(new RunCommand(()-> {
+      m_launcher.setLauncherPower(0.7);
+      m_feeder.setFeederPower(1.0);
+    }, m_launcher, m_feeder));
+
+    m_operator.leftBumper().whileTrue(new RunCommand(()-> {
+      m_intake.setIntakePower(-0.2);
+      m_feeder.setFeederPower(-0.2);
+      m_launcher.setLauncherPower(-0.2);
+    }, m_intake, m_feeder, m_launcher));
   }
 
   public Command getAutonomousCommand() {

@@ -140,8 +140,8 @@ public class Lift extends SubsystemBase {
 		m_liftPidTuner.tune();
 		if (atBottom() && !hasSeenBottom()){
 			m_hasSeenBottom = true;
-			m_liftLeft.setPosition(LiftConstants.MinHeightMeters);
-			m_liftRight.setPosition(LiftConstants.MinHeightMeters);
+			m_liftLeft.setPosition(LiftConstants.MinHeightMeters + 0.05);
+			m_liftRight.setPosition(LiftConstants.MinHeightMeters + 0.05);
 		}
 
 		if (Robot.isSimulation()) {
