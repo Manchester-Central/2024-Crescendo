@@ -33,7 +33,7 @@ public class DefaultLiftCommand extends Command {
       m_lift.setSpeed(-0.1);
     } else {
       // m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
-      m_lift.setSpeed(m_operator.getRightY() * 0.8);
+      m_lift.setSpeed(m_operator.getRightY() * 1);
     }
     
   }

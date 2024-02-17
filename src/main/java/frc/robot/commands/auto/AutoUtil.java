@@ -6,6 +6,7 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.RunIntake;
@@ -62,6 +63,11 @@ public class AutoUtil {
     public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
         .alongWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, launcher, feeder));
+    }
+
+    public static Command driveAndIntakeSimple(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
+        return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
+        .alongWith(new StartEndCommand(() -> intake.setIntakePower(0.7), () -> intake.setIntakePower(0), intake));
     }
 
 }

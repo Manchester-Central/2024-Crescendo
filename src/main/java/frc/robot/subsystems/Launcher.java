@@ -64,14 +64,16 @@ public class Launcher extends SubsystemBase {
 		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltController.setIdleMode(IdleMode.kCoast);
+		m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
 		m_tiltController.setInverted(true);
+		m_tiltController.getEncoder().setPosition(LauncherConstants.MaxAngle.getDegrees());
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", Constants.DebugMode, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
 		
 
 		m_flywheelLeft.burnFlash();
 		m_flywheelRight.burnFlash();
 		m_tiltController.burnFlash();
-		recalibrateTilt();
+		//recalibrateTilt();
 	}
 
 	public void setTiltSpeed(double speed) {
@@ -128,6 +130,7 @@ public class Launcher extends SubsystemBase {
 			return m_simAngle;
 		}
 		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
+		//return getAbsoluteTiltAngle();
 	}
 
 	public boolean atTargetAngle(Rotation2d targetAngle) {
@@ -198,6 +201,7 @@ public class Launcher extends SubsystemBase {
 		SmartDashboard.putNumber("Launcher/AbsAngleDegrees", getAbsoluteTiltAngle().getDegrees());
 		SmartDashboard.putNumber("Launcher/TargetRPM", m_targetRPM);
 		SmartDashboard.putNumber("Launcher/TargetAngleDegrees", m_targetAngle.getDegrees());
+		
 
 	}
 }

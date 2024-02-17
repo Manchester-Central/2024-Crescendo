@@ -70,8 +70,8 @@ public class Constants {
 		public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(5);
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77);//1.27
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9);//54.4
 
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
@@ -99,7 +99,7 @@ public class Constants {
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
-		public static final double MaxHeightMeters = 0.793 - 0.05; // max height is 0.768
+		public static final double MaxHeightMeters = 0.793; // max height is 0.768
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;

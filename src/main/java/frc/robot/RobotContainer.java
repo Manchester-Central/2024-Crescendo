@@ -72,6 +72,16 @@ public class RobotContainer {
      m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder));
      m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
      m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+     m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new StartEndCommand(() -> m_launcher.setLauncherPower(1.0), () -> m_launcher.setLauncherPower(0), m_launcher));
+     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new StartEndCommand(() -> {
+      m_launcher.setLauncherPower(1.0);
+      m_feeder.setFeederPower(1.0);
+     }, () -> {
+      m_launcher.setLauncherPower(0);
+      m_feeder.setFeederPower(0);
+    }, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
   }
   
 
@@ -107,14 +117,16 @@ public class RobotContainer {
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
+    
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);
     m_driver.start().onTrue(driverRelativeDrive);
 
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    
-    m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
+  
+    m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true));
+    //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
@@ -131,21 +143,32 @@ public class RobotContainer {
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
     // m_operator.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
 
-    m_operator.leftTrigger().whileTrue(new RunCommand(()-> {
+    m_operator.back().whileTrue(frozoneSlowCommand);
+
+    m_operator.a().whileTrue(new RunCommand(()-> {
       m_intake.setIntakePower(0.7);
       m_feeder.setFeederPower(0.7);
     }, m_intake, m_feeder));
 
+    m_operator.leftTrigger().whileTrue(new RunCommand(()-> {
+      m_feeder.setFeederPower(-1);
+      m_launcher.setLauncherPower(-1);
+    }, m_feeder, m_launcher));
+
      m_operator.rightTrigger().whileTrue(new RunCommand(()-> {
-      m_launcher.setLauncherPower(0.7);
+      m_launcher.setLauncherPower(1.0);
       m_feeder.setFeederPower(1.0);
     }, m_launcher, m_feeder));
 
-    m_operator.leftBumper().whileTrue(new RunCommand(()-> {
+    m_operator.b().whileTrue(new RunCommand(()-> {
       m_intake.setIntakePower(-0.2);
       m_feeder.setFeederPower(-0.2);
       m_launcher.setLauncherPower(-0.2);
     }, m_intake, m_feeder, m_launcher));
+
+    m_operator.rightBumper().whileTrue(new RunCommand(()-> {
+      m_launcher.setLauncherPower(1.0);
+    }, m_launcher));
   }
 
   public Command getAutonomousCommand() {
