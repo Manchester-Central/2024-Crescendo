@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.ejml.sparse.csc.mult.MatrixVectorMultWithSemiRing_FSCC;
+
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +28,7 @@ public class LiftClimbAndPull extends Command {
 
     @Override
     public void initialize() {
-       m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
+    //   m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
 
     }
 
@@ -35,8 +37,11 @@ public class LiftClimbAndPull extends Command {
 
     if ( state == liftState.raiseLift) {
 
+       m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
+
         if(m_lift.atTargetHeight(Constants.LiftConstants.StartClimbHeight)){
             state = liftState.moveForwards;
+            
 
             double x = -1 * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
             double y = -1 * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
@@ -50,7 +55,8 @@ public class LiftClimbAndPull extends Command {
 
         if (m_swerveDrive.atTarget()) {
             state = liftState.pullDown;
-            m_lift.moveToHeight(0);
+            m_lift.moveToHeight(Constants.LiftConstants.MinHeight);
+            m_swerveDrive.stop();
         } else {
             m_swerveDrive.moveToTarget(0.15);
         }
@@ -62,7 +68,7 @@ public class LiftClimbAndPull extends Command {
 
   @Override
   public boolean isFinished () {
-    return m_lift.atTargetHeight(0) && state == liftState.pullDown;
+    return m_lift.atTargetHeight(Constants.LiftConstants.MinHeight) && state == liftState.pullDown;
 
   }
     
