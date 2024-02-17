@@ -38,7 +38,7 @@ public class Launch extends Command {
   public void execute() {
     m_lift.moveToHeight(LiftConstants.DefaultLaunchMeters);
     m_launcher.setLauncherRPM(LauncherConstants.MaxRPM); // TODO: value should be determined from limelight/odometry
-    m_launcher.setLauncherAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
+    m_launcher.setTiltAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
     if (m_lift.atTargetHeight(LiftConstants.DefaultLaunchMeters) && m_launcher.atTargetAngle(LauncherConstants.BumperShotAngle) && m_launcher.atTargetRPM(LauncherConstants.MaxRPM)) {
       m_feeder.setFeederPower(0.3);
     }

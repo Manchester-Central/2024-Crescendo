@@ -64,11 +64,22 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.burnFlash();
 	}
 
+	public void setTiltSpeed(double speed) {
+		if (getCurrentAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
+			speed = MathUtil.clamp(speed, 0, 1);
+		} else if (getCurrentAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
+			speed = MathUtil.clamp(speed, -1, 0);
+		} 
+		m_simAnglePower = speed;
+		m_tiltController.set(speed);
+	}
+
 	/**
 	 * Sets the target angle for the launcher
 	 * @param angle the target angle to move to
 	 */
-	public void setLauncherAngle(Rotation2d angle) {
+	public void setTiltAngle(Rotation2d angle) {
+		angle = Rotation2d.fromDegrees(MathUtil.clamp(angle.getDegrees(), LauncherConstants.MinAngle.getDegrees(), LauncherConstants.MaxAngle.getDegrees()));
 		m_targetAngle = angle;
 		if (Robot.isSimulation()) {
 			m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), angle.getDegrees()), -1.0, 1.0);

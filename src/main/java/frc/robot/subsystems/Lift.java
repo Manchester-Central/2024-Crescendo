@@ -58,10 +58,6 @@ public class Lift extends SubsystemBase {
 	}
 
 	public void setSpeed(double speed) {
-		if (Robot.isSimulation()) {
-			m_simPower = speed;
-		}
-
 		if (!hasSeenBottom()){
 			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
 		}
@@ -70,6 +66,10 @@ public class Lift extends SubsystemBase {
 		}
 		else if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
 			speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
+		} 
+		
+		if (Robot.isSimulation()) {
+			m_simPower = speed;
 		}
 
 		m_liftLeft.set(speed);

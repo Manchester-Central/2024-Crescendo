@@ -72,6 +72,8 @@ public class Constants {
 		public static final double TiltPotConversionFactor = 1;
 		public static final double TiltEncoderConversionFactor = 1;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(5);
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(45);
 
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
