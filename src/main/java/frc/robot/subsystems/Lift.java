@@ -118,6 +118,9 @@ public class Lift extends SubsystemBase {
 	}
 	
 	public boolean hasSeenBottom(){
+		if (Robot.isSimulation()) {
+			return true;
+		}
 		return m_hasSeenBottom;
 	}
 

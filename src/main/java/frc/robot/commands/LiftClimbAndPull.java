@@ -45,11 +45,9 @@ public class LiftClimbAndPull extends Command {
             state = liftState.raiseLift;
             m_swerveDrive.stop();
         } else {
-            m_swerveDrive.moveToTarget(0.15);
+            m_swerveDrive.moveToTarget(0.40);
         }
-    }
-
-    else if ( state == liftState.raiseLift) {
+    } else if ( state == liftState.raiseLift) {
 
        m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
 
@@ -57,8 +55,8 @@ public class LiftClimbAndPull extends Command {
             state = liftState.moveForwards;
             
 
-            double x = -1 * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
-            double y = -1 * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
+            double x = -0.6 * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
+            double y = -0.6 * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
             Translation2d currntPose = m_swerveDrive.getPose().getTranslation();
             currntPose = currntPose.plus(new Translation2d(x, y));
 
