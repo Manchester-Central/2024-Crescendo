@@ -127,7 +127,7 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return m_simHeight < LiftConstants.MinHeightMeters;
 		}
-		return m_bottomSensor.get();
+		return !m_bottomSensor.get();
 	}
 	
 	public boolean hasSeenBottom(){

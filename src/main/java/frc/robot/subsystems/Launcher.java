@@ -47,21 +47,31 @@ public class Launcher extends SubsystemBase {
 	private PIDController m_simFlywheelPid = new PIDController(1, 0, 0);
 
 	public Launcher() {
+		m_flywheelLeft.restoreFactoryDefaults();
+		m_flywheelRight.restoreFactoryDefaults();
+		m_tiltController.restoreFactoryDefaults();
+		
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 		m_flywheelRight.setIdleMode(IdleMode.kCoast);
 		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", Constants.DebugMode, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
 		m_flywheelLeft.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 		m_flywheelRight.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 
+		m_flywheelLeft.setInverted(false);
+		m_flywheelRight.setInverted(true);
+
+		m_tiltPot.setInverted(true);
 		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
-		m_tiltController.setIdleMode(IdleMode.kBrake);
+		m_tiltController.setIdleMode(IdleMode.kCoast);
+		m_tiltController.setInverted(true);
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", Constants.DebugMode, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
-		recalibrateTilt();
+		
 
 		m_flywheelLeft.burnFlash();
 		m_flywheelRight.burnFlash();
 		m_tiltController.burnFlash();
+		recalibrateTilt();
 	}
 
 	public void setTiltSpeed(double speed) {
@@ -71,6 +81,7 @@ public class Launcher extends SubsystemBase {
 			speed = MathUtil.clamp(speed, -1, 0);
 		} 
 		m_simAnglePower = speed;
+		System.out.println("speed " + speed);
 		m_tiltController.set(speed);
 	}
 

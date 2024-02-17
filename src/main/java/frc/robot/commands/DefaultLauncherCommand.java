@@ -29,7 +29,7 @@ public class DefaultLauncherCommand extends Command {
   @Override
   public void execute() {
     m_launcher.setLauncherPower(0.0);
-    m_launcher.setTiltSpeed(m_operator.getLeftY());
+    m_launcher.setTiltSpeed(m_operator.getLeftY() * 0.08);
     // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }
 

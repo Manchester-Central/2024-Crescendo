@@ -22,6 +22,7 @@ public class Feeder extends SubsystemBase {
 		m_feederSensorSecondary = m_feederMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
+		m_feederMotor.setInverted(true);
 	}
 
 	/**

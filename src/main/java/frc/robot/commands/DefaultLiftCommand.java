@@ -28,12 +28,13 @@ public class DefaultLiftCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.setSpeed(m_operator.getRightY() * 0.15);
-    // if(!m_lift.hasSeenBottom()){
-    //   m_lift.setSpeed(-0.2);
-    //} else {
-    //    m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
-    // }
+
+    if(!m_lift.hasSeenBottom()){
+      m_lift.setSpeed(-0.1);
+    } else {
+      // m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
+      m_lift.setSpeed(m_operator.getRightY() * 0.15);
+    }
     
   }
 
