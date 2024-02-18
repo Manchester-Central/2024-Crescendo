@@ -62,8 +62,6 @@ public class RobotContainer {
   private Feeder m_feeder = new Feeder();
   private Launcher m_launcher = new Launcher();
 
-  private final double m_midfieldLine = FieldPose2024.FieldWidthMeters / 2; // todo, fix me
-
   public RobotContainer() {
      m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
      configureBindings();
