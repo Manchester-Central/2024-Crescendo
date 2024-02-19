@@ -36,6 +36,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.Mode;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.SimpleRollerControl;
 import frc.robot.commands.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -109,15 +110,15 @@ public class RobotContainer {
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
-    
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);
     m_driver.start().onTrue(driverRelativeDrive);
 
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    // TODO: do the other 3 directions (Left, Right, Down)
   
-    m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true));
+    m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
@@ -137,32 +138,15 @@ public class RobotContainer {
 
     m_operator.back().whileTrue(frozoneSlowCommand);
 
-    m_operator.a().whileTrue(new RunCommand(()-> {
-      m_intake.setIntakePower(0.7);
-      m_feeder.setFeederPower(0.7);
-    }, m_intake, m_feeder));
+    m_operator.a().whileTrue(new SimpleRollerControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
+    m_operator.b().whileTrue(new SimpleRollerControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).launcher(m_launcher, -0.2)); // Simple spit
 
-    m_operator.leftTrigger().whileTrue(new RunCommand(()-> {
-      m_feeder.setFeederPower(-1);
-      m_launcher.setLauncherPower(-1);
-    }, m_feeder, m_launcher));
+    m_operator.leftTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, -1.0).launcher(m_launcher, -1.0)); // Simple Amp
 
-     m_operator.rightTrigger().whileTrue(new RunCommand(()-> {
-      m_launcher.setLauncherPower(1.0);
-      m_feeder.setFeederPower(1.0);
-    }, m_launcher, m_feeder));
+    m_operator.rightBumper().whileTrue(new SimpleRollerControl().launcher(m_launcher, 1.0)); // Simple Prepare Flywheel
+    m_operator.rightTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, 1.0).launcher(m_launcher, 1.0)); // Simple Speaker Launch
 
-    m_operator.b().whileTrue(new RunCommand(()-> {
-      m_intake.setIntakePower(-0.2);
-      m_feeder.setFeederPower(-0.2);
-      m_launcher.setLauncherPower(-0.2);
-    }, m_intake, m_feeder, m_launcher));
-
-    m_operator.rightBumper().whileTrue(new RunCommand(()-> {
-      m_launcher.setLauncherPower(1.0);
-    }, m_launcher));
-
-    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1));
+    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1)); // Slower manual lift speed
   }
   
   public Command getAutonomousCommand() {
