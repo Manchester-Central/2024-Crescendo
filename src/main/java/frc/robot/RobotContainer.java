@@ -83,34 +83,22 @@ public class RobotContainer {
       m_feeder.setFeederPower(0);
     }, m_launcher, m_feeder));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
-
-    SwerveDrive2024.TranslationSpeedModifier = SwerveConstants2024.DefaultRobotPercentSpeed;
-    SwerveDrive2024.RotationSpeedModifier = SwerveConstants2024.DefaultRobotPercentSpeed;
   }
   
 
   private void configureBindings() {
     var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
     var driverRelativeDrive = new DriverRelativeDrive(m_driver, m_swerveDrive);
+
+    m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
+
     var fastCommand = new StartEndCommand(
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
-         BaseSwerveDrive.RotationSpeedModifier = 1.0;
-      },      
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 0.65; 
-         BaseSwerveDrive.RotationSpeedModifier = 0.65;
-      }
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.FastSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
     var frozoneSlowCommand = new StartEndCommand(
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 0.25; 
-         BaseSwerveDrive.RotationSpeedModifier = 0.25;
-      },      
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
-         BaseSwerveDrive.RotationSpeedModifier = 1.0;
-      }
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
 
     // Default commands
@@ -174,7 +162,7 @@ public class RobotContainer {
       m_launcher.setLauncherPower(1.0);
     }, m_launcher));
 
-    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.maxLiftSpeed = 0.1, () -> DefaultLiftCommand.maxLiftSpeed = 1));
+    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1));
   }
   
   public Command getAutonomousCommand() {

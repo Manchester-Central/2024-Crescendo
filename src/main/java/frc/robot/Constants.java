@@ -56,24 +56,27 @@ public class Constants {
 
 	public static class SwerveConstants2024 {
 
+		// Speeds
 		public static final double MaxRobotSpeed_mps =  5.8;
 		public static final double MaxRobotRotation_radps =  6.75; // untested
+		public static final double FastSpeedModifier = 1.0;
+		public static final double DefaultSpeedModifier = 0.65;
+		public static final double SlowSpeedModifier = 0.25;
+
 		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(1.0, 0.0, 0.0);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
 		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.017, 0.0001, 0.0);
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
-		public static final double DefaultRobotPercentSpeed = 0.65;
-		
 	}	
 
 	public static class LauncherConstants {
 		public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77);//1.27
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9);//54.4
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77); // TODO: confirm when using abs angle again
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9); // TODO: confirm when using abs angle again
 
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
