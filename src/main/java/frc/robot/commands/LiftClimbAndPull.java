@@ -67,7 +67,7 @@ public class LiftClimbAndPull extends Command {
 
         if (m_swerveDrive.atTarget()) {
             state = liftState.pullDown;
-            m_lift.moveToHeight(Constants.LiftConstants.MinHeight);
+            m_lift.moveToHeight(Constants.LiftConstants.MinHeightMeters);
             m_swerveDrive.stop();
         } else {
             m_swerveDrive.moveToTarget(0.15);
@@ -80,7 +80,7 @@ public class LiftClimbAndPull extends Command {
 
   @Override
   public boolean isFinished () {
-    return m_lift.atTargetHeight(Constants.LiftConstants.MinHeight) && state == liftState.pullDown;
+    return m_lift.atTargetHeight(Constants.LiftConstants.MinHeightMeters) && state == liftState.pullDown;
   }
     
   @Override

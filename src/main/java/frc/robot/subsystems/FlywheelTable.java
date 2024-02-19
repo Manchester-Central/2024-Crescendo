@@ -108,7 +108,7 @@ public class FlywheelTable {
         return new TableData(
             distance,
             idealSpeed,
-            topTableData.getHoodUp(),
+            topTableData.getLauncherAngle(),
             topTableData.getLauncherTolerance(),
             topTableData.getFeederSpeed()
         );

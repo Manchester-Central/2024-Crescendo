@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.util.FieldPose2024;
@@ -48,14 +49,14 @@ public class FireIntoAmp extends Command {
   @Override
   public void execute() {
     if (state == ampState.moveIntoPosition) {
-      if (m_swerveDrive.atTarget() && m_lift.atTargetHeight(1)
+      if (m_swerveDrive.atTarget() && m_lift.atTargetHeight(LiftConstants.DefaultAmpMeters)
           && m_launcher.atTargetAngle(Rotation2d.fromDegrees(10))) {
         m_swerveDrive.stop();
         state = ampState.fireIntoAmp;
       } else {
         m_swerveDrive.moveToTarget(0.40);
         m_lift.moveToHeight(1);
-        m_launcher.setLauncherAngle(Rotation2d.fromDegrees(10));
+        m_launcher.setTiltAngle(Rotation2d.fromDegrees(10));
       }
 
     } else {
