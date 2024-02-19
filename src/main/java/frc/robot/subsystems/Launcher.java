@@ -83,7 +83,6 @@ public class Launcher extends SubsystemBase {
 			speed = MathUtil.clamp(speed, -1, 0);
 		} 
 		m_simAnglePower = speed;
-		System.out.println("speed " + speed);
 		m_tiltController.set(speed);
 	}
 
