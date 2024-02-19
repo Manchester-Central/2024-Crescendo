@@ -4,10 +4,14 @@
 
 package frc.robot.commands;
 
+import com.chaos131.auto.ParsedCommand;
+import com.chaos131.swerve.BaseSwerveDrive;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
@@ -34,15 +38,21 @@ public class Launch extends Command {
   public void execute() {
     m_lift.moveToHeight(LiftConstants.DefaultLaunchMeters);
     m_launcher.setLauncherRPM(LauncherConstants.MaxRPM); // TODO: value should be determined from limelight/odometry
-    m_launcher.setLauncherAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
+    m_launcher.setTiltAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
     if (m_lift.atTargetHeight(LiftConstants.DefaultLaunchMeters) && m_launcher.atTargetAngle(LauncherConstants.BumperShotAngle) && m_launcher.atTargetRPM(LauncherConstants.MaxRPM)) {
       m_feeder.setFeederPower(0.3);
     }
   }
 
+  public static Command createAutoCommand(ParsedCommand parsedCommand, Lift lift, Launcher launcher, Feeder feeder){
+    return new Launch(lift, launcher, feeder);
+  }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_launcher.setLauncherPower(0);
+  }
 
   // Returns true when the command should end.
   @Override

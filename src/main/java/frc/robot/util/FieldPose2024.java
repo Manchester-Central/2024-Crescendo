@@ -36,8 +36,22 @@ public class FieldPose2024 extends MirroredDrivePose {
     // ID 16 and 11, this is the side of the stage that faces the source (with the blue robot rotation of course)
     public static final FieldPose2024 StageSource   = new FieldPose2024("StageSource", new Pose2d(4.641, 3.713, Rotation2d.fromDegrees(240)));
 
-     // The April Tag point at the Amp, accounting for robot orientation but not robot size as it tries to interact with the Amp
+    // The April Tag point at the Amp, accounting for robot orientation but not robot size as it tries to interact with the Amp
     public static final FieldPose2024 TestStart     = new FieldPose2024("TestStart", new Pose2d(2, 3, Rotation2d.fromDegrees(0)));
+
+
+    // TODO: Pick better names!
+    // Starting Note Placements, Starting blue side wing, Amp to Source, rotation is for the Robot position to intake during autonomous
+    public static final FieldPose2024 Note1         = new FieldPose2024("Note1", new Pose2d(3.11, 7.0, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note2         = new FieldPose2024("Note2", new Pose2d(3.11, 5.57, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note3         = new FieldPose2024("Note3", new Pose2d(3.11, 4.1, Rotation2d.fromDegrees(180)));
+    // And now down the midfield line from Amp to Source side
+    public static final FieldPose2024 Note4         = new FieldPose2024("Note4", new Pose2d(8.26, 7.7, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note5         = new FieldPose2024("Note5", new Pose2d(8.26, 5.7, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note6         = new FieldPose2024("Note6", new Pose2d(8.26, 4.1, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note7         = new FieldPose2024("Note7", new Pose2d(8.26, 2.5, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 Note8         = new FieldPose2024("Note8", new Pose2d(8.26, 0.8, Rotation2d.fromDegrees(180)));
+
 
     public FieldPose2024(String name, Pose2d bluePose) {
         super(FieldWidthMeters, DefaultAlliance, name, bluePose);

@@ -17,14 +17,14 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
 // TODO: Implement actual control logic
-public class RunIntake extends Command {
+public class Outtake extends Command {
   private Intake m_intake;
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
 
-  /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, Lift lift, Launcher launcher, Feeder feeder) {
+  /** Creates a new Outtake. */
+  public Outtake(Intake intake, Lift lift, Launcher launcher, Feeder feeder) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
@@ -43,19 +43,18 @@ public class RunIntake extends Command {
     m_launcher.setLauncherPower(0.0);
     m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
-      m_intake.setIntakePower(0.3);
+      m_intake.setIntakePower(-0.3);
+      m_feeder.setFeederPower(-0.3);
     }    
-
-    m_feeder.grabAndHoldPiece(0.3);
-  }
-
-  public static Command createAutoCommand(ParsedCommand parsedCommand, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
-    return new RunIntake(intake, lift, launcher, feeder);
+    else {
+      m_feeder.grabAndHoldPiece(0.3);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_feeder.setFeederPower(0);
     m_intake.setIntakePower(0);
   }
 

@@ -1,10 +1,18 @@
 package frc.robot.commands.auto;
 
 import com.chaos131.auto.ParsedCommand;
+import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.commands.DriveToLocation;
+import frc.robot.commands.RunIntake;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.Lift;
 import frc.robot.util.FieldPose2024;
 
 public class AutoUtil {
@@ -49,6 +57,11 @@ public class AutoUtil {
         double y_meters = AutoUtil.ParseDouble(parsedCommand.getArgument("y"), 0.0);
         double angle_degrees = AutoUtil.ParseDouble(parsedCommand.getArgument("angle"), 0.0);
         return new Pose2d(x_meters, y_meters, Rotation2d.fromDegrees(angle_degrees));
+    }
+
+    public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
+        return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
+        .alongWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, launcher, feeder));
     }
 
 }

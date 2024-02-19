@@ -58,9 +58,20 @@ public class Lift extends SubsystemBase {
 	}
 
 	public void setSpeed(double speed) {
+		if (!hasSeenBottom()){
+			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
+		}
+		else if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
+			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeed, 0);
+		}
+		else if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
+			speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
+		} 
+		
 		if (Robot.isSimulation()) {
 			m_simPower = speed;
 		}
+
 		m_liftLeft.set(speed);
 		m_liftRight.set(speed);
 	}
@@ -92,6 +103,8 @@ public class Lift extends SubsystemBase {
 			return;
 		}
 
+		heightMeters = MathUtil.clamp(heightMeters, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
+
 		if (Robot.isSimulation()) {
 			m_simPower = MathUtil.clamp(m_simPid.calculate(m_simHeight, heightMeters), -1.0, 1.0);
 		}
@@ -114,7 +127,7 @@ public class Lift extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return m_simHeight < LiftConstants.MinHeightMeters;
 		}
-		return m_bottomSensor.get();
+		return !m_bottomSensor.get();
 	}
 	
 	public boolean hasSeenBottom(){
@@ -130,8 +143,8 @@ public class Lift extends SubsystemBase {
 		m_liftPidTuner.tune();
 		if (atBottom() && !hasSeenBottom()){
 			m_hasSeenBottom = true;
-			m_liftLeft.setPosition(LiftConstants.MinHeightMeters);
-			m_liftRight.setPosition(LiftConstants.MinHeightMeters);
+			m_liftLeft.setPosition(LiftConstants.MinHeightMeters + 0.05);
+			m_liftRight.setPosition(LiftConstants.MinHeightMeters + 0.05);
 		}
 
 		if (Robot.isSimulation()) {

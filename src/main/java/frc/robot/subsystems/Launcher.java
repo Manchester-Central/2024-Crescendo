@@ -47,28 +47,50 @@ public class Launcher extends SubsystemBase {
 	private PIDController m_simFlywheelPid = new PIDController(1, 0, 0);
 
 	public Launcher() {
+		m_flywheelLeft.restoreFactoryDefaults();
+		m_flywheelRight.restoreFactoryDefaults();
+		m_tiltController.restoreFactoryDefaults();
+		
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 		m_flywheelRight.setIdleMode(IdleMode.kCoast);
 		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", Constants.DebugMode, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
 		m_flywheelLeft.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 		m_flywheelRight.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 
+		m_flywheelLeft.setInverted(false);
+		m_flywheelRight.setInverted(true);
+
+		m_tiltPot.setInverted(true);
 		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
-		m_tiltController.setIdleMode(IdleMode.kBrake);
+		m_tiltController.setIdleMode(IdleMode.kCoast);
+		m_tiltController.setInverted(true);
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", Constants.DebugMode, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
-		recalibrateTilt();
+		
 
 		m_flywheelLeft.burnFlash();
 		m_flywheelRight.burnFlash();
 		m_tiltController.burnFlash();
+		recalibrateTilt();
+	}
+
+	public void setTiltSpeed(double speed) {
+		if (getCurrentAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
+			speed = MathUtil.clamp(speed, 0, 1);
+		} else if (getCurrentAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
+			speed = MathUtil.clamp(speed, -1, 0);
+		} 
+		m_simAnglePower = speed;
+		System.out.println("speed " + speed);
+		m_tiltController.set(speed);
 	}
 
 	/**
 	 * Sets the target angle for the launcher
 	 * @param angle the target angle to move to
 	 */
-	public void setLauncherAngle(Rotation2d angle) {
+	public void setTiltAngle(Rotation2d angle) {
+		angle = Rotation2d.fromDegrees(MathUtil.clamp(angle.getDegrees(), LauncherConstants.MinAngle.getDegrees(), LauncherConstants.MaxAngle.getDegrees()));
 		m_targetAngle = angle;
 		if (Robot.isSimulation()) {
 			m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), angle.getDegrees()), -1.0, 1.0);

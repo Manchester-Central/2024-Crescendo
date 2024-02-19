@@ -35,7 +35,7 @@ public class DropInAmp extends Command {
   public void execute() {
     m_lift.moveToHeight(LiftConstants.DefaultAmpMeters);
     m_launcher.setLauncherPower(0.0);
-    m_launcher.setLauncherAngle(LauncherConstants.AmpAngle);
+    m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
     if (m_lift.atTargetHeight(LiftConstants.DefaultAmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
       m_feeder.setFeederPower(-0.3);
     }

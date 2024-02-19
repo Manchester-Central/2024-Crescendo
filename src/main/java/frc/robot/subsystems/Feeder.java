@@ -2,24 +2,27 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.CANIdentifiers;
-import frc.robot.Constants.IOPorts;
 
 public class Feeder extends SubsystemBase {
-	private DigitalInput m_feederSensorPrimary = new DigitalInput(IOPorts.FeederSensorPrimary);
-	private DigitalInput m_feederSensorSecondary = new DigitalInput(IOPorts.FeederSensorSecondary);
+	private SparkLimitSwitch m_feederSensorPrimary;
+	private SparkLimitSwitch m_feederSensorSecondary;
 	CANSparkFlex m_feederMotor = new CANSparkFlex(CANIdentifiers.Feeder, MotorType.kBrushless);
 
 	private double simPower = 0;
 
 	public Feeder() {
-		//
+		m_feederSensorPrimary = m_feederMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+		m_feederSensorSecondary = m_feederMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+		m_feederSensorPrimary.enableLimitSwitch(false);
+		m_feederSensorSecondary.enableLimitSwitch(false);
+		m_feederMotor.setInverted(true);
 	}
 
 	/**
@@ -29,13 +32,6 @@ public class Feeder extends SubsystemBase {
 	public void setFeederPower(double power) {
 		simPower = power;
 		m_feederMotor.set(power);
-	}
-
-	public boolean hasNoteAtPrimary(){
-		if (Robot.isSimulation()) {
-			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
-		}
-		return m_feederSensorPrimary.get();
 	}
 	
 	public void grabAndHoldPiece(double grabSpeed) {
@@ -48,11 +44,18 @@ public class Feeder extends SubsystemBase {
 		}
 	}
 
+	public boolean hasNoteAtPrimary(){
+		if (Robot.isSimulation()) {
+			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
+		}
+		return m_feederSensorPrimary.isPressed();
+	}
+
 	public boolean hasNoteAtSecondary(){
 		if (Robot.isSimulation()) {
 			return RobotContainer.SimKeyboard.a().getAsBoolean(); //z on keyboard 0
 		}
-		return m_feederSensorSecondary.get();
+		return m_feederSensorSecondary.isPressed();
 	}
 
 	/** 
