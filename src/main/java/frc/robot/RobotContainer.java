@@ -75,14 +75,8 @@ public class RobotContainer {
      m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
      m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
     m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
-     m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new StartEndCommand(() -> m_launcher.setLauncherPower(1.0), () -> m_launcher.setLauncherPower(0), m_launcher));
-     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new StartEndCommand(() -> {
-      m_launcher.setLauncherPower(1.0);
-      m_feeder.setFeederPower(1.0);
-     }, () -> {
-      m_launcher.setLauncherPower(0);
-      m_feeder.setFeederPower(0);
-    }, m_launcher, m_feeder));
+     m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleRollerControl().flywheel(m_launcher, 1.0));
+     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleRollerControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
   }
   
@@ -139,12 +133,12 @@ public class RobotContainer {
     m_operator.back().whileTrue(frozoneSlowCommand);
 
     m_operator.a().whileTrue(new SimpleRollerControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
-    m_operator.b().whileTrue(new SimpleRollerControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).launcher(m_launcher, -0.2)); // Simple spit
+    m_operator.b().whileTrue(new SimpleRollerControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
 
-    m_operator.leftTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, -1.0).launcher(m_launcher, -1.0)); // Simple Amp
+    m_operator.leftTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp
 
-    m_operator.rightBumper().whileTrue(new SimpleRollerControl().launcher(m_launcher, 1.0)); // Simple Prepare Flywheel
-    m_operator.rightTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, 1.0).launcher(m_launcher, 1.0)); // Simple Speaker Launch
+    m_operator.rightBumper().whileTrue(new SimpleRollerControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel
+    m_operator.rightTrigger().whileTrue(new SimpleRollerControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)); // Simple Speaker Launch
 
     m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1)); // Slower manual lift speed
   }

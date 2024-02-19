@@ -10,7 +10,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 
 /**
- * A class for controlling the rollers (intake, feeder, and launcher) in a simple way. Each respective subsystem can optionally be added via chaining:
+ * A class for controlling the rollers (intake, feeder, and flywheels) in a simple way. Each respective subsystem can optionally be added via chaining:
  * 
  * <code>
  * new SimpleRollerControl().intake(m_intake, 0.5).feeder(m_feeder, 0.3);
@@ -23,7 +23,7 @@ public class SimpleRollerControl extends Command {
 
   private double m_intakePower = Double.NaN;
   private double m_feederPower = Double.NaN;
-  private double m_launcherPower = Double.NaN;
+  private double m_flywheelPower = Double.NaN;
 
   /**
    * Adds the intake to the roller controller, running it at the set power
@@ -50,13 +50,13 @@ public class SimpleRollerControl extends Command {
   }
 
   /**
-   * Adds the launcher to the roller controller, running it at the set power
+   * Adds the flywheels to the roller controller, running it at the set power
    * @param launcher the launcher (will be added as a requirement of the command)
-   * @param launcherPower the duty cycle power [-1.0, 1.0] to run at
+   * @param flywheelPower the duty cycle power [-1.0, 1.0] to run at
    */
-  public SimpleRollerControl launcher(Launcher launcher, double launcherPower) {
+  public SimpleRollerControl flywheel(Launcher launcher, double flywheelPower) {
     m_launcher = launcher;
-    m_launcherPower = launcherPower;
+    m_flywheelPower = flywheelPower;
     addRequirements(m_launcher);
     return this;
   }
@@ -74,8 +74,8 @@ public class SimpleRollerControl extends Command {
       m_feeder.setFeederPower(m_feederPower);
     }
 
-    if (Double.isFinite(m_launcherPower)) {
-      m_launcher.setLauncherPower(m_launcherPower);
+    if (Double.isFinite(m_flywheelPower)) {
+      m_launcher.setLauncherPower(m_flywheelPower);
     }
   }
 
@@ -92,7 +92,7 @@ public class SimpleRollerControl extends Command {
       m_feeder.setFeederPower(0.0);
     }
 
-    if (Double.isFinite(m_launcherPower)) {
+    if (Double.isFinite(m_flywheelPower)) {
       m_launcher.setLauncherPower(0.0);
     }
   }
