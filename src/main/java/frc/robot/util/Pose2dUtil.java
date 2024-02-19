@@ -13,7 +13,7 @@ public class Pose2dUtil {
     private Pose2dUtil() {}
 
     /**
-     * Translates the pose (with the give Rotation2d) with forward moving in the direction of the current angle and left moving orthogonal to the current angle
+     * Translates the pose (with the given Rotation2d) with forward moving in the direction of the current angle and left moving orthogonal to the current angle
      * @param originalPose the current pose with x meters, y meters, and a Rotation2d
      * @param forwardMeters the meters to move forward (or backwards if negative) in relation to the current pose and direction
      * @param leftMeters the meters to move left (or right if negative) in relation to the current pose and direction
