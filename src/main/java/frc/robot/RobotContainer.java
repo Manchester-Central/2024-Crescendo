@@ -128,6 +128,7 @@ public class RobotContainer {
     m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
+    // Operator
     // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
     // m_operator.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
