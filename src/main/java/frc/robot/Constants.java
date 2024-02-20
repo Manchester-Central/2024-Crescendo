@@ -87,6 +87,8 @@ public class Constants {
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 
 		public static final double LauncherToleranceRPM = 50;
+		public static final double DefaultLauncherSpeed = 1.0; // TODO Determine later
+		public static final double DefaultLauncherAngle = 5;
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
 		public static final double FlywheelI = 0;
@@ -94,6 +96,7 @@ public class Constants {
 		public static final double FlywheelF = 0;
 
 		public static final double MaxRPM = 1000; // TODO: Change
+
 	}
 
 	public static class LiftConstants {
@@ -108,9 +111,11 @@ public class Constants {
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
-		public static final double DefaultAmpMeters = 1.0;
+		public static final double DefaultAmpMeters = 0.7;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.4;
+
+		public static final double StartClimbHeight = MaxHeightMeters;
 
 	}
 }

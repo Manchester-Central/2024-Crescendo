@@ -26,7 +26,9 @@ import frc.robot.commands.DefaultVisionCommand;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.DriverRelativeDrive;
 import frc.robot.commands.DropInAmp;
+import frc.robot.commands.FireIntoAmp;
 import frc.robot.commands.Launch;
+import frc.robot.commands.LiftClimbAndPull;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.ResetPosition;
 import frc.robot.commands.RobotRelativeDrive;
@@ -109,9 +111,13 @@ public class RobotContainer {
     m_driver.start().onTrue(driverRelativeDrive);
 
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    // TODO: do the other 3 directions (Left, Right, Down)
-  
+
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
+    m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
+    m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
+    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
+    // TODO: do the other 3 directions (Left, Right, Down)
+
     //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
