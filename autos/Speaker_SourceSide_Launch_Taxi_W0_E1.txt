@@ -1,0 +1,7 @@
+resetPosition?X=0.694&Y=4.343&Angle=120
+tiltDown?TimeMs=750
+flyWheelOn?TimeMs=2000
+flyWheelAndFeederOn?TimeMs=2000
+driveAndIntakeSimple?X=1.031&Y=2.657&Angle=180
+driveAndIntakeSimple?X=7.949&Y=1.077&Angle=180&TimeMs=3000
+drive?X=1.878&Y=2.222&Angle=120&TimeMs=4000
