@@ -47,7 +47,7 @@ public class FieldPose2024 extends MirroredDrivePose {
         super(FieldWidthMeters, DefaultAlliance, null, bluePose);
     }
 
-    public double DistanceTo(Pose2d location) {
+    public double distanceTo(Pose2d location) {
         return location.getTranslation().getDistance(getCurrentAlliancePose().getTranslation());
     }
 }
