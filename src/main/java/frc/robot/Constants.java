@@ -56,8 +56,13 @@ public class Constants {
 
 	public static class SwerveConstants2024 {
 
+		// Speeds
 		public static final double MaxRobotSpeed_mps =  5.8;
 		public static final double MaxRobotRotation_radps =  6.75; // untested
+		public static final double FastSpeedModifier = 1.0;
+		public static final double DefaultSpeedModifier = 0.65;
+		public static final double SlowSpeedModifier = 0.25;
+
 		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(1.0, 0.0, 0.0);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
 		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.017, 0.0001, 0.0);
@@ -70,8 +75,8 @@ public class Constants {
 		public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(5);
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77); // TODO: confirm when using abs angle again
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9); // TODO: confirm when using abs angle again
 
 		public static final double TiltP = 0;
 		public static final double TiltI = 0;
@@ -102,7 +107,7 @@ public class Constants {
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
-		public static final double MaxHeightMeters = 0.793 - 0.05; // max height is 0.768
+		public static final double MaxHeightMeters = 0.793; // max height is 0.768
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
@@ -111,7 +116,6 @@ public class Constants {
 		public static final double IntakeHeightMeters = 0.4;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
-		public static final double MinHeight = 0.1;
 
 	}
 }

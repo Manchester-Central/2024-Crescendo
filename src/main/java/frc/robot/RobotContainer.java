@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultLauncherCommand;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.Mode;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.SimpleControl;
 import frc.robot.commands.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -65,38 +67,34 @@ public class RobotContainer {
   private Launcher m_launcher = new Launcher();
 
   public RobotContainer() {
-     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
-     configureBindings();
-     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
-     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-     m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder));
-     m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
-     m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
+    configureBindings();
+    m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
+    m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
+    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
+    m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
+    m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
   }
   
 
   private void configureBindings() {
     var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
     var driverRelativeDrive = new DriverRelativeDrive(m_driver, m_swerveDrive);
-    var slowCommand = new StartEndCommand(
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 0.5; 
-         BaseSwerveDrive.RotationSpeedModifier = 0.5;
-      },      
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
-         BaseSwerveDrive.RotationSpeedModifier = 1.0;
-      }
+
+    m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
+
+    var fastCommand = new StartEndCommand(
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.FastSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
     var frozoneSlowCommand = new StartEndCommand(
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 0.25; 
-         BaseSwerveDrive.RotationSpeedModifier = 0.25;
-      },      
-      () -> {
-         BaseSwerveDrive.TranslationSpeedModifier = 1.0; 
-         BaseSwerveDrive.RotationSpeedModifier = 1.0;
-      }
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
 
     // Default commands
@@ -113,19 +111,23 @@ public class RobotContainer {
     m_driver.start().onTrue(driverRelativeDrive);
 
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    
+
+    m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
     m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
+    // TODO: do the other 3 directions (Left, Right, Down)
+
+    //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.leftTrigger().whileTrue(slowCommand);
+    m_driver.leftTrigger().whileTrue(fastCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
     //m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
 
-    m_driver.leftStick().whileTrue(slowCommand);
+    m_driver.leftStick().whileTrue(fastCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
     // Operator
@@ -133,23 +135,19 @@ public class RobotContainer {
     // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
     // m_operator.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
 
-    m_operator.leftTrigger().whileTrue(new RunCommand(()-> {
-      m_intake.setIntakePower(0.7);
-      m_feeder.setFeederPower(0.7);
-    }, m_intake, m_feeder));
+    m_operator.back().whileTrue(frozoneSlowCommand);
 
-     m_operator.rightTrigger().whileTrue(new RunCommand(()-> {
-      m_launcher.setLauncherPower(0.7);
-      m_feeder.setFeederPower(1.0);
-    }, m_launcher, m_feeder));
+    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
+    m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
 
-    m_operator.leftBumper().whileTrue(new RunCommand(()-> {
-      m_intake.setIntakePower(-0.2);
-      m_feeder.setFeederPower(-0.2);
-      m_launcher.setLauncherPower(-0.2);
-    }, m_intake, m_feeder, m_launcher));
+    m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp
+
+    m_operator.rightBumper().whileTrue(new SimpleControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel
+    m_operator.rightTrigger().whileTrue(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)); // Simple Speaker Launch
+
+    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1)); // Slower manual lift speed
   }
-
+  
   public Command getAutonomousCommand() {
     return m_autoBuilder.createAutoCommand();
   }

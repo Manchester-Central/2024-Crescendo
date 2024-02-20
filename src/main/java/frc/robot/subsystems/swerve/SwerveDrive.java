@@ -10,8 +10,11 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.util.Pose2dUtil;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
 
@@ -19,10 +22,38 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
             Supplier<Rotation2d> getRotation) {
         super(swerveModules, swerveConfigs, getRotation);
     }
+    /**
+     * Translates the robot's current pose with forward moving in the direction of the current angle and left moving orthogonal to the current angle
+     * @param robotForwardMeters the meters to move forward (or backwards if negative) in relation to the current pose and direction
+     * @param robotLeftMeters the meters to move left (or right if negative) in relation to the current pose and direction
+     */
+    public Pose2d getTranslatedPose(double robotForwardMeters, double robotLeftMeters) {
+        return Pose2dUtil.getTranslatedPose(getPose(), robotForwardMeters, robotLeftMeters);
+    }
 
     @Override
     public void periodic() {
         super.periodic();
         SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
+    }
+
+    /**
+     * Updates the speed modifiers [0.0, 1.0] of the robot for translation and rotation
+     * @param translationSpeedModifier the value to multiply the swerve drive's translation output by
+     * @param rotationSpeedModifier the value to multiply the swerve drive's rotation output by
+     */
+    public void updateSpeedModifier(double translationSpeedModifier, double rotationSpeedModifier) {
+        BaseSwerveDrive.TranslationSpeedModifier = MathUtil.clamp(translationSpeedModifier, 0.0, 1.0);
+        BaseSwerveDrive.RotationSpeedModifier = MathUtil.clamp(rotationSpeedModifier, 0.0, 1.0);
+    }
+
+    /**
+     * Updates the speed modifier [0.0, 1.0] of the robot for translation and rotation
+     * @param speedModifier the value to multiply the swerve drive's output by
+     */
+    public void updateSpeedModifier(double speedModifier) {
+        var speedModifierClamped = MathUtil.clamp(speedModifier, 0.0, 1.0);
+        BaseSwerveDrive.TranslationSpeedModifier = speedModifierClamped;
+        BaseSwerveDrive.RotationSpeedModifier = speedModifierClamped;
     }
 }

@@ -13,6 +13,7 @@ import frc.robot.subsystems.Launcher;
 public class DefaultLauncherCommand extends Command {
   private Launcher m_launcher;
   private Gamepad m_operator;
+  public static double MaxTiltSpeed = 0.08;
 
   /** Creates a new DefaultLauncherCommand. */
   public DefaultLauncherCommand(Launcher launcher, Gamepad operator) {
@@ -29,7 +30,7 @@ public class DefaultLauncherCommand extends Command {
   @Override
   public void execute() {
     m_launcher.setLauncherPower(0.0);
-    m_launcher.setTiltSpeed(m_operator.getLeftY() * 0.08);
+    m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
     // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }
 

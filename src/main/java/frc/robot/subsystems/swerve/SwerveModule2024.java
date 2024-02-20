@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,6 +12,10 @@ public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
 			AngleControllerConfig angleControllerConfig, AbsoluteEncoderConfig absoluteEncoderConfig,
 			DriveConfig driveConfig) {
 		super(name, translation, speedControllerConfig, angleControllerConfig, absoluteEncoderConfig, driveConfig);
+		m_speedConfig.CurrentLimits = new CurrentLimitsConfigs();
+		m_speedConfig.CurrentLimits.SupplyCurrentLimit = 70;
+		m_speedConfig.CurrentLimits.SupplyCurrentLimitEnable = true; 
+		m_speedController.getConfigurator().apply(m_speedConfig.CurrentLimits);
 		m_speedController.setPosition(0);
 		// "I love dark mode" - Josh 02/08/2024
 	}

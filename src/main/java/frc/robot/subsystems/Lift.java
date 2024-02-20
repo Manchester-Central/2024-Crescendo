@@ -30,7 +30,7 @@ public class Lift extends SubsystemBase {
 	private TalonFXConfiguration m_liftRightConfig = new TalonFXConfiguration();
 	private PositionVoltage m_positionVoltage = new PositionVoltage(0);
 	
-	private double m_simHeight = LiftConstants.MinHeightMeters + 0.5; // Start off higher so we can see the lift move down
+	private double m_simHeight = LiftConstants.MinHeightMeters; // Start off higher so we can see the lift move down
 	private double m_simPower = 0;
 	private double m_simMaxMetersChangePerLoop = 0.1;
 	private PIDController m_simPid = new PIDController(1, 0, 0);
@@ -38,6 +38,8 @@ public class Lift extends SubsystemBase {
 
 	private boolean m_hasSeenBottom = false;
 	private double m_targetHeightMeters = 0; 
+
+	public static boolean SafeftyLimtEnabled = true;
 
 	public Lift() {
 
@@ -58,15 +60,18 @@ public class Lift extends SubsystemBase {
 	}
 
 	public void setSpeed(double speed) {
-		if (!hasSeenBottom()){
-			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
+
+		if(SafeftyLimtEnabled){
+			if (!hasSeenBottom()){
+				speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeedBeforeBottom, 0);
+			}
+			else if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
+				speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeed, 0);
+			}
+			else if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
+				speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
+			} 
 		}
-		else if (getCurrentHeightMeters() >= LiftConstants.MaxHeightMeters){
-			speed = MathUtil.clamp(speed, -LiftConstants.MaxSpeed, 0);
-		}
-		else if (getCurrentHeightMeters() <= LiftConstants.MinHeightMeters){
-			speed = MathUtil.clamp(speed, 0, LiftConstants.MaxSpeed);
-		} 
 		
 		if (Robot.isSimulation()) {
 			m_simPower = speed;
