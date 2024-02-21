@@ -7,10 +7,12 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +30,7 @@ public class Lift extends SubsystemBase {
 	private PIDTuner m_liftPidTuner;
 	private TalonFXConfiguration m_liftLeftConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_liftRightConfig = new TalonFXConfiguration();
+	private ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
 	private PositionVoltage m_positionVoltage = new PositionVoltage(0);
 	
 	private double m_simHeight = LiftConstants.MinHeightMeters; // Start off higher so we can see the lift move down
@@ -47,12 +50,14 @@ public class Lift extends SubsystemBase {
 		m_liftLeftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		m_liftLeftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 		m_liftLeftConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
+		m_liftLeftConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = LiftConstants.LiftRampRate;
 		m_liftLeft.getConfigurator().apply(m_liftLeftConfig);
 		
 		m_liftRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 		m_liftRightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		m_liftRightConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 		m_liftRightConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
+		m_liftRightConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = LiftConstants.LiftRampRate;
 		m_liftRight.getConfigurator().apply(m_liftRightConfig);
 
 		m_liftPidTuner = new PIDTuner("Lift", Constants.DebugMode, LiftConstants.LiftP, LiftConstants.LiftI,
@@ -90,6 +95,7 @@ public class Lift extends SubsystemBase {
 		slot0.kP = pidValue.P;
 		slot0.kI = pidValue.I;
 		slot0.kD = pidValue.D;
+		slot0.kG = LiftConstants.LiftG;
 		m_liftLeftConfig.Slot0 = slot0;
 		m_liftRightConfig.Slot0 = slot0;
 		m_liftLeft.getConfigurator().apply(m_liftLeftConfig.Slot0);
@@ -116,6 +122,7 @@ public class Lift extends SubsystemBase {
 		m_positionVoltage.Slot = 0;
 		m_liftLeft.setControl(m_positionVoltage.withPosition(heightMeters));
 		m_liftRight.setControl(m_positionVoltage.withPosition(heightMeters));
+
 	}
 
 	/**
@@ -163,5 +170,7 @@ public class Lift extends SubsystemBase {
 		SmartDashboard.putNumber("Lift/LeftHeight", m_liftLeft.getPosition().getValueAsDouble());
 		SmartDashboard.putNumber("Lift/RightHeight", m_liftRight.getPosition().getValueAsDouble());
 		SmartDashboard.putNumber("Lift/TargetHeightMeters", m_targetHeightMeters);
+		SmartDashboard.putNumber("Lift/LeftPower", m_liftLeft.getMotorVoltage().getValueAsDouble());
+		SmartDashboard.putNumber("Lift/RightPower", m_liftRight.getMotorVoltage().getValueAsDouble());
 	}
 }

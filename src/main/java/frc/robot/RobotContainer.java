@@ -54,6 +54,7 @@ public class RobotContainer {
   private Gamepad m_driver = new Gamepad(0,0.2,0.2);
   private Gamepad m_operator = new Gamepad(1);
   public static Gamepad SimKeyboard = new Gamepad(2);
+  private Gamepad m_tester = new Gamepad(3);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
@@ -105,6 +106,10 @@ public class RobotContainer {
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
+
+    // Tester
+    m_tester.a().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
+    m_tester.b().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);

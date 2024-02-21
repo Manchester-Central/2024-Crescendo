@@ -101,9 +101,11 @@ public class Constants {
 
 	public static class LiftConstants {
 		public static final double LiftEncoderConversionFactor = 71.81;
-		public static final double LiftP = 0;
-		public static final double LiftI = 0;
+		public static final double LiftRampRate = 0.1;
+		public static final double LiftP = 90;
+		public static final double LiftI = 1;
 		public static final double LiftD = 0;
+		public static final double LiftG = 0.6;
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
