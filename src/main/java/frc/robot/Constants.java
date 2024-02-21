@@ -75,10 +75,11 @@ public class Constants {
 		public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77); // TODO: confirm when using abs angle again
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9); // TODO: confirm when using abs angle again
+		public static final double TiltRampRate = 0.1;
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // TODO: confirm when using abs angle again
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52); // TODO: confirm when using abs angle again
 
-		public static final double TiltP = 0;
+		public static final double TiltP = 0.068;
 		public static final double TiltI = 0;
 		public static final double TiltD = 0;
 

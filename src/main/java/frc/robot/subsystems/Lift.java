@@ -30,7 +30,6 @@ public class Lift extends SubsystemBase {
 	private PIDTuner m_liftPidTuner;
 	private TalonFXConfiguration m_liftLeftConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_liftRightConfig = new TalonFXConfiguration();
-	private ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
 	private PositionVoltage m_positionVoltage = new PositionVoltage(0);
 	
 	private double m_simHeight = LiftConstants.MinHeightMeters; // Start off higher so we can see the lift move down
