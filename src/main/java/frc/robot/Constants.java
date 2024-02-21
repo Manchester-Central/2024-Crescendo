@@ -76,6 +76,7 @@ public class Constants {
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 		public static final double TiltRampRate = 0.1;
+		public static final int TiltCurrentLimitAmps = 40;
 		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // TODO: confirm when using abs angle again
 		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52); // TODO: confirm when using abs angle again
 
