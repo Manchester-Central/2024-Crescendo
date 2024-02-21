@@ -77,8 +77,9 @@ public class Constants {
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // TODO: confirm when using abs angle again
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52); // TODO: confirm when using abs angle again
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8);
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
+		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 
 		public static final double TiltP = 0.068;
 		public static final double TiltI = 0;
@@ -111,6 +112,7 @@ public class Constants {
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
+		public static final double MinLaunchOverHeightMeters = 0.24;
 		public static final double MaxHeightMeters = 0.793; // max height is 0.768
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;

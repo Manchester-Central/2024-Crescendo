@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
@@ -145,6 +146,7 @@ public class RobotContainer {
     m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
     m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
 
+    m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
     m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp
 
     m_operator.rightBumper().whileTrue(new SimpleControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel
