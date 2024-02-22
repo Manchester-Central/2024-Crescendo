@@ -65,7 +65,9 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltController.setIdleMode(IdleMode.kCoast);
 		m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
+		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
 		m_tiltController.setInverted(true);
+		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
 		m_tiltController.getEncoder().setPosition(LauncherConstants.MaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", Constants.DebugMode, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
 		
@@ -77,9 +79,9 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public void setTiltSpeed(double speed) {
-		if (getCurrentAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
+		if (getAbsoluteTiltAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
 			speed = MathUtil.clamp(speed, 0, 1);
-		} else if (getCurrentAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
+		} else if (getAbsoluteTiltAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
 			speed = MathUtil.clamp(speed, -1, 0);
 		} 
 		m_simAnglePower = speed;
@@ -132,7 +134,7 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public boolean atTargetAngle(Rotation2d targetAngle) {
-		return Math.abs(getCurrentAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
+		return Math.abs(getAbsoluteTiltAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
 	}
 
 	/**
@@ -199,5 +201,6 @@ public class Launcher extends SubsystemBase {
 		SmartDashboard.putNumber("Launcher/AbsAngleDegrees", getAbsoluteTiltAngle().getDegrees());
 		SmartDashboard.putNumber("Launcher/TargetRPM", m_targetRPM);
 		SmartDashboard.putNumber("Launcher/TargetAngleDegrees", m_targetAngle.getDegrees());
+		SmartDashboard.putNumber("Launcher/TiltOutput", m_tiltController.getAppliedOutput());
 	}
 }

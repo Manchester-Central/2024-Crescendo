@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
@@ -54,6 +55,7 @@ public class RobotContainer {
   private Gamepad m_driver = new Gamepad(0,0.2,0.2);
   private Gamepad m_operator = new Gamepad(1);
   public static Gamepad SimKeyboard = new Gamepad(2);
+  private Gamepad m_tester = new Gamepad(3);
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
@@ -106,6 +108,10 @@ public class RobotContainer {
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
 
+    // Tester
+    m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
+
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);
     m_driver.start().onTrue(driverRelativeDrive);
@@ -140,6 +146,7 @@ public class RobotContainer {
     m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
     m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
 
+    m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
     m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp
 
     m_operator.rightBumper().whileTrue(new SimpleControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel

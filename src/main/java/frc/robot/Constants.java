@@ -75,10 +75,13 @@ public class Constants {
 		public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(1.77); // TODO: confirm when using abs angle again
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(53.9); // TODO: confirm when using abs angle again
+		public static final double TiltRampRate = 0.1;
+		public static final int TiltCurrentLimitAmps = 40;
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8);
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
+		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 
-		public static final double TiltP = 0;
+		public static final double TiltP = 0.068;
 		public static final double TiltI = 0;
 		public static final double TiltD = 0;
 
@@ -101,12 +104,15 @@ public class Constants {
 
 	public static class LiftConstants {
 		public static final double LiftEncoderConversionFactor = 71.81;
-		public static final double LiftP = 0;
-		public static final double LiftI = 0;
+		public static final double LiftRampRate = 0.1;
+		public static final double LiftP = 90;
+		public static final double LiftI = 1;
 		public static final double LiftD = 0;
+		public static final double LiftG = 0.6;
 		public static final double LiftToleranceMeters = 0.01;
 
 		public static final double MinHeightMeters = 0.05;
+		public static final double MinLaunchOverHeightMeters = 0.24;
 		public static final double MaxHeightMeters = 0.793; // max height is 0.768
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
