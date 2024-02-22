@@ -56,7 +56,8 @@ public class Launcher extends SubsystemBase {
 		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", Constants.DebugMode, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
 		m_flywheelLeft.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 		m_flywheelRight.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
-
+		m_flywheelLeft.setClosedLoopRampRate(LauncherConstants.FlywheelRampRate);
+		m_flywheelRight.setClosedLoopRampRate(LauncherConstants.FlywheelRampRate);
 		m_flywheelLeft.setInverted(false);
 		m_flywheelRight.setInverted(true);
 

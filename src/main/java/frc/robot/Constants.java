@@ -92,6 +92,7 @@ public class Constants {
 		public static final double LauncherToleranceRPM = 50;
 		public static final double DefaultLauncherSpeed = 1.0; // TODO Determine later
 		public static final double DefaultLauncherAngle = 5;
+		public static final double FlywheelRampRate = 0.1;
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
 		public static final double FlywheelI = 0;
