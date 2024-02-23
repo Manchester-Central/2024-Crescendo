@@ -53,7 +53,7 @@ public class FlywheelTable {
 
             flyTable.sort(TableData.getComparator());
             for (TableData data : flyTable) {
-                System.out.println(data.getDistance() + " " + data.getSpeed());
+                System.out.println(data.toString());
             }
             return true;
 
@@ -74,11 +74,15 @@ public class FlywheelTable {
     }
 
     private double getDistance(int index) {
-        return getTableData(index).getDistance();
+        return getTableData(index).getDistanceMeters();
     }
 
     private double getSpeed(int index) {
-        return getTableData(index).getSpeed();
+        return getTableData(index).getLauncherSpeedRPM();
+    }
+
+ private double getTilt(int index) {
+        return getTableData(index).getTiltAngle().getDegrees();
     }
 
     private int findIndex(double distance) {
@@ -103,14 +107,13 @@ public class FlywheelTable {
         int botIndex = topIndex - 1;
 
         double idealSpeed = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getSpeed(topIndex), getSpeed(botIndex), distance);
-
+        double idealTilt = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getTilt(topIndex), getTilt(botIndex), distance);
         var topTableData = getTableData(topIndex);
         return new TableData(
             distance,
             idealSpeed,
-            topTableData.getLauncherAngle(),
-            topTableData.getLauncherTolerance(),
-            topTableData.getFeederSpeed()
+            idealTilt, 
+            topTableData.getHeightMeters()
         );
     }
 }

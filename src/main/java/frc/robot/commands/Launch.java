@@ -7,25 +7,33 @@ package frc.robot.commands;
 import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.swerve.SwerveDrive;
+import frc.robot.util.FieldPose2024;
 
 // TODO: Implement actual control logic
 public class Launch extends Command {
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
+  private FlywheelTable m_flywheelTable;
+  private SwerveDrive m_swerveDrive;
 
   /** Creates a new Lanch Partay. */
-  public Launch(Lift lift, Launcher launcher, Feeder feeder) {
+  public Launch(Lift lift, Launcher launcher, Feeder feeder, FlywheelTable flywheelTable, SwerveDrive swerveDrive) {
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
+    m_flywheelTable = flywheelTable;
+    m_swerveDrive = swerveDrive;
     addRequirements(lift, launcher, feeder);
   }
 
@@ -36,16 +44,21 @@ public class Launch extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(LiftConstants.DefaultLaunchMeters);
-    m_launcher.setLauncherRPM(LauncherConstants.MaxRPM); // TODO: value should be determined from limelight/odometry
-    m_launcher.setTiltAngle(LauncherConstants.BumperShotAngle); // TODO: value should be determined from limelight/odometry
-    if (m_lift.atTargetHeight(LiftConstants.DefaultLaunchMeters) && m_launcher.atTargetAngle(LauncherConstants.BumperShotAngle) && m_launcher.atTargetRPM(LauncherConstants.MaxRPM)) {
-      m_feeder.setFeederPower(0.3);
+    var targets = m_flywheelTable.getIdealTarget(FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose()));
+    SmartDashboard.putString("Flywheel data", targets.toString());
+    var targetHeight = targets.getHeightMeters();
+    var targetSpeed = targets.getLauncherSpeedRPM();
+    var targetTilt = targets.getTiltAngle();
+    m_lift.moveToHeight(targetHeight);
+    m_launcher.setLauncherRPM(targetSpeed);
+    m_launcher.setTiltAngle(targetTilt);
+    if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeed)) {
+      m_feeder.setFeederPower(1.0);
     }
   }
 
-  public static Command createAutoCommand(ParsedCommand parsedCommand, Lift lift, Launcher launcher, Feeder feeder){
-    return new Launch(lift, launcher, feeder);
+  public static Command createAutoCommand(ParsedCommand parsedCommand, Lift lift, Launcher launcher, Feeder feeder, FlywheelTable flywheelTable, SwerveDrive swerveDrive){
+    return new Launch(lift, launcher, feeder, flywheelTable, swerveDrive);
   }
 
   // Called once the command ends or is interrupted.
