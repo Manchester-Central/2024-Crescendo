@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
@@ -54,7 +56,7 @@ import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
-  private Gamepad m_driver = new Gamepad(0,0.2,0.2);
+  private Gamepad m_driver = new Gamepad(0,10,10);
   private Gamepad m_operator = new Gamepad(1);
   public static Gamepad SimKeyboard = new Gamepad(2);
   private Gamepad m_tester = new Gamepad(3);
@@ -93,12 +95,12 @@ public class RobotContainer {
 
     m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
 
-    var fastCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.FastSpeedModifier),
+    var slowCommand = new StartEndCommand(
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
     var frozoneSlowCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SuperSlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
 
@@ -123,7 +125,15 @@ public class RobotContainer {
     m_driver.back().onTrue(robotRelativeDrive);
     m_driver.start().onTrue(driverRelativeDrive);
 
+    // var updateHeading = (double blueAngle) -> {
+    //   return new InstantCommand(() -> m_swerveDrive.resetHeading())
+    // }
+
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    // m_driver.povDown().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180).)));
+    // m_driver.povLeft().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    // m_driver.povRight().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+
 
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
@@ -136,11 +146,11 @@ public class RobotContainer {
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.leftTrigger().whileTrue(fastCommand);
+    m_driver.leftTrigger().whileTrue(slowCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
     m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTable, m_swerveDrive));
 
-    m_driver.leftStick().whileTrue(fastCommand);
+    m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
     // Operator

@@ -61,9 +61,9 @@ public class Constants {
 		// Speeds
 		public static final double MaxRobotSpeed_mps =  5.8;
 		public static final double MaxRobotRotation_radps =  6.75; // untested
-		public static final double FastSpeedModifier = 1.0;
-		public static final double DefaultSpeedModifier = 0.65;
-		public static final double SlowSpeedModifier = 0.25;
+		public static final double SlowSpeedModifier = 0.65;
+		public static final double DefaultSpeedModifier = 1.0;
+		public static final double SuperSlowSpeedModifier = 0.25;
 
 		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(1.0, 0.0, 0.0);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
