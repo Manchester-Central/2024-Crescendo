@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.chaos131.swerve.BaseSwerveDrive;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -8,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 
 public class Vision extends SubsystemBase {
@@ -37,6 +40,8 @@ public class Vision extends SubsystemBase {
 
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
 
+	private BaseSwerveDrive m_SwerveDrive;
+
 	/**
 	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
 	 * Make sure the limelight device has a distinct static IP and network tables name.
@@ -49,6 +54,11 @@ public class Vision extends SubsystemBase {
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
+	}
+
+	public Vision prepSimulation(BaseSwerveDrive swervedrive) {
+		m_SwerveDrive = swervedrive;
+		return this;
 	}
 
 	/**
@@ -68,6 +78,9 @@ public class Vision extends SubsystemBase {
 	 * it should be ignored in calculations
 	 */
 	public Pose2d getPose() {
+		if (Robot.isSimulation()) {
+			return m_SwerveDrive.getPose();
+		}
 		if(m_mode == Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
 		}

@@ -81,8 +81,12 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+    if(Robot.isSimulation()) { 
+      m_vision.prepSimulation(m_swerveDrive); 
+    }
   }
   
+
 
   private void configureBindings() {
     var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
@@ -120,8 +124,8 @@ public class RobotContainer {
 
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
-    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
+    m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive, m_vision, m_launcher));
+    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive, m_vision));
     // TODO: do the other 3 directions (Left, Right, Down)
 
     //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));

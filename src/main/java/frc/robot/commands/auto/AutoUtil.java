@@ -69,5 +69,4 @@ public class AutoUtil {
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
         .alongWith(new StartEndCommand(() -> intake.setIntakePower(0.7), () -> intake.setIntakePower(0), intake));
     }
-
 }
