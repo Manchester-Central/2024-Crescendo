@@ -90,9 +90,9 @@ public class FlywheelTable {
     }
 
     /**
-     * Finds the first index with a distance larger than the parameter
-     * @param distance
-     * @return
+     * Finds the index of the first element whose value is less than distance.
+     * @param distance - The distance between the robot and the target.
+     * @return The index of the first element in flyTable with a value less than distance.
      */
     private int findIndex(double distance) {
         for (int i = 0; i < flyTable.size(); i++) {
@@ -125,7 +125,7 @@ public class FlywheelTable {
     }
 
     /**
-     * 
+     * Given the distance between the robot and the target, calculate the ideal launcher angle, speed, and lift height to score
      * @param distance - The distance between the robot and the target.
      * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given angle.
      */
