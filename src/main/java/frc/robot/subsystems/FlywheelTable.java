@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -35,6 +36,8 @@ public class FlywheelTable {
     // parses data from .csv into doubles for addData()
     public boolean readCSV(Path path) { // change return type
         flyTable.clear();
+        
+        // Attempt to read FlywheelTable file
         try {
             // System.out.println(realPath.toString());
             csvReader = new BufferedReader(new FileReader(path.toString()));
@@ -43,6 +46,7 @@ public class FlywheelTable {
             return false;
         }
 
+        // If found, read the FlywheelTable file
         try {
             csvReader.readLine(); // skips 1st line
             while ((row = csvReader.readLine()) != null) {
@@ -51,7 +55,7 @@ public class FlywheelTable {
                 addData(TableData.FromCSV(data));
             }
 
-            flyTable.sort(TableData.getComparator());
+            flyTable.sort(TableData.getComparator()); // Sort flyTable by each TableData's distanceMeters attribute
             for (TableData data : flyTable) {
                 System.out.println(data.toString());
             }
@@ -85,6 +89,11 @@ public class FlywheelTable {
         return getTableData(index).getTiltAngle().getDegrees();
     }
 
+    /**
+     * Finds the first index with a distance larger than the parameter
+     * @param distance
+     * @return
+     */
     private int findIndex(double distance) {
         for (int i = 0; i < flyTable.size(); i++) {
             if (distance < getDistance(i)) {
@@ -101,19 +110,37 @@ public class FlywheelTable {
         return (slope * distance) + intercept;
     }
 
+    /**
+     * This is a step function courstey of Lord Gartrand.
+     * @param distance - The distance between the robot and the target.
+     * @return - The greatest distance value smaller than distance in FlywheelTable.csv.
+     */
+    private double stepHeight(double distance) {
+        for(int i = flyTable.size() - 1; i >= 0; i--) {
+            if(distance > getDistance(i)) {
+                return getTableData(i).getHeightMeters();
+            }
+        }
+        return Double.MAX_VALUE; // Gartrand the Destoryer has found you.
+    }
+
+    /**
+     * 
+     * @param distance - The distance between the robot and the target.
+     * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given angle.
+     */
     public TableData getIdealTarget(double distance) {
         int initialIndex = findIndex(distance);
-        int topIndex = initialIndex == 0 ? 1 : findIndex(distance);
+        int topIndex = (initialIndex == 0) ? 1 : findIndex(distance); // Change this to (initialIndex == 0) ? 1 : initialIndex
         int botIndex = topIndex - 1;
 
         double idealSpeed = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getSpeed(topIndex), getSpeed(botIndex), distance);
         double idealTilt = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getTilt(topIndex), getTilt(botIndex), distance);
-        var topTableData = getTableData(topIndex);
         return new TableData(
-            distance,
-            idealSpeed,
-            idealTilt, 
-            topTableData.getHeightMeters()
+        distance,
+        idealSpeed,
+        idealTilt, 
+        stepHeight(distance)
         );
     }
 }
