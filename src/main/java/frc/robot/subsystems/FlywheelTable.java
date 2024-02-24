@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
@@ -101,19 +102,22 @@ public class FlywheelTable {
         return (slope * distance) + intercept;
     }
 
-    public TableData getIdealTarget(double distance) {
+    public Optional<TableData> getIdealTarget(double distance) {
         int initialIndex = findIndex(distance);
         int topIndex = initialIndex == 0 ? 1 : findIndex(distance);
         int botIndex = topIndex - 1;
+        var topTableData = getTableData(topIndex);
+        if (distance > topTableData.getDistanceMeters()) {
+            return Optional.empty();
+        }
 
         double idealSpeed = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getSpeed(topIndex), getSpeed(botIndex), distance);
         double idealTilt = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getTilt(topIndex), getTilt(botIndex), distance);
-        var topTableData = getTableData(topIndex);
-        return new TableData(
+        return Optional.of(new TableData(
             distance,
             idealSpeed,
             idealTilt, 
             topTableData.getHeightMeters()
-        );
+        ));
     }
 }

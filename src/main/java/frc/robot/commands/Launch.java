@@ -44,7 +44,15 @@ public class Launch extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var targets = m_flywheelTable.getIdealTarget(FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose()));
+    var targetOptional = m_flywheelTable.getIdealTarget(FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose()));
+    if (targetOptional.isEmpty()) {
+      m_lift.setSpeed(0);
+      m_launcher.setTiltSpeed(0);
+      m_launcher.setLauncherPower(0);
+      m_feeder.setFeederPower(0);
+      return;
+    }
+    var targets = targetOptional.get();
     SmartDashboard.putString("Flywheel data", targets.toString());
     var targetHeight = targets.getHeightMeters();
     var targetSpeed = targets.getLauncherSpeedRPM();
