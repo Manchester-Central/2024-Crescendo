@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.chaos131.logging.LogManager;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
@@ -7,6 +8,7 @@ import com.revrobotics.SparkLimitSwitch;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
@@ -23,6 +25,14 @@ public class Feeder extends SubsystemBase {
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
 		m_feederMotor.setInverted(true);
+
+		var logManager = LogManager.getInstance();
+		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());
+		logManager.addBoolean("Feeder/HasNoteAtSecondary", Constants.DebugMode, () -> hasNoteAtSecondary());
+
+		logManager.addNumber("Feeder/MotorPosition", Constants.DebugMode, () -> m_feederMotor.getEncoder().getPosition());
+		logManager.addNumber("Feeder/CurrentAmps", Constants.DebugMode, () -> m_feederMotor.getOutputCurrent());
+		logManager.addNumber("Feeder/AppliedOutput", Constants.DebugMode, () -> m_feederMotor.getAppliedOutput());
 	}
 
 	/**
@@ -71,9 +81,6 @@ public class Feeder extends SubsystemBase {
 	@Override
 	public void periodic() {
 		super.periodic();
-		SmartDashboard.putBoolean("Feeder/HasNoteAtPrimary", hasNoteAtPrimary());
-		SmartDashboard.putBoolean("Feeder/HasNoteAtSecondary", hasNoteAtSecondary());
 
-		SmartDashboard.putNumber("Feeder/MotorPosition", m_feederMotor.getEncoder().getPosition());
 	}
 }

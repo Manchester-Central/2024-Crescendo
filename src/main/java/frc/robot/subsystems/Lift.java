@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.chaos131.logging.LogManager;
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDTuner;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -61,6 +62,20 @@ public class Lift extends SubsystemBase {
 
 		m_liftPidTuner = new PIDTuner("Lift", Constants.DebugMode, LiftConstants.LiftP, LiftConstants.LiftI,
 				LiftConstants.LiftD, this::tuneLiftPID);
+
+		var logManager = LogManager.getInstance();
+
+		logManager.addBoolean("Lift/AtBottom", Constants.DebugMode, () -> atBottom());
+		logManager.addBoolean("Lift/SeenBottom", Constants.DebugMode, () -> hasSeenBottom());
+
+		logManager.addNumber("Lift/CurrentHeightMeters", Constants.DebugMode, () -> getCurrentHeightMeters());
+		logManager.addNumber("Lift/LeftHeightMeters", Constants.DebugMode, () -> m_liftLeft.getPosition().getValueAsDouble());
+		logManager.addNumber("Lift/RightHeightMeters", Constants.DebugMode, () -> m_liftRight.getPosition().getValueAsDouble());
+		logManager.addNumber("Lift/TargetHeightMeters", Constants.DebugMode, () -> m_targetHeightMeters);
+		logManager.addNumber("Lift/LeftPowerVoltage", Constants.DebugMode, () -> m_liftLeft.getMotorVoltage().getValueAsDouble());
+		logManager.addNumber("Lift/RightPowerVoltage", Constants.DebugMode, () -> m_liftRight.getMotorVoltage().getValueAsDouble());
+		logManager.addNumber("Lift/LeftCurrentAmps", Constants.DebugMode, () -> m_liftLeft.getSupplyCurrent().getValueAsDouble());
+		logManager.addNumber("Lift/RightCurrentAmps", Constants.DebugMode, () -> m_liftRight.getSupplyCurrent().getValueAsDouble());
 	}
 
 	public void setSpeed(double speed) {
@@ -162,14 +177,5 @@ public class Lift extends SubsystemBase {
 			m_simHeight += m_simPower * m_simMaxMetersChangePerLoop;
 		}
 
-		SmartDashboard.putBoolean("Lift/AtBottom", atBottom());
-		SmartDashboard.putBoolean("Lift/SeenBottom", hasSeenBottom());
-
-		SmartDashboard.putNumber("Lift/CurrentHeightMeters", getCurrentHeightMeters());
-		SmartDashboard.putNumber("Lift/LeftHeight", m_liftLeft.getPosition().getValueAsDouble());
-		SmartDashboard.putNumber("Lift/RightHeight", m_liftRight.getPosition().getValueAsDouble());
-		SmartDashboard.putNumber("Lift/TargetHeightMeters", m_targetHeightMeters);
-		SmartDashboard.putNumber("Lift/LeftPower", m_liftLeft.getMotorVoltage().getValueAsDouble());
-		SmartDashboard.putNumber("Lift/RightPower", m_liftRight.getMotorVoltage().getValueAsDouble());
 	}
 }

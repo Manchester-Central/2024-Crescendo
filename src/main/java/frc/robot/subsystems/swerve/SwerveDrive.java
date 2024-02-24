@@ -6,6 +6,7 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
+import com.chaos131.logging.LogManager;
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
@@ -13,7 +14,7 @@ import com.chaos131.swerve.SwerveConfigs;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.util.Pose2dUtil;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
@@ -34,7 +35,6 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     @Override
     public void periodic() {
         super.periodic();
-        SmartDashboard.putNumber("Odometry Angle Degrees", getOdometryRotation().getDegrees());
     }
 
     /**
