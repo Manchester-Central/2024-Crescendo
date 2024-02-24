@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Comparator;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 
 /**
@@ -9,35 +10,32 @@ import frc.robot.Constants;
  */
 public class TableData {
 
-    private double m_distance;
-    private double m_speed;
-    private double m_launcherAngle;
-    private double m_launcherTolerance;
-    private double m_feederSpeed;
+    private double m_distanceMeters;
+    private double m_launcherSpeedRPM;
+    private double m_tiltAngleDegrees;
+    private double m_heightMeters;
 
-    public TableData(double distance, double speed, double launcherAngle, double launcherTolerance, double feederSpeed) {
+    public TableData(double distance, double speed, double launcherAngle, double heightMeters) {
 
-        m_distance = distance;
-        m_speed = speed;
-        m_launcherAngle = launcherAngle;
-        m_launcherTolerance = launcherTolerance;
-        m_feederSpeed = feederSpeed;
+        m_distanceMeters = distance;
+        m_launcherSpeedRPM = speed;
+        m_tiltAngleDegrees = launcherAngle;
+        m_heightMeters = heightMeters;
+
 
     }
 
     public static TableData FromCSV(String[] args) throws Exception {
-        var distance = getValueFromStringArray(args, 0, true, "distance");
-        var speed = getValueFromStringArray(args, 1, true, "speed");
-        var launcherAngle = getValueFromStringArray(args, 2, false, "launcherAngle");
-        var launcherTolerance = getValueFromStringArray(args, 3, false, "launcherTolerance");
-        var feederSpeed = getValueFromStringArray(args, 4, false, "feederSpeed");
+        var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
+        var launcherSpeedRPM = getValueFromStringArray(args, 1, true, "launcherSpeedRPM");
+        var launcherAngle = getValueFromStringArray(args, 2, true, "tiltAngleDegrees");
+        var heightMeters = getValueFromStringArray(args, 3, true, "heightMeters");
 
         return new TableData(
-            Double.parseDouble(distance),
-            Double.parseDouble(speed),
-            isValueSet(launcherAngle) ? Double.parseDouble(launcherAngle) : Constants.LauncherConstants.DefaultLauncherAngle,
-            isValueSet(launcherTolerance) ? Double.parseDouble(launcherTolerance) : Constants.LauncherConstants.LauncherToleranceRPM,
-            isValueSet(feederSpeed) ? Double.parseDouble(feederSpeed) : Constants.LauncherConstants.DefaultLauncherSpeed
+            Double.parseDouble(distanceMeters),
+            Double.parseDouble(launcherSpeedRPM),
+            Double.parseDouble(launcherAngle), 
+            Double.parseDouble(heightMeters)
         );
     }
 
@@ -61,36 +59,32 @@ public class TableData {
         return new Comparator<TableData>() {
             @Override
             public int compare(TableData arg0, TableData arg1) {
-                if (arg1.getDistance() == arg0.getDistance()){
+                if (arg1.getDistanceMeters() == arg0.getDistanceMeters()){
                     return 0;
                 }
-                return arg1.getDistance() < arg0.getDistance() ? 1 : -1;
+                return arg1.getDistanceMeters() < arg0.getDistanceMeters() ? 1 : -1;
             }
         };
     }
 
-    public double getDistance() {
-        return m_distance;
+    public double getDistanceMeters() {
+        return m_distanceMeters;
     }
 
-    public double getSpeed() {
-        return m_speed;
+    public double getLauncherSpeedRPM() {
+        return m_launcherSpeedRPM;
     }
     
-    public double getLauncherAngle() {
-        return m_launcherAngle;
+    public Rotation2d getTiltAngle() {
+        return Rotation2d.fromDegrees(m_tiltAngleDegrees);
     }
-    
-    public double getLauncherTolerance() {
-        return m_launcherTolerance;
-    }
-    
-    public double getFeederSpeed() {
-        return m_feederSpeed;
+       
+    public double getHeightMeters() {
+        return m_heightMeters;
     }
 
     @Override
     public String toString() {
-        return "distance=" + m_distance + ", speed = " + m_speed;
+        return "distance = " + m_distanceMeters + ", speed = " + m_launcherSpeedRPM + ", tilt = " + m_tiltAngleDegrees + ", height = " + m_heightMeters;
     }
 }

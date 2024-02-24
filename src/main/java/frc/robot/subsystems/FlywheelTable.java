@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
@@ -53,7 +54,7 @@ public class FlywheelTable {
 
             flyTable.sort(TableData.getComparator());
             for (TableData data : flyTable) {
-                System.out.println(data.getDistance() + " " + data.getSpeed());
+                System.out.println(data.toString());
             }
             return true;
 
@@ -74,11 +75,15 @@ public class FlywheelTable {
     }
 
     private double getDistance(int index) {
-        return getTableData(index).getDistance();
+        return getTableData(index).getDistanceMeters();
     }
 
     private double getSpeed(int index) {
-        return getTableData(index).getSpeed();
+        return getTableData(index).getLauncherSpeedRPM();
+    }
+
+ private double getTilt(int index) {
+        return getTableData(index).getTiltAngle().getDegrees();
     }
 
     private int findIndex(double distance) {
@@ -97,20 +102,22 @@ public class FlywheelTable {
         return (slope * distance) + intercept;
     }
 
-    public TableData getIdealTarget(double distance) {
+    public Optional<TableData> getIdealTarget(double distance) {
         int initialIndex = findIndex(distance);
         int topIndex = initialIndex == 0 ? 1 : findIndex(distance);
         int botIndex = topIndex - 1;
+        var topTableData = getTableData(topIndex);
+        if (distance > topTableData.getDistanceMeters()) {
+            return Optional.empty();
+        }
 
         double idealSpeed = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getSpeed(topIndex), getSpeed(botIndex), distance);
-
-        var topTableData = getTableData(topIndex);
-        return new TableData(
+        double idealTilt = getInterpolatedValue(getDistance(topIndex), getDistance(botIndex), getTilt(topIndex), getTilt(botIndex), distance);
+        return Optional.of(new TableData(
             distance,
             idealSpeed,
-            topTableData.getLauncherAngle(),
-            topTableData.getLauncherTolerance(),
-            topTableData.getFeederSpeed()
-        );
+            idealTilt, 
+            topTableData.getHeightMeters()
+        ));
     }
 }

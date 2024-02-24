@@ -92,6 +92,7 @@ public class Constants {
 		public static final double LauncherToleranceRPM = 50;
 		public static final double DefaultLauncherSpeed = 1.0; // TODO Determine later
 		public static final double DefaultLauncherAngle = 5;
+		public static final double FlywheelRampRate = 0.1;
 		public static final double FlywheelEncoderConversionFactor = 1;
 		public static final double FlywheelP = 0;
 		public static final double FlywheelI = 0;
@@ -113,7 +114,7 @@ public class Constants {
 
 		public static final double MinHeightMeters = 0.05;
 		public static final double MinLaunchOverHeightMeters = 0.24;
-		public static final double MaxHeightMeters = 0.793; // max height is 0.768
+		public static final double MaxHeightMeters = 0.793; 
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
