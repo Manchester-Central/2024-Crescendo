@@ -119,7 +119,7 @@ public class RobotContainer {
     m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
     m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
     m_tester.rightBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
-    m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(6000), () -> m_launcher.setLauncherPower(0), m_launcher));
+    m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);

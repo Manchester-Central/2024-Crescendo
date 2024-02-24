@@ -91,15 +91,15 @@ public class Constants {
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(40);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 
-		public static final double LauncherToleranceRPM = 50;
+		public static final double LauncherToleranceRPM = 150;
 		public static final double DefaultLauncherSpeed = 1.0; // TODO Determine later
 		public static final double DefaultLauncherAngle = 5;
 		public static final double FlywheelRampRate = 0.1;
 		public static final double FlywheelEncoderConversionFactor = 1;
-		public static final double FlywheelP = 0;
+		public static final double FlywheelP = 0.0005;
 		public static final double FlywheelI = 0;
 		public static final double FlywheelD = 0;
-		public static final double FlywheelF = 0;
+		public static final double FlywheelF = 0.00016;
 
 		public static final double MaxRPM = 6784; // TODO: Test
 
