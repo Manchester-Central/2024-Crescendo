@@ -82,18 +82,21 @@ public class Launcher extends SubsystemBase {
 		var logManager = LogManager.getInstance();
 		logManager.addNumber("Launcher/LeftRPM", Constants.DebugMode, () -> m_flywheelLeft.getEncoder().getVelocity());
 		logManager.addNumber("Launcher/RightRPM", Constants.DebugMode, () -> m_flywheelRight.getEncoder().getVelocity());
-		logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
-		logManager.addNumber("Launcher/AbsAngleDegrees", Constants.DebugMode, () -> getAbsoluteTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetRPM", Constants.DebugMode, () -> m_targetRPM);
-		logManager.addNumber("Launcher/TargetAngleDegrees", Constants.DebugMode, () -> m_targetAngle.getDegrees());
-		logManager.addNumber("Launcher/TiltAppliedOutput", Constants.DebugMode, () -> m_tiltController.getAppliedOutput());
-		logManager.addNumber("Launcher/TiltCurrentAmps", Constants.DebugMode, () -> m_tiltController.getOutputCurrent());
 		logManager.addNumber("Launcher/LeftCurrentAmps", Constants.DebugMode, () -> m_flywheelLeft.getOutputCurrent());
 		logManager.addNumber("Launcher/RightCurrentAmps", Constants.DebugMode, () -> m_flywheelRight.getOutputCurrent());
 		logManager.addNumber("Launcher/LeftAppliedOutput", Constants.DebugMode, () -> m_flywheelLeft.getAppliedOutput());
 		logManager.addNumber("Launcher/RightAppliedOutput", Constants.DebugMode, () -> m_flywheelRight.getAppliedOutput());
+		logManager.addNumber("Launcher/LeftError", Constants.DebugMode, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
+		logManager.addNumber("Launcher/RightError", Constants.DebugMode, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
+		logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
+		logManager.addNumber("Launcher/AbsAngleDegrees", Constants.DebugMode, () -> getAbsoluteTiltAngle().getDegrees());
+		logManager.addNumber("Launcher/TargetAngleDegrees", Constants.DebugMode, () -> m_targetAngle.getDegrees());
+		logManager.addNumber("Launcher/TiltAppliedOutput", Constants.DebugMode, () -> m_tiltController.getAppliedOutput());
+		logManager.addNumber("Launcher/TiltCurrentAmps", Constants.DebugMode, () -> m_tiltController.getOutputCurrent());
 
+		
 	}
 
 	public void setTiltSpeed(double speed) {
