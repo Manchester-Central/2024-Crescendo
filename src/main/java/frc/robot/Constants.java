@@ -39,7 +39,7 @@ public class Constants {
 		public static final int IntakeUpper = 42;
 		public static final int IntakeLower = 43;
 
-		public static final int Feeder = 44;
+		public static final int FeederMain = 44;
 
 		public static final int LauncherTilt = 45;
 		public static final int FlywheelLeft = 46;
@@ -47,6 +47,8 @@ public class Constants {
 
 		public static final int LiftLeft = 48;
 		public static final int LiftRight = 49; 
+		
+		public static final int FeederTrap = 50;
 	}
 
 	public static class IOPorts {
