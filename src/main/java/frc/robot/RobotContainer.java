@@ -111,7 +111,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
 
     // Tester
     m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
@@ -160,8 +160,9 @@ public class RobotContainer {
 
     m_operator.back().whileTrue(frozoneSlowCommand);
 
-    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
+    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Simple Intake
     m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
+    m_operator.x().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
     m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp

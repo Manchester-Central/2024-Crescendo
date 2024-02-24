@@ -26,6 +26,7 @@ public class Feeder extends SubsystemBase {
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
 		m_feederMainMotor.setInverted(true);
+		m_feederTrapMotor.setInverted(true);
 
 		var logManager = LogManager.getInstance();
 		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());
@@ -55,7 +56,7 @@ public class Feeder extends SubsystemBase {
 	
 	public void grabAndHoldPiece(double grabSpeed) {
 		if (hasNoteAtSecondary()) {
-			setFeederPower(-0.1);
+			setFeederPower(-0.3);
 		} else if(hasNoteAtPrimary()) {
 			setFeederPower(0);
 		} else {
