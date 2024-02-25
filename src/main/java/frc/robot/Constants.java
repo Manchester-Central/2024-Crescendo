@@ -126,6 +126,9 @@ public class Constants {
 		public static final double IntakeHeightMeters = 0.4;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
+		public static final double AmpHeight = 0.5;
 
 	}
+
+
 }

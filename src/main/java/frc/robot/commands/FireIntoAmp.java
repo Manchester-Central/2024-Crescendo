@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
@@ -24,7 +25,7 @@ public class FireIntoAmp extends Command {
   private Launcher m_launcher;
   private BaseSwerveDrive m_swerveDrive;
   private Vision m_vision;
-  private ampState state = ampState.moveIntoPosition;
+  private ampState state = ampState.vision;
   private Pose2d m_finalPose;
 
   /** Creates a new FireIntoAmp. */
@@ -61,8 +62,7 @@ public class FireIntoAmp extends Command {
         state = ampState.vision;
       } else {
         m_swerveDrive.moveToTarget(0.40);
-        m_lift.moveToHeight(1);
-        m_launcher.setTiltAngle(Rotation2d.fromDegrees(10));
+        
       }
 
     } else if(state == ampState.vision) { 
@@ -70,9 +70,12 @@ public class FireIntoAmp extends Command {
       Pose2d visionPose = m_vision.getPose();
       Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_finalPose.getTranslation());
       Rotation2d rotationError = visionPose.getRotation().minus(m_finalPose.getRotation());
+      m_lift.moveToHeight(LiftConstants.AmpHeight);
+        m_launcher.setTiltAngle((LauncherConstants.AmpAngle));
       
 
-      if (translationErrorMeters.getNorm() < 0.01 && rotationError.getDegrees() < 2) {
+      if (translationErrorMeters.getNorm() < 0.01 && rotationError.getDegrees() < 2 
+          && m_lift.atTargetHeight(LiftConstants.AmpHeight) && m_launcher.atTargetAngle((LauncherConstants.AmpAngle))) {
         state = ampState.fireIntoAmp; 
         m_swerveDrive.stop();
 
@@ -91,7 +94,7 @@ public class FireIntoAmp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    state = ampState.moveIntoPosition;
+    state = ampState.vision;
   }
 
   // Returns true when the command should end.
