@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;
+import com.chaos131.util.DashboardNumber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,28 +25,22 @@ import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.FieldPose2024;
 
 // TODO: Implement actual control logic
-public class Launch extends BaseLaunch {
-  private FlywheelTable m_flywheelTable;
-  private Vision m_vision;
+public class DashboardLaunch extends BaseLaunch {
 
+  double m_targetRPM = 5000;
+  double m_targetHeight = 0.096;
+  
   /** Creates a new Lanch Partay. */
-  public Launch(Lift lift, Launcher launcher, Feeder feeder, FlywheelTable flywheelTable, Vision vision) {
+  public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder) {
     super (lift, launcher, feeder);
-    m_flywheelTable = flywheelTable;
-    m_vision = vision;
-    addRequirements(lift, launcher, feeder);
-  }
-
-  public static Command createAutoCommand(ParsedCommand parsedCommand, Lift lift, Launcher launcher, Feeder feeder, FlywheelTable flywheelTable, Vision vision){
-    return new Launch(lift, launcher, feeder, flywheelTable, vision);
+    SmartDashboard.putNumber("DSLaunch Target RPM", m_targetRPM);
+    SmartDashboard.putNumber("DSLaunch Target Height Meters", m_targetHeight);
   }
 
   @Override
   protected Optional<TableData> getTargets() {
-    var pose = m_vision.getPose();
-    if (pose == null) {
-      return Optional.empty(); 
-    }
-    return m_flywheelTable.getIdealTarget(FieldPose2024.Speaker.distanceTo(pose));
+    m_targetRPM = SmartDashboard.getNumber("DSLaunch Target RPM", m_targetRPM);
+    m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
+    return Optional.of(new TableData(0, m_targetRPM, m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
   }
 }

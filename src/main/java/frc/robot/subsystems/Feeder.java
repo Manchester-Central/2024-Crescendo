@@ -26,7 +26,7 @@ public class Feeder extends SubsystemBase {
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
 		m_feederMainMotor.setInverted(true);
-		m_feederTrapMotor.setInverted(true);
+		m_feederTrapMotor.setInverted(false);
 
 		var logManager = LogManager.getInstance();
 		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());

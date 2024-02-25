@@ -101,7 +101,7 @@ public class Constants {
 		public static final double FlywheelD = 0;
 		public static final double FlywheelF = 0.00017;
 
-		public static final double MaxRPM = 6784; // TODO: Test
+		public static final double MaxRPM = 5500; // TODO: Test
 
 	}
 

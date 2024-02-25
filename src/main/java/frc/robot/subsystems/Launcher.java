@@ -92,7 +92,7 @@ public class Launcher extends SubsystemBase {
 		logManager.addNumber("Launcher/LeftError", Constants.DebugMode, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
 		logManager.addNumber("Launcher/RightError", Constants.DebugMode, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
-		logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
+		//logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
 		logManager.addNumber("Launcher/AbsAngleDegrees", Constants.DebugMode, () -> getAbsoluteTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetAngleDegrees", Constants.DebugMode, () -> m_targetAngle.getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", Constants.DebugMode, () -> m_tiltController.getAppliedOutput());
@@ -149,12 +149,12 @@ public class Launcher extends SubsystemBase {
 	/**
 	 * Gets the current angle of the launcher
 	 */
-	public Rotation2d getCurrentAngle() {
-		if (Robot.isSimulation()) {
-			return m_simAngle;
-		}
-		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
-	}
+	// public Rotation2d getCurrentAngle() {
+	// 	if (Robot.isSimulation()) {
+	// 		return m_simAngle;
+	// 	}
+	// 	return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
+	// }
 
 	public boolean atTargetAngle(Rotation2d targetAngle) {
 		return Math.abs(getAbsoluteTiltAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
