@@ -96,10 +96,10 @@ public class Constants {
 		public static final double DefaultLauncherAngle = 5;
 		public static final double FlywheelRampRate = 0.1;
 		public static final double FlywheelEncoderConversionFactor = 1;
-		public static final double FlywheelP = 0.0005;
+		public static final double FlywheelP = 0.0007;
 		public static final double FlywheelI = 0;
 		public static final double FlywheelD = 0;
-		public static final double FlywheelF = 0.00016;
+		public static final double FlywheelF = 0.00017;
 
 		public static final double MaxRPM = 6784; // TODO: Test
 
@@ -122,7 +122,7 @@ public class Constants {
 		public static final double DefaultLaunchMeters = 0.6;
 		public static final double DefaultAmpMeters = 0.7;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
-		public static final double IntakeHeightMeters = 0.4;
+		public static final double IntakeHeightMeters = 0.1;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 

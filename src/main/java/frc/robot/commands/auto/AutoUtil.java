@@ -60,9 +60,9 @@ public class AutoUtil {
         return new Pose2d(x_meters, y_meters, Rotation2d.fromDegrees(angle_degrees));
     }
 
-    public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
+    public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Feeder feeder){
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
-        .alongWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, launcher, feeder));
+        .alongWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, feeder));
     }
 
     public static Command driveAndIntakeSimple(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
