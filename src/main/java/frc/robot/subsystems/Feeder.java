@@ -32,6 +32,8 @@ public class Feeder extends SubsystemBase {
 
 		m_feederMainMotor.setInverted(true);
 		m_feederTrapMotor.setInverted(true);
+		m_feederMainMotor.setOpenLoopRampRate(0.1);
+		m_feederTrapMotor.setOpenLoopRampRate(0.1);
 
 		m_feederMainMotor.burnFlash();
 		m_feederTrapMotor.burnFlash();

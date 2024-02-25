@@ -22,8 +22,14 @@ public class Intake extends SubsystemBase {
 	private double simPower = 0;
 
 	public Intake() {
+		m_intakeUpper.restoreFactoryDefaults();
+		m_intakeLower.restoreFactoryDefaults();
 		m_intakeUpper.setIdleMode(IdleMode.kCoast);
 		m_intakeLower.setIdleMode(IdleMode.kCoast);
+		m_intakeUpper.setOpenLoopRampRate(0.1);
+		m_intakeLower.setOpenLoopRampRate(0.1);
+		m_intakeUpper.burnFlash();
+		m_intakeLower.burnFlash();
 
 		var logManager = LogManager.getInstance();
 		logManager.addNumber("Intake/UpperCurrentAmps", Constants.DebugMode, () -> m_intakeUpper.getOutputCurrent());
