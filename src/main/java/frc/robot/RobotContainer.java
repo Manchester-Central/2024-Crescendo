@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
@@ -54,7 +56,7 @@ import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
-  private Gamepad m_driver = new Gamepad(0,0.2,0.2);
+  private Gamepad m_driver = new Gamepad(0,10,10);
   private Gamepad m_operator = new Gamepad(1);
   public static Gamepad SimKeyboard = new Gamepad(2);
   private Gamepad m_tester = new Gamepad(3);
@@ -93,12 +95,12 @@ public class RobotContainer {
 
     m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
 
-    var fastCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.FastSpeedModifier),
+    var slowCommand = new StartEndCommand(
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
     var frozoneSlowCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SuperSlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
 
@@ -109,7 +111,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
 
     // Tester
     m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
@@ -117,13 +119,21 @@ public class RobotContainer {
     m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
     m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
     m_tester.rightBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
-    m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(6000), () -> m_launcher.setLauncherPower(0), m_launcher));
+    m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);
     m_driver.start().onTrue(driverRelativeDrive);
 
+    // var updateHeading = (double blueAngle) -> {
+    //   return new InstantCommand(() -> m_swerveDrive.resetHeading())
+    // }
+
     m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    // m_driver.povDown().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180).)));
+    // m_driver.povLeft().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+    // m_driver.povRight().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
+
 
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
@@ -136,11 +146,11 @@ public class RobotContainer {
     //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.leftTrigger().whileTrue(fastCommand);
+    m_driver.leftTrigger().whileTrue(slowCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
     m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTable, m_swerveDrive));
 
-    m_driver.leftStick().whileTrue(fastCommand);
+    m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
 
     // Operator
@@ -150,8 +160,9 @@ public class RobotContainer {
 
     m_operator.back().whileTrue(frozoneSlowCommand);
 
-    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7).feeder(m_feeder, 0.7)); // Simple Intake
+    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Simple Intake
     m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
+    m_operator.x().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
 
     m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
     m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp

@@ -65,7 +65,7 @@ public class SwerveDrive2024 extends SwerveDrive {
 			new Translation2d(frontLengthDistance, frontLengthDistance),
 			new SpeedControllerConfig(CANIdentifiers.FrontLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(CANIdentifiers.FrontLeftAngle, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(CANIdentifiers.FrontLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-26.02)),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-0.61 + 90)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 		//TODO create CAN_ID and absolute offset constants
@@ -74,7 +74,7 @@ public class SwerveDrive2024 extends SwerveDrive {
 			new Translation2d(frontLengthDistance, -frontLengthDistance),
 			new SpeedControllerConfig(CANIdentifiers.FrontRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(CANIdentifiers.FrontRightAngle, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(CANIdentifiers.FrontRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-15.03)),
+			new AbsoluteEncoderConfig(CANIdentifiers.FrontRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-70.57 - 90)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
@@ -83,7 +83,7 @@ public class SwerveDrive2024 extends SwerveDrive {
 			new Translation2d(-backLengthDistance, backLengthDistance),
 			new SpeedControllerConfig(CANIdentifiers.BackLeftSpeed, leftSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(CANIdentifiers.BackLeftAngle, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(CANIdentifiers.BackLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(42.45)),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackLeftEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(12.57 + 90)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(-45))
 		);
 		//TODO create CAN_ID and absolute offset constants
@@ -92,7 +92,7 @@ public class SwerveDrive2024 extends SwerveDrive {
 			new Translation2d(-backLengthDistance, -backLengthDistance),
 			new SpeedControllerConfig(CANIdentifiers.BackRightSpeed, rightSpeedMotorDirection, speedGearRatio, wheelCircumferenceMeters),
 			new AngleControllerConfig(CANIdentifiers.BackRightAngle, angleMotorDirection, angleGearRatio),
-			new AbsoluteEncoderConfig(CANIdentifiers.BackRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(63.9)),
+			new AbsoluteEncoderConfig(CANIdentifiers.BackRightEncoder, absoluteEncoderDirection, Rotation2d.fromDegrees(-37 - 90)),
 			new DriveConfig(driverModeClosedLoopRampRatePeriod, driveToPositionClosedLoopRampRatePeriod, Rotation2d.fromDegrees(45))
 		);
 

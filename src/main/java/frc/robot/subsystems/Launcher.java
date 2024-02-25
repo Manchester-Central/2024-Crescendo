@@ -61,6 +61,8 @@ public class Launcher extends SubsystemBase {
 		m_flywheelRight.setClosedLoopRampRate(LauncherConstants.FlywheelRampRate);
 		m_flywheelLeft.setInverted(false);
 		m_flywheelRight.setInverted(true);
+		m_flywheelLeft.getPIDController().setOutputRange(0, 1);
+		m_flywheelRight.getPIDController().setOutputRange(0, 1);
 
 		m_tiltPot.setInverted(true);
 		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);

@@ -46,7 +46,7 @@ public class RunIntake extends Command {
       m_intake.setIntakePower(0.3);
     }    
 
-    m_feeder.grabAndHoldPiece(0.3);
+    m_feeder.grabAndHoldPiece(0.5);
   }
 
   public static Command createAutoCommand(ParsedCommand parsedCommand, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
