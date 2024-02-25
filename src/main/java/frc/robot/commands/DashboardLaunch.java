@@ -28,19 +28,22 @@ import frc.robot.util.FieldPose2024;
 public class DashboardLaunch extends BaseLaunch {
 
   double m_targetRPM = 5000;
+  double m_speedOffsetRPM = 0;
   double m_targetHeight = 0.096;
   
   /** Creates a new Lanch Partay. */
   public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder) {
     super (lift, launcher, feeder);
     SmartDashboard.putNumber("DSLaunch Target RPM", m_targetRPM);
+    SmartDashboard.putNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     SmartDashboard.putNumber("DSLaunch Target Height Meters", m_targetHeight);
   }
 
   @Override
   protected Optional<TableData> getTargets() {
     m_targetRPM = SmartDashboard.getNumber("DSLaunch Target RPM", m_targetRPM);
+    m_speedOffsetRPM = SmartDashboard.getNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
-    return Optional.of(new TableData(0, m_targetRPM, m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
+    return Optional.of(new TableData(0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
   }
 }

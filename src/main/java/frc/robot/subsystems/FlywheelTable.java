@@ -116,6 +116,7 @@ public class FlywheelTable {
         return Optional.of(new TableData(
             distance,
             idealSpeed,
+            topTableData.getSpeedOffsetRPM(),
             idealTilt, 
             topTableData.getHeightMeters()
         ));

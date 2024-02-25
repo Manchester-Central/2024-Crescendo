@@ -63,11 +63,14 @@ public abstract class BaseLaunch extends Command {
     SmartDashboard.putString("Flywheel data", targets.toString());
     var targetHeight = targets.getHeightMeters();
     var targetSpeed = targets.getLauncherSpeedRPM();
+    var speedOffset = targets.getSpeedOffsetRPM();
+    var targetSpeedLeft = targetSpeed + speedOffset;
+    var targetSpeedRight = targetSpeed - speedOffset;
     var targetTilt = targets.getTiltAngle();
     m_lift.moveToHeight(targetHeight);
-    m_launcher.setLauncherRPM(targetSpeed);
+    m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     //m_launcher.setTiltAngle(targetTilt);
-    if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeed)) {
+    if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
       m_feeder.setFeederPower(1.0);
     }
   }

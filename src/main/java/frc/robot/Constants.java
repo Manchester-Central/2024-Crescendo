@@ -82,6 +82,7 @@ public class Constants {
 		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8);
 		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
+		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
 
 		public static final double TiltP = 0.068;
 		public static final double TiltI = 0;

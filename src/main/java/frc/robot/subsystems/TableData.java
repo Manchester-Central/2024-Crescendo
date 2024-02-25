@@ -12,13 +12,15 @@ public class TableData {
 
     private double m_distanceMeters;
     private double m_launcherSpeedRPM;
+    private double m_speedOffsetRPM;
     private double m_tiltAngleDegrees;
     private double m_heightMeters;
 
-    public TableData(double distance, double speed, double launcherAngle, double heightMeters) {
+    public TableData(double distance, double speed, double speedOffset,double launcherAngle, double heightMeters) {
 
         m_distanceMeters = distance;
         m_launcherSpeedRPM = speed;
+        m_speedOffsetRPM = speedOffset;
         m_tiltAngleDegrees = launcherAngle;
         m_heightMeters = heightMeters;
 
@@ -28,12 +30,14 @@ public class TableData {
     public static TableData FromCSV(String[] args) throws Exception {
         var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
         var launcherSpeedRPM = getValueFromStringArray(args, 1, true, "launcherSpeedRPM");
-        var launcherAngle = getValueFromStringArray(args, 2, true, "tiltAngleDegrees");
-        var heightMeters = getValueFromStringArray(args, 3, true, "heightMeters");
+        var speedOffsetRPM = getValueFromStringArray(args, 2, true, "speedOffsetRPM");
+        var launcherAngle = getValueFromStringArray(args, 3, true, "tiltAngleDegrees");
+        var heightMeters = getValueFromStringArray(args, 4, true, "heightMeters");
 
         return new TableData(
             Double.parseDouble(distanceMeters),
             Double.parseDouble(launcherSpeedRPM),
+            Double.parseDouble(speedOffsetRPM),
             Double.parseDouble(launcherAngle), 
             Double.parseDouble(heightMeters)
         );
@@ -73,6 +77,10 @@ public class TableData {
 
     public double getLauncherSpeedRPM() {
         return m_launcherSpeedRPM;
+    }
+
+    public double getSpeedOffsetRPM(){
+        return m_speedOffsetRPM;
     }
     
     public Rotation2d getTiltAngle() {
