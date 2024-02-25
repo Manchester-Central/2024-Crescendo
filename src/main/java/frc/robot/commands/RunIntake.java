@@ -43,9 +43,13 @@ public class RunIntake extends Command {
     //m_launcher.setLauncherPower(0.0);
     //m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
-    if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom())) {
+    var atIntakeHeight = m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom());
+    var hasPiece = m_feeder.hasNoteAtPrimary() || m_feeder.hasNoteAtSecondary();
+    if (atIntakeHeight && !hasPiece) {
       m_intake.setIntakePower(1);
-    }    
+    }else{
+      m_intake.setIntakePower(0);
+    }
 
     m_feeder.grabAndHoldPiece(0.5);
   }
