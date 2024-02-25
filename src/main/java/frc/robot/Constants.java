@@ -11,7 +11,7 @@ public class Constants {
 
 	public static final double robotWidthMeters = 0.990;
     public static final double robotHeightMeters = 0.876;
-	public static final double robotLengthMeters = 0.876; // TODO put in correct length
+	public static final double robotLengthMeters = 0.9779; 
 
 	public static class VisionConstants {
 		public static final boolean UseVisionForOdometry = false;

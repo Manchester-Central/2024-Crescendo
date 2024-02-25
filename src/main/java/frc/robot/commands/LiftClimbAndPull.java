@@ -20,7 +20,7 @@ import frc.robot.util.FieldPose2024;
 
 public class LiftClimbAndPull extends Command {
     private Lift m_lift;
-    private liftState state = liftState.moveIntoPosition;
+    private liftState state = liftState.visionMove;
     private BaseSwerveDrive m_swerveDrive;
     private Pose2d m_closestChain;
     private Pose2d m_startClimbPose;
@@ -71,9 +71,11 @@ public class LiftClimbAndPull extends Command {
         Pose2d visionPose = m_vision.getPose();
         Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_startClimbPose.getTranslation());
         Rotation2d rotationError = visionPose.getRotation().minus(m_startClimbPose.getRotation());
+        m_lift.moveToHeight(LiftConstants.StartClimbHeight);
+
         
 
-        if(translationErrorMeters.getNorm() < 0.05 && rotationError.getDegrees() < 2){
+        if(translationErrorMeters.getNorm() < 0.05 && rotationError.getDegrees() < 2 && m_lift.atTargetHeight(LiftConstants.StartClimbHeight)){
             state = liftState.moveForwards;
             
 
@@ -111,6 +113,6 @@ public class LiftClimbAndPull extends Command {
     
   @Override
   public void end(boolean interrupted) {
-    state = liftState.moveIntoPosition;
+    state = liftState.visionMove;
   }
 }
