@@ -27,6 +27,8 @@ public class LiftClimbAndPull extends Command {
     private Vision m_vision;
     private Launcher m_launcher;
 
+    private final double DISTANCE_FROM_TAG = 0.95;
+
     private enum liftState{
         moveIntoPosition, visionMove, moveForwards, pullDown
     }
@@ -48,8 +50,8 @@ public class LiftClimbAndPull extends Command {
             FieldPose2024.StageFar.getCurrentAlliancePose()});
         Pose2d closestChain = m_swerveDrive.getPose().nearest(Stages);
         m_closestChain = closestChain;
-        double x = Math.cos(closestChain.getRotation().getRadians());
-        double y = Math.sin(closestChain.getRotation().getRadians());
+        double x = DISTANCE_FROM_TAG * Math.cos(closestChain.getRotation().getRadians());
+        double y = DISTANCE_FROM_TAG * Math.sin(closestChain.getRotation().getRadians());
         Translation2d pose = closestChain.getTranslation().plus(new Translation2d (x, y));
         m_startClimbPose = new Pose2d(pose, closestChain.getRotation());
         m_swerveDrive.setTarget(new Pose2d(pose, closestChain.getRotation()));
@@ -73,14 +75,12 @@ public class LiftClimbAndPull extends Command {
         Rotation2d rotationError = visionPose.getRotation().minus(m_startClimbPose.getRotation());
         m_lift.moveToHeight(LiftConstants.StartClimbHeight);
 
-        
-
         if(translationErrorMeters.getNorm() < 0.05 && rotationError.getDegrees() < 2 && m_lift.atTargetHeight(LiftConstants.StartClimbHeight)){
             state = liftState.moveForwards;
             
 
-            double x = -0.6 * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
-            double y = -0.6 * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
+            double x = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
+            double y = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
             Translation2d currntPose = m_swerveDrive.getPose().getTranslation();
             currntPose = currntPose.plus(new Translation2d(x, y));
 
@@ -91,7 +91,7 @@ public class LiftClimbAndPull extends Command {
             m_swerveDrive.setTarget(new Pose2d(translationErrorMeters.plus(robotPose.getTranslation()), rotationError.plus(robotPose.getRotation())));
             m_swerveDrive.moveToTarget(0.15);
         }
-    }else if(state == liftState.moveForwards) {
+    } else if(state == liftState.moveForwards) {
 
         if (m_swerveDrive.atTarget()) {
             state = liftState.pullDown;
@@ -100,7 +100,7 @@ public class LiftClimbAndPull extends Command {
         } else {
             m_swerveDrive.moveToTarget(0.15);
         }
-    }else if(state == liftState.pullDown){
+    } else if(state == liftState.pullDown){
         // no work(lift do on own )- Jojo :D
     }
 
