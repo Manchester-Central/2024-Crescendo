@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
-import org.ejml.sparse.csc.mult.MatrixVectorMultWithSemiRing_FSCC;
+import java.util.Arrays;
+import java.util.List;
 
 import com.chaos131.swerve.BaseSwerveDrive;
 
@@ -9,82 +10,121 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
-import frc.robot.subsystems.swerve.SwerveDrive;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.FieldPose2024;
 
 public class LiftClimbAndPull extends Command {
-    private Lift m_lift;
-    private liftState state = liftState.moveIntoPosition;
-    private BaseSwerveDrive m_swerveDrive;
+	private Lift m_lift;
+	private LiftSequence state = LiftSequence.VisionMoveAdjust;
+	private BaseSwerveDrive m_swerveDrive;
+	private Pose2d m_startClimbPose;
+	private Vision m_vision;
+	//private Launcher m_launcher;
 
-    private enum liftState{
-        moveIntoPosition, raiseLift, moveForwards, pullDown
-    }
+	private final double DISTANCE_FROM_TAG = 0.95;
+	private final double VISION_TRANSLATION_TOLERANCE = 0.01;
+	private final double VISION_ROTATION_TOLERANCE = 0.01;
+	private final double VISION_MOVE_SPEED = 0.15;
 
-    public LiftClimbAndPull (Lift lift, BaseSwerveDrive swerveDrive){
-        m_lift = lift;
-        m_swerveDrive = swerveDrive;
-        addRequirements(lift, swerveDrive);
-    };
+	private enum LiftSequence {
+		MoveToArea, VisionMoveAdjust, Backup, PullDown, LiftToTrapHeight, ScoreTrap
+	}
 
-    @Override
-    public void initialize() {
-    //   m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
-        double x = Math.cos(FieldPose2024.StageSource.getCurrentAlliancePose().getRotation().getRadians());
-        double y = Math.sin(FieldPose2024.StageSource.getCurrentAlliancePose().getRotation().getRadians());
-        Translation2d pose = FieldPose2024.StageSource.getCurrentAlliancePose().getTranslation().plus(new Translation2d (x, y));
-        m_swerveDrive.setTarget(new Pose2d(pose, FieldPose2024.StageSource.getCurrentAlliancePose().getRotation()));
-    }
+	public LiftClimbAndPull(Lift lift, BaseSwerveDrive swerveDrive, Vision vision, Launcher launcher) {
+		m_lift = lift;
+		m_swerveDrive = swerveDrive;
+		m_vision = vision;
+		// m_launcher = launcher;
+		addRequirements(lift, swerveDrive, launcher);
+	};
 
-  @Override
-  public void execute() {
-    System.out.println(state);
-    if (state == liftState.moveIntoPosition) {
-        if(m_swerveDrive.atTarget()) {
-            state = liftState.raiseLift;
-            m_swerveDrive.stop();
-        } else {
-            m_swerveDrive.moveToTarget(0.40);
-        }
-    } else if ( state == liftState.raiseLift) {
+	@Override
+	public void initialize() {
+		// m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
+		List<Pose2d> Stages = Arrays.asList(new Pose2d[]{
+			FieldPose2024.StageSource.getCurrentAlliancePose(),
+			FieldPose2024.StageAmp.getCurrentAlliancePose(),
+			FieldPose2024.StageFar.getCurrentAlliancePose()});
+		Pose2d closestChain = m_swerveDrive.getPose().nearest(Stages);
+		double x = DISTANCE_FROM_TAG * Math.cos(closestChain.getRotation().getRadians());
+		double y = DISTANCE_FROM_TAG * Math.sin(closestChain.getRotation().getRadians());
+		Translation2d pose = closestChain.getTranslation().plus(new Translation2d (x, y));
+		m_startClimbPose = new Pose2d(pose, closestChain.getRotation());
+		m_swerveDrive.setTarget(new Pose2d(pose, closestChain.getRotation()));
+	}
 
-       m_lift.moveToHeight(Constants.LiftConstants.StartClimbHeight);
+	@Override
+	public void execute() {
+		if (state == LiftSequence.MoveToArea) {
+			// Swerve odometry based movement
 
-        if(m_lift.atTargetHeight(Constants.LiftConstants.StartClimbHeight)){
-            state = liftState.moveForwards;
-            
+			if(m_swerveDrive.atTarget(/* 1.5 */) && m_lift.atTargetHeight(LiftConstants.StartClimbHeight)) {
+				state = LiftSequence.VisionMoveAdjust;
+				m_swerveDrive.stop();
+			} else {
+				m_swerveDrive.moveToTarget(0.40);
+				m_lift.moveToHeight(LiftConstants.StartClimbHeight);
+			}
 
-            double x = -0.6 * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
-            double y = -0.6 * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
-            Translation2d currntPose = m_swerveDrive.getPose().getTranslation();
-            currntPose = currntPose.plus(new Translation2d(x, y));
+		} else if ( state == LiftSequence.VisionMoveAdjust) {
+			// Vision based movement
 
-            m_swerveDrive.setTarget(new Pose2d(currntPose, m_swerveDrive.getPose().getRotation()));
-            
-       }
-    }else if(state == liftState.moveForwards) {
+			Pose2d visionPose = m_vision.getPose();
+			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_startClimbPose.getTranslation());
+			Rotation2d rotationError = visionPose.getRotation().minus(m_startClimbPose.getRotation());
+			m_lift.moveToHeight(LiftConstants.StartClimbHeight);
 
-        if (m_swerveDrive.atTarget()) {
-            state = liftState.pullDown;
-            m_lift.moveToHeight(Constants.LiftConstants.MinHeightMeters);
-            m_swerveDrive.stop();
-        } else {
-            m_swerveDrive.moveToTarget(0.15);
-        }
-    }else if(state == liftState.pullDown){
-        // no work(lift do on own )- Jojo :D
-    }
+			if(translationErrorMeters.getNorm() < VISION_TRANSLATION_TOLERANCE
+					&& rotationError.getDegrees() < VISION_ROTATION_TOLERANCE
+					&& m_lift.atTargetHeight(LiftConstants.StartClimbHeight))
+			{
+				// Once we are close enough to the target orientation and the list is raised all the way, we can move into the next state
+				state = LiftSequence.Backup;
 
-  }
+				double x = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
+				double y = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
+				Translation2d currntPose = m_swerveDrive.getPose().getTranslation();
+				currntPose = currntPose.plus(new Translation2d(x, y));
 
-  @Override
-  public boolean isFinished () {
-    return m_lift.atTargetHeight(Constants.LiftConstants.MinHeightMeters) && state == liftState.pullDown;
-  }
-    
-  @Override
-  public void end(boolean interrupted) {
-    state = liftState.moveIntoPosition;
-  }
+				m_swerveDrive.setTarget(new Pose2d(currntPose, m_swerveDrive.getPose().getRotation()));
+				
+			} else { 
+				var robotPose = m_swerveDrive.getPose();
+				m_swerveDrive.setTarget(new Pose2d(translationErrorMeters.plus(robotPose.getTranslation()), rotationError.plus(robotPose.getRotation())));
+				m_swerveDrive.moveToTarget(VISION_MOVE_SPEED);
+			}
+
+		} else if(state == LiftSequence.Backup) {
+			// Lifting the launcher up the elevator
+
+			if (m_swerveDrive.atTarget()) {
+				// Once the drive is at the target, we can move the lift all the way back down.
+				state = LiftSequence.PullDown;
+				m_lift.moveToHeight(LiftConstants.MinHeightMeters);
+				m_swerveDrive.stop();
+			} else {
+				// otherwise keep trying to get there
+				m_swerveDrive.moveToTarget(VISION_MOVE_SPEED);
+			}
+		} else if(state == LiftSequence.PullDown) {
+			// no work(lift do on own )- Jojo :D
+		} else if(state == LiftSequence.LiftToTrapHeight) {
+			// Unreachable, for possible future work
+		} else if(state == LiftSequence.ScoreTrap) {
+			// Unreachable, for possible future work
+		}
+	}
+
+	@Override
+	public boolean isFinished () {
+		return m_lift.atTargetHeight(LiftConstants.MinHeightMeters) && state == LiftSequence.PullDown;
+	}
+
+	@Override
+	public void end(boolean interrupted) {
+		state = LiftSequence.VisionMoveAdjust;
+	}
 }
