@@ -140,6 +140,4 @@ public class Constants {
 		public static final double AmpHeight = 0.43;
 
 	}
-
-
 }
