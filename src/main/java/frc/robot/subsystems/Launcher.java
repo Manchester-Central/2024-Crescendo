@@ -152,7 +152,7 @@ public class Launcher extends SubsystemBase {
 
 	public boolean atTargetRPM(double leftTargetRPM, double rightTargetRPM) {
 		return Math.abs(getRightLauncherRPM() - rightTargetRPM) <= LauncherConstants.LauncherToleranceRPM 
-		&& Math.abs(getLeftLauncherRPM() - leftTargetRPM) <= LauncherConstants.LauncherToleranceRPM; 
+			&& Math.abs(getLeftLauncherRPM() - leftTargetRPM) <= LauncherConstants.LauncherToleranceRPM; 
 	}
 
 	/**
@@ -192,6 +192,9 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public Rotation2d getAbsoluteTiltAngle() {
+		if (Robot.isSimulation()) {
+			return m_simAngle;
+		}
 		return Rotation2d.fromDegrees(m_tiltPot.getPosition());
 	}
 

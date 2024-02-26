@@ -60,7 +60,8 @@ public class SimpleControl extends Command {
   /**
    * Adds the feeder to the simple controller, running it at the set power
    * @param feeder the feeder (will be added as a requirement of the command)
-   * @param feederPower the duty cycle power [-1.0, 1.0] to run at
+   * @param feederPower the duty cycle power [-1.0, 1.0] to run the main feeder rollers at
+   * @param trapPower the duty cycle power [-1.0, 1.0] to run at the trap roller at
    */
   public SimpleControl feeder(Feeder feeder, double feederPower, double trapPower) {
     m_feederPower = feederPower;

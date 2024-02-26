@@ -69,7 +69,7 @@ public abstract class BaseLaunch extends Command {
     var targetTilt = targets.getTiltAngle();
     m_lift.moveToHeight(targetHeight);
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
-    //m_launcher.setTiltAngle(targetTilt);
+    m_launcher.setTiltAngle(targetTilt);
     if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
       m_feeder.setFeederPower(1.0);
     }
