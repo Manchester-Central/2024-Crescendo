@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.chaos131.logging.LogManager;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -12,16 +14,19 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private LogManager m_logManager = LogManager.getInstance();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    m_logManager.writeHeaders();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
+    m_logManager.update();
   }
 
   @Override

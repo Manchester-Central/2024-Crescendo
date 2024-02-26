@@ -6,9 +6,11 @@ package frc.robot.commands;
 
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.FieldPose2024;
 
 public class DefaultVisionCommand extends Command {
 
@@ -30,7 +32,8 @@ public class DefaultVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (VisionConstants.UseVisionForOdometry && m_vision.getPose() != null) {
+    var pose = m_vision.getPose();
+    if (VisionConstants.UseVisionForOdometry && pose != null) {
       m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
     }
   }

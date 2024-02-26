@@ -7,6 +7,7 @@ package frc.robot.commands;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriverRelativeDrive extends Command {
@@ -29,7 +30,8 @@ public class DriverRelativeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveDrive.moveFieldRelative(m_driver.getLeftY(), -m_driver.getLeftX(), -m_driver.getRightX());
+    m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
+    m_driver.getHID().setRumble(RumbleType.kBothRumble, m_driver.getSlewLeftY());
     // m_swerveDrive.moveFieldRelative(m_driver.getLeftY(), 0, 0);
   }
 
