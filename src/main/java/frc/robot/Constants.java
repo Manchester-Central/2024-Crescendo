@@ -133,8 +133,4 @@ public class Constants {
 		public static final double AmpHeight = 0.43;
 
 	}
-
-	public static class CommandConstants {
-		public static final double LaunchUpperFlywheelTableThresholdMeters = 3.18;
-	}
 }

@@ -213,4 +213,12 @@ public class FlywheelTable {
             topTableData.getHeightMeters() // Default to further row's lift height
         ));
     }
+
+    public double getMinDistance() {
+        return m_minDistance;
+    }
+
+    public double getMaxDistance() {
+        return m_maxDistance;
+    }
 }

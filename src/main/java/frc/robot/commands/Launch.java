@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.chaos131.auto.ParsedCommand;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.CommandConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Launcher;
@@ -53,7 +52,7 @@ public class Launch extends BaseLaunch {
       return Optional.empty(); 
     }
     var distanceMeters = FieldPose2024.Speaker.distanceTo(pose);
-    if (distanceMeters >= CommandConstants.LaunchUpperFlywheelTableThresholdMeters) {
+    if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistance()) {
       m_beenAboveThreshold = true;
     }
     return (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
