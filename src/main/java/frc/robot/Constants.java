@@ -10,7 +10,7 @@ public class Constants {
 	public static final boolean Use2022Robot = false;
 
 	public static final double robotWidthMeters = 0.990;
-    public static final double robotHeightMeters = 0.876;
+	public static final double robotHeightMeters = 0.876;
 	public static final double robotLengthMeters = 0.9779; 
 
 	public static class VisionConstants {
@@ -126,7 +126,7 @@ public class Constants {
 		public static final double IntakeHeightMeters = 0.4;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
-		public static final double AmpHeight = 0.5;
+		public static final double AmpHeight = 0.43;
 
 	}
 

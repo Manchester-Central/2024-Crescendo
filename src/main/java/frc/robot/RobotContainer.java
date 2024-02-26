@@ -125,7 +125,7 @@ public class RobotContainer {
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive, m_vision, m_launcher));
-    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive, m_vision));
+    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     // TODO: do the other 3 directions (Left, Right, Down)
 
     //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
