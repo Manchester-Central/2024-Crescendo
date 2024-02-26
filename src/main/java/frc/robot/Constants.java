@@ -134,5 +134,7 @@ public class Constants {
 
 	}
 
-
+	public static class CommandConstants {
+		public static final double LaunchUpperFlywheelTableThresholdMeters = 3.18;
+	}
 }

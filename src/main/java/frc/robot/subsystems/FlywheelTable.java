@@ -15,20 +15,14 @@ import edu.wpi.first.wpilibj.Filesystem;
  */
 public class FlywheelTable {
 
-    public static final String PATH = "FlywheelTable.csv";
+    public static final String FlywheelTableLowerHeight = "FlywheelTableLowerHeight.csv";
+    public static final String FlywheelTableUpperHeight = "FlywheelTableUpperHeight.csv";
     private double m_minDistance = 0;
     private double m_maxDistance = 0;
 
     // holds an ArrayList with a key (distance) as reference to [key]
     ArrayList<TableData> flyTable = new ArrayList<TableData>();
 
-    /**
-     * Creates a FlywheelTable for the default file
-     */
-    public FlywheelTable() {
-        var lines = readCsvFile(PATH);
-        parseLines(lines);
-    }
 
     /**
      * Creates a FlyWheel table for the given fileName in the deploy directory

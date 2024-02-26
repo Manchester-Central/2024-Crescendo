@@ -73,14 +73,15 @@ public class RobotContainer {
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
   private Launcher m_launcher = new Launcher();
-  private FlywheelTable m_flywheelTable = new FlywheelTable();
+  private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
+  private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTable, m_vision));
+    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision));
     m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder));
     m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder));
     m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
@@ -155,7 +156,7 @@ public class RobotContainer {
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     m_driver.leftTrigger().whileTrue(slowCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
-    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTable, m_vision));
+    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision));
 
     m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
