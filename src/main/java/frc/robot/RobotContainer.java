@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.DashboardLaunch;
 import frc.robot.commands.DefaultFeederCommand;
 import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.DefaultLauncherCommand;
@@ -66,7 +68,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision("limelight");
+  private Vision m_vision = new Vision("limelight-front");
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -78,9 +80,9 @@ public class RobotContainer {
     configureBindings();
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTable, m_swerveDrive));
-    m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_launcher, m_feeder));
-    m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTable, m_vision));
+    m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder));
+    m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder));
     m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
     m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
@@ -118,8 +120,8 @@ public class RobotContainer {
     m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
     m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
-    m_tester.rightBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
-    m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
+   // m_tester.rightBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
+   // m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
 
     // Driver
     m_driver.back().onTrue(robotRelativeDrive);
@@ -137,8 +139,8 @@ public class RobotContainer {
 
     m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
     m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
-    m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
+   // m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
+   // m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
     // TODO: do the other 3 directions (Left, Right, Down)
 
     //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
@@ -148,7 +150,7 @@ public class RobotContainer {
     m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
     m_driver.leftTrigger().whileTrue(slowCommand);
     m_driver.rightBumper().whileTrue(frozoneSlowCommand);
-    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTable, m_swerveDrive));
+    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTable, m_vision));
 
     m_driver.leftStick().whileTrue(slowCommand);
     m_driver.rightStick().whileTrue(frozoneSlowCommand);
@@ -160,12 +162,14 @@ public class RobotContainer {
 
     m_operator.back().whileTrue(frozoneSlowCommand);
 
-    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Simple Intake
+   // m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Simple Intake
+   m_operator.a().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MaxHeightMeters), () -> m_lift.setSpeed(0), m_lift));
     m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
-    m_operator.x().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
+    m_operator.x().whileTrue(new RunIntake(m_intake, m_lift, m_feeder));
+    m_operator.y().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder));
 
     m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
-    m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0).flywheel(m_launcher, -1.0)); // Simple Amp
+    m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0, 1.0).flywheel(m_launcher, -1.0)); // Simple Amp
 
     m_operator.rightBumper().whileTrue(new SimpleControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel
     m_operator.rightTrigger().whileTrue(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)); // Simple Speaker Launch
@@ -182,12 +186,19 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getCurrentAngle().getDegrees(),
+      m_launcher.getAbsoluteTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
       m_feeder.hasNoteAtSecondary() ? 1 : 0
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
+
+    var pose = m_vision.getPose();
+    var distanceToSpeaker = -1.0;
+    if(pose != null){
+      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
+    }
+    SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
   }
 }

@@ -92,7 +92,7 @@ public class Launcher extends SubsystemBase {
 		logManager.addNumber("Launcher/LeftError", Constants.DebugMode, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
 		logManager.addNumber("Launcher/RightError", Constants.DebugMode, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
-		logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
+		//logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
 		logManager.addNumber("Launcher/AbsAngleDegrees", Constants.DebugMode, () -> getAbsoluteTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetAngleDegrees", Constants.DebugMode, () -> m_targetAngle.getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", Constants.DebugMode, () -> m_tiltController.getAppliedOutput());
@@ -124,37 +124,46 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.getPIDController().setReference(angle.getDegrees(), ControlType.kPosition);
 	}
 
-	public void setLauncherRPM(double speedRPM) {
-		m_targetRPM = speedRPM;
+	public void setLauncherRPM(double leftSpeedRPM, double rightSpeedRPM) {
+		m_targetRPM = leftSpeedRPM;
+		
 
 		if (Robot.isSimulation()) {
 			// Slowly adjust the power to make the simulator show the launcher getting up to speed
-			m_simFlywheelPower += MathUtil.clamp(m_simFlywheelPid.calculate(m_simFlywheelRPM, speedRPM), -m_simMaxFlywheelPowerChangePerLoop, m_simMaxFlywheelPowerChangePerLoop);
+			m_simFlywheelPower += MathUtil.clamp(m_simFlywheelPid.calculate(m_simFlywheelRPM, m_targetRPM), -m_simMaxFlywheelPowerChangePerLoop, m_simMaxFlywheelPowerChangePerLoop);
 		}
-		m_flywheelLeft.getPIDController().setReference(speedRPM, ControlType.kVelocity);
-		m_flywheelRight.getPIDController().setReference(speedRPM, ControlType.kVelocity);
+		m_flywheelLeft.getPIDController().setReference(leftSpeedRPM, ControlType.kVelocity);
+		m_flywheelRight.getPIDController().setReference(rightSpeedRPM, ControlType.kVelocity);
 	}
 
-	public double getLauncherRPM() {
+	public double getRightLauncherRPM() {
 		if (Robot.isSimulation()) {
 			return m_simFlywheelRPM;
 		}
 		return m_flywheelRight.getEncoder().getVelocity();
 	}
 
-	public boolean atTargetRPM(double targetRPM) {
-		return Math.abs(getLauncherRPM() - targetRPM) <= LauncherConstants.LauncherToleranceRPM;
+	public double getLeftLauncherRPM() {
+		if (Robot.isSimulation()) {
+			return m_simFlywheelRPM;
+		}
+		return m_flywheelLeft.getEncoder().getVelocity();
+	}
+
+	public boolean atTargetRPM(double leftTargetRPM, double rightTargetRPM) {
+		return Math.abs(getRightLauncherRPM() - rightTargetRPM) <= LauncherConstants.LauncherToleranceRPM 
+			&& Math.abs(getLeftLauncherRPM() - leftTargetRPM) <= LauncherConstants.LauncherToleranceRPM; 
 	}
 
 	/**
 	 * Gets the current angle of the launcher
 	 */
-	public Rotation2d getCurrentAngle() {
-		if (Robot.isSimulation()) {
-			return m_simAngle;
-		}
-		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
-	}
+	// public Rotation2d getCurrentAngle() {
+	// 	if (Robot.isSimulation()) {
+	// 		return m_simAngle;
+	// 	}
+	// 	return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
+	// }
 
 	public boolean atTargetAngle(Rotation2d targetAngle) {
 		return Math.abs(getAbsoluteTiltAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
@@ -183,6 +192,9 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public Rotation2d getAbsoluteTiltAngle() {
+		if (Robot.isSimulation()) {
+			return m_simAngle;
+		}
 		return Rotation2d.fromDegrees(m_tiltPot.getPosition());
 	}
 

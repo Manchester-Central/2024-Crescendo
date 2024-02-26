@@ -21,12 +21,22 @@ public class Feeder extends SubsystemBase {
 	private double simPower = 0;
 
 	public Feeder() {
+		m_feederMainMotor.restoreFactoryDefaults();
+		m_feederTrapMotor.restoreFactoryDefaults();
 		m_feederSensorPrimary = m_feederMainMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorSecondary = m_feederMainMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
+		m_feederTrapMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);	
+		m_feederTrapMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);
+
 		m_feederMainMotor.setInverted(true);
 		m_feederTrapMotor.setInverted(true);
+		m_feederMainMotor.setOpenLoopRampRate(0.1);
+		m_feederTrapMotor.setOpenLoopRampRate(0.1);
+
+		m_feederMainMotor.burnFlash();
+		m_feederTrapMotor.burnFlash();
 
 		var logManager = LogManager.getInstance();
 		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());

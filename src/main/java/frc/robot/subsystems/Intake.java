@@ -4,6 +4,7 @@ import com.chaos131.logging.LogManager;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -21,6 +22,15 @@ public class Intake extends SubsystemBase {
 	private double simPower = 0;
 
 	public Intake() {
+		m_intakeUpper.restoreFactoryDefaults();
+		m_intakeLower.restoreFactoryDefaults();
+		m_intakeUpper.setIdleMode(IdleMode.kCoast);
+		m_intakeLower.setIdleMode(IdleMode.kCoast);
+		m_intakeUpper.setOpenLoopRampRate(0.1);
+		m_intakeLower.setOpenLoopRampRate(0.1);
+		m_intakeUpper.burnFlash();
+		m_intakeLower.burnFlash();
+
 		var logManager = LogManager.getInstance();
 		logManager.addNumber("Intake/UpperCurrentAmps", Constants.DebugMode, () -> m_intakeUpper.getOutputCurrent());
 		logManager.addNumber("Intake/LowerCurrentAmps", Constants.DebugMode, () -> m_intakeLower.getOutputCurrent());
