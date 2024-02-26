@@ -84,8 +84,8 @@ public class LiftClimbAndPull extends Command {
 				// Once we are close enough to the target orientation and the list is raised all the way, we can move into the next state
 				state = LiftSequence.Backup;
 
-				double x = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
-				double y = -(DISTANCE_FROM_TAG-Constants.robotLengthMeters) * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
+				double x = -(DISTANCE_FROM_TAG-Constants.RobotBounds.BackwardEdge) * Math.cos(m_swerveDrive.getPose().getRotation().getRadians());
+				double y = -(DISTANCE_FROM_TAG-Constants.RobotBounds.BackwardEdge) * Math.sin(m_swerveDrive.getPose().getRotation().getRadians());
 				Translation2d currntPose = m_swerveDrive.getPose().getTranslation();
 				currntPose = currntPose.plus(new Translation2d(x, y));
 
