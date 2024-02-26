@@ -56,8 +56,8 @@ public class FireIntoAmp extends Command {
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
-		double x = Constants.robotLengthMeters/2 * Math.cos(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
-		double y = Constants.robotLengthMeters/2 * Math.sin(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
+		double x = Constants.RobotBounds.BackwardEdge * Math.cos(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
+		double y = Constants.RobotBounds.BackwardEdge * Math.sin(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
 		Translation2d pose = FieldPose2024.Amp.getCurrentAlliancePose().getTranslation().plus(new Translation2d(x, y));
 		m_swerveDrive.setTarget(new Pose2d(pose, FieldPose2024.Amp.getCurrentAlliancePose().getRotation()));
 		m_finalPose = new Pose2d(pose, FieldPose2024.Amp.getCurrentAlliancePose().getRotation());
