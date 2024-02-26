@@ -88,8 +88,9 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
-    if(Robot.isSimulation()) { 
-      m_vision.prepSimulation(m_swerveDrive); 
+    if(Robot.isSimulation()) {
+      // Stores a lambda to collect the pose without needing an explicit swerve drive reference
+      m_vision.prepSimulation(() -> m_swerveDrive.getPose()); 
     }
   }
   

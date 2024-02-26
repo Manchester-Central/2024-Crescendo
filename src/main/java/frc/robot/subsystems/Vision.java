@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,7 +42,7 @@ public class Vision extends SubsystemBase {
 
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
 
-	private BaseSwerveDrive m_SwerveDrive;
+	private Supplier<Pose2d> m_simPoseSupplier;
 
 	/**
 	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
@@ -56,8 +58,8 @@ public class Vision extends SubsystemBase {
 		m_ty = m_visionTable.getEntry("ty");
 	}
 
-	public Vision prepSimulation(BaseSwerveDrive swervedrive) {
-		m_SwerveDrive = swervedrive;
+	public Vision prepSimulation(Supplier<Pose2d> poseSupplier) {
+		m_simPoseSupplier = poseSupplier;
 		return this;
 	}
 
@@ -79,7 +81,7 @@ public class Vision extends SubsystemBase {
 	 */
 	public Pose2d getPose() {
 		if (Robot.isSimulation()) {
-			return m_SwerveDrive.getPose();
+			return m_simPoseSupplier.get();
 		}
 		if(m_mode == Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
