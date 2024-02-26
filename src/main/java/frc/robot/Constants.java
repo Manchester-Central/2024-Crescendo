@@ -11,7 +11,14 @@ public class Constants {
 
 	public static final double robotWidthMeters = 0.990;
 	public static final double robotHeightMeters = 0.876;
-	public static final double robotLengthMeters = 0.9779; 
+	public static final double robotLengthMeters = 0.9779;
+
+	public static class RobotBounds {
+		public static final double ForwardEdge = 0.438;
+		public static final double BackwardEdge = -0.553;
+		public static final double LeftEdge = 0.438;
+		public static final double RightEdge = -0.438;
+	}
 
 	public static class VisionConstants {
 		public static final boolean UseVisionForOdometry = false;
