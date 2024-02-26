@@ -35,7 +35,6 @@
     },
     "persistent": {
       "SmartDashboard": {
-        "open": true,
         "string[]##v_/SmartDashboard/Auto Steps": {
           "open": true
         }

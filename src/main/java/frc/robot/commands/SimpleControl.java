@@ -29,6 +29,7 @@ public class SimpleControl extends Command {
 
   private double m_intakePower = Double.NaN;
   private double m_feederPower = Double.NaN;
+  private double m_trapPower = Double.NaN;
   private double m_flywheelPower = Double.NaN;
   private double m_tiltPower = Double.NaN;
   private double m_liftPower = Double.NaN;
@@ -53,7 +54,18 @@ public class SimpleControl extends Command {
    * @param feederPower the duty cycle power [-1.0, 1.0] to run at
    */
   public SimpleControl feeder(Feeder feeder, double feederPower) {
+    return feeder(feeder, feederPower, feederPower);
+  }
+
+  /**
+   * Adds the feeder to the simple controller, running it at the set power
+   * @param feeder the feeder (will be added as a requirement of the command)
+   * @param feederPower the duty cycle power [-1.0, 1.0] to run the main feeder rollers at
+   * @param trapPower the duty cycle power [-1.0, 1.0] to run at the trap roller at
+   */
+  public SimpleControl feeder(Feeder feeder, double feederPower, double trapPower) {
     m_feederPower = feederPower;
+    m_trapPower = trapPower;
     if (m_feeder == null) {
       m_feeder = feeder;
       addRequirements(m_feeder);
@@ -113,8 +125,8 @@ public class SimpleControl extends Command {
       m_intake.setIntakePower(m_intakePower);
     }
 
-    if (Double.isFinite(m_feederPower)) {
-      m_feeder.setFeederPower(m_feederPower);
+    if (Double.isFinite(m_feederPower) && Double.isFinite(m_trapPower)) {
+      m_feeder.setFeederPower(m_feederPower, m_trapPower);
     }
 
     if (Double.isFinite(m_flywheelPower)) {

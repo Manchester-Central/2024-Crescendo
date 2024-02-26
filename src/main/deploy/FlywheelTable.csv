@@ -1,1 +1,5 @@
-TY, LauncherSpeed, LauncherAngle, LauncherTolerance, FeederSpeed
+DistanceMeters,LauncherSpeedRPM,TiltAngleDegrees,HeightMeters
+0,100,2,0.26
+3,100,20,0.26
+3.1,1000,30,0.08
+10,1000,52,0.08

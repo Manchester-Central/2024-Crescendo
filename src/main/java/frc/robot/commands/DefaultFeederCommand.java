@@ -4,15 +4,19 @@
 
 package frc.robot.commands;
 
+import com.chaos131.gamepads.Gamepad;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder;
 
 public class DefaultFeederCommand extends Command {
   private Feeder m_feeder;
+  private Gamepad m_tester;
 
   /** Creates a new DefaultFeederCommand. */
-  public DefaultFeederCommand(Feeder feeder) {
+  public DefaultFeederCommand(Feeder feeder, Gamepad operator) {
     m_feeder = feeder;
+    m_tester = operator;
     addRequirements(feeder);
   }
 
@@ -23,8 +27,9 @@ public class DefaultFeederCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() { 
-    //m_feeder.grabAndHoldPiece(0.1);
-    m_feeder.setFeederPower(0);
+    //m_feeder.grabAndHoldPiece(0.5);
+     m_feeder.setFeederPower(0);
+    // m_feeder.setFeederPower(0, m_tester.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.chaos131.logging.LogManager;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
@@ -7,22 +8,46 @@ import com.revrobotics.SparkLimitSwitch;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class Feeder extends SubsystemBase {
 	private SparkLimitSwitch m_feederSensorPrimary;
 	private SparkLimitSwitch m_feederSensorSecondary;
-	CANSparkFlex m_feederMotor = new CANSparkFlex(CANIdentifiers.Feeder, MotorType.kBrushless);
+	CANSparkFlex m_feederMainMotor = new CANSparkFlex(CANIdentifiers.FeederMain, MotorType.kBrushless);
+	CANSparkFlex m_feederTrapMotor = new CANSparkFlex(CANIdentifiers.FeederTrap, MotorType.kBrushless);
 
 	private double simPower = 0;
 
 	public Feeder() {
-		m_feederSensorPrimary = m_feederMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
-		m_feederSensorSecondary = m_feederMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+		m_feederMainMotor.restoreFactoryDefaults();
+		m_feederTrapMotor.restoreFactoryDefaults();
+		m_feederSensorPrimary = m_feederMainMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+		m_feederSensorSecondary = m_feederMainMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
-		m_feederMotor.setInverted(true);
+		m_feederTrapMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);	
+		m_feederTrapMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);
+
+		m_feederMainMotor.setInverted(true);
+		m_feederTrapMotor.setInverted(true);
+		m_feederMainMotor.setOpenLoopRampRate(0.1);
+		m_feederTrapMotor.setOpenLoopRampRate(0.1);
+
+		m_feederMainMotor.burnFlash();
+		m_feederTrapMotor.burnFlash();
+
+		var logManager = LogManager.getInstance();
+		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());
+		logManager.addBoolean("Feeder/HasNoteAtSecondary", Constants.DebugMode, () -> hasNoteAtSecondary());
+
+		logManager.addNumber("FeederMain/MotorPosition", Constants.DebugMode, () -> m_feederMainMotor.getEncoder().getPosition());
+		logManager.addNumber("FeederMain/CurrentAmps", Constants.DebugMode, () -> m_feederMainMotor.getOutputCurrent());
+		logManager.addNumber("FeederMain/AppliedOutput", Constants.DebugMode, () -> m_feederMainMotor.getAppliedOutput());
+
+		logManager.addNumber("FeederTrap/CurrentAmps", Constants.DebugMode, () -> m_feederTrapMotor.getOutputCurrent());
+		logManager.addNumber("FeederTrap/AppliedOutput", Constants.DebugMode, () -> m_feederTrapMotor.getAppliedOutput());
 	}
 
 	/**
@@ -30,13 +55,18 @@ public class Feeder extends SubsystemBase {
 	 * @param power the duty cycle [-1, 1] power to run at
 	 */
 	public void setFeederPower(double power) {
-		simPower = power;
-		m_feederMotor.set(power);
+		setFeederPower(power, power);
+	}
+
+	public void setFeederPower(double mainPower, double trapPower) {
+		simPower = mainPower;
+		m_feederMainMotor.set(mainPower);
+		m_feederTrapMotor.set(trapPower);
 	}
 	
 	public void grabAndHoldPiece(double grabSpeed) {
 		if (hasNoteAtSecondary()) {
-			setFeederPower(-0.1);
+			setFeederPower(-0.3);
 		} else if(hasNoteAtPrimary()) {
 			setFeederPower(0);
 		} else {
@@ -65,15 +95,12 @@ public class Feeder extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return simPower;
 		}
-		return m_feederMotor.get();
+		return m_feederMainMotor.get();
 	}
 	
 	@Override
 	public void periodic() {
 		super.periodic();
-		SmartDashboard.putBoolean("Feeder/HasNoteAtPrimary", hasNoteAtPrimary());
-		SmartDashboard.putBoolean("Feeder/HasNoteAtSecondary", hasNoteAtSecondary());
 
-		SmartDashboard.putNumber("Feeder/MotorPosition", m_feederMotor.getEncoder().getPosition());
 	}
 }
