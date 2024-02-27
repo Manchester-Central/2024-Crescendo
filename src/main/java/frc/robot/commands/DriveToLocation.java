@@ -25,6 +25,10 @@ public class DriveToLocation extends Command {
 		addRequirements(swerveDrive);
 	}
 
+	public DriveToLocation(Pose2d location, BaseSwerveDrive swerveDrive) {
+		this(location, swerveDrive, SwerveConstants2024.DefaultDriveToTargetTolerance_m, 1.0);
+	}
+
 	/** Runs when the command is first run, before execute. It is only run once. */
 	public void initialize() {
 		m_swerveDrive.driveToPositionInit();
