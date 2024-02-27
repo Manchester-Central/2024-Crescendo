@@ -8,38 +8,48 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.auto.AutoUtil;
 
 public class DriveToLocation extends Command {
 	private Pose2d m_targetLocation;
 	private BaseSwerveDrive m_swerveDrive;
+	private double m_translationToleranceMeters;
+	private double m_maxPercentSpeed;
 
-	public DriveToLocation(Pose2d location, BaseSwerveDrive swerveDrive) {
+	public DriveToLocation(Pose2d location, BaseSwerveDrive swerveDrive, double translationToleranceMeters, double maxPercentSpeed) {
 		m_targetLocation = location;
 		m_swerveDrive = swerveDrive;
+		m_translationToleranceMeters = translationToleranceMeters;
+		m_maxPercentSpeed = maxPercentSpeed;
 		addRequirements(swerveDrive);
+	}
+
+	public DriveToLocation(Pose2d location, BaseSwerveDrive swerveDrive) {
+		this(location, swerveDrive, SwerveConstants2024.DefaultDriveToTargetTolerance_m, 1.0);
 	}
 
 	/** Runs when the command is first run, before execute. It is only run once. */
 	public void initialize() {
 		m_swerveDrive.driveToPositionInit();
 		m_swerveDrive.resetPids();
+		m_swerveDrive.setDriveTranslationTolerance(m_translationToleranceMeters);
 		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_targetLocation.getRotation());
 	}
 
 	public static Command createAutoCommand(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive) {
-		// double translationTolerance = AutoUtil.getTranslationTolerance(parsedCommand);
-		// double maxPercentSpeed = AutoUtil.getMaxPercentSpeed(parsedCommand);
+		double translationTolerance = AutoUtil.getTranslationTolerance(parsedCommand);
+		double maxPercentSpeed = AutoUtil.getMaxPercentSpeed(parsedCommand);
 		Pose2d pose = AutoUtil.getDrivePose(parsedCommand);
 		if(pose == null) {
 			return new InstantCommand();
 		}
-		return new DriveToLocation(pose, swerveDrive);
+		return new DriveToLocation(pose, swerveDrive, translationTolerance, maxPercentSpeed);
 	}
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		m_swerveDrive.moveToTarget(0.5);
+		m_swerveDrive.moveToTarget(m_maxPercentSpeed);
 	}
 
 	/**
@@ -52,6 +62,7 @@ public class DriveToLocation extends Command {
 	 * @param interrupted whether the command was interrupted/canceled
 	 */
 	public void end(boolean interrupted) {
+		m_swerveDrive.setDriveTranslationTolerance(SwerveConstants2024.DefaultDriveToTargetTolerance_m);
 		m_swerveDrive.resetPids();
 		m_swerveDrive.stop();
 	}
