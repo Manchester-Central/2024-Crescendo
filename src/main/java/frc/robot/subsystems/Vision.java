@@ -159,14 +159,26 @@ public class Vision extends SubsystemBase {
 	}
 
 	public double getXAngle() {
+		if (Robot.isSimulation()) {
+			// TODO: calculate value based on sim distance to goal
+			return 0;
+		}
 		return m_tx.getDouble(0.0);
 	  }
 	
 	  public double getYAngle() {
+		if (Robot.isSimulation()) {
+			// TODO: calculate value based on sim distance to goal
+			return 0;
+		}
 		return m_ty.getDouble(0.0);
 	  }
 	
 	  public boolean hasTarget() {
+		if (Robot.isSimulation()) {
+			// TODO: only return true if within a certain angle/distance of the goal
+			return true;
+		}
 		return (m_tv.getDouble(0) == 1);
 	  }
 }

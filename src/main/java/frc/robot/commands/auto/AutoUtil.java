@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.Feeder;
@@ -25,21 +26,21 @@ public class AutoUtil {
         return Double.parseDouble(stringToParse);
     }
     
-    // /**
-    //  * Gets the drive translation tolerance from the auto script step
-    //  * @param parsedCommand the auto script step
-    //  */
-    // public static double getTranslationTolerance(ParsedCommand parsedCommand) {
-    //     return AutoUtil.ParseDouble(parsedCommand.getArgument("translationTolerance"), SwerveConstants.DriveToTargetTolerance);
-    // }
+    /**
+     * Gets the drive translation tolerance from the auto script step
+     * @param parsedCommand the auto script step
+     */
+    public static double getTranslationTolerance(ParsedCommand parsedCommand) {
+        return AutoUtil.ParseDouble(parsedCommand.getArgument("translationTolerance"), SwerveConstants2024.DefaultDriveToTargetTolerance_m);
+    }
     
-    // /**
-    //  * Gets the mac percent speed from the auto script step
-    //  * @param parsedCommand the auto script step
-    //  */
-    // public static double getMaxPercentSpeed(ParsedCommand parsedCommand) {
-    //     return AutoUtil.ParseDouble(parsedCommand.getArgument("maxPercentSpeed"), SwerveConstants.MaxTranslationPIDSpeedPercent);
-    // }
+    /**
+     * Gets the max percent speed from the auto script step
+     * @param parsedCommand the auto script step
+     */
+    public static double getMaxPercentSpeed(ParsedCommand parsedCommand) {
+        return AutoUtil.ParseDouble(parsedCommand.getArgument("maxPercentSpeed"), 1.0);
+    }
 
     /**
      * Gets the drive pose from the auto script step (if pose doesn't exist, it returns null)
@@ -57,16 +58,17 @@ public class AutoUtil {
         double x_meters = AutoUtil.ParseDouble(parsedCommand.getArgument("x"), 0.0);
         double y_meters = AutoUtil.ParseDouble(parsedCommand.getArgument("y"), 0.0);
         double angle_degrees = AutoUtil.ParseDouble(parsedCommand.getArgument("angle"), 0.0);
-        return new Pose2d(x_meters, y_meters, Rotation2d.fromDegrees(angle_degrees));
+        var mirrorablePose = new FieldPose2024(new Pose2d(x_meters, y_meters, Rotation2d.fromDegrees(angle_degrees)));
+        return mirrorablePose.getCurrentAlliancePose();
     }
 
     public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Feeder feeder){
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
-        .alongWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, feeder));
+        .raceWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, feeder));
     }
 
     public static Command driveAndIntakeSimple(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
-        .alongWith(new StartEndCommand(() -> intake.setIntakePower(0.7), () -> intake.setIntakePower(0), intake));
+        .raceWith(new StartEndCommand(() -> intake.setIntakePower(0.7), () -> intake.setIntakePower(0), intake));
     }
 }
