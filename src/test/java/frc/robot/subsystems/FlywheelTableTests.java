@@ -58,15 +58,15 @@ public class FlywheelTableTests {
 
     @Test
     public void testDiscreteOffset() {
-        assertEquals(150, m_flywheelTable.getIdealTarget(0.0).get().getSpeedOffsetRPM(), DELTA);
-        assertEquals(150, m_flywheelTable.getIdealTarget(2.5).get().getSpeedOffsetRPM(), DELTA);
-        assertEquals(200, m_flywheelTable.getIdealTarget(5.0).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(100, m_flywheelTable.getIdealTarget(0.0).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(100, m_flywheelTable.getIdealTarget(2.5).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(150, m_flywheelTable.getIdealTarget(5.0).get().getSpeedOffsetRPM(), DELTA);
     }
 
     @Test
     public void testDiscreteHeight() {
-        assertEquals(0.5, m_flywheelTable.getIdealTarget(0.0).get().getHeightMeters(), DELTA);
-        assertEquals(0.5, m_flywheelTable.getIdealTarget(2.5).get().getHeightMeters(), DELTA);
-        assertEquals(0.1, m_flywheelTable.getIdealTarget(5.0).get().getHeightMeters(), DELTA);
+        assertEquals(1.0, m_flywheelTable.getIdealTarget(0.0).get().getHeightMeters(), DELTA);
+        assertEquals(1.0, m_flywheelTable.getIdealTarget(2.5).get().getHeightMeters(), DELTA);
+        assertEquals(0.5, m_flywheelTable.getIdealTarget(5.0).get().getHeightMeters(), DELTA);
     }
 }

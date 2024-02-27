@@ -71,7 +71,7 @@ public abstract class BaseLaunch extends Command {
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     m_launcher.setTiltAngle(targetTilt);
     if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
-      m_feeder.setFeederPower(0.3);
+      m_feeder.setFeederPower(1.0);
     }
   }
 
