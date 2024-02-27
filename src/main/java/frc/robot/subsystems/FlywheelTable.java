@@ -89,15 +89,15 @@ public class FlywheelTable {
                 addData(TableData.FromCSV(data));
             }
 
-            flyTable.sort(TableData.getComparator()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
+            flyTable.sort(TableData.getComparatorTY()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
             for (TableData dataRow : flyTable) {
                 System.out.println(dataRow.toString());
             }
 
             // set the min and max distances
             if (flyTable.size() > 0) {
-                m_minDistance = getDistance(0);
-                m_maxDistance = getDistance(flyTable.size() - 1);
+                m_minDistance = getTY(0);
+                m_maxDistance = getTY(flyTable.size() - 1);
             }
         } catch (Exception ie) {
             ie.printStackTrace();
@@ -114,8 +114,8 @@ public class FlywheelTable {
         return flyTable.get(index);
     }
 
-    private double getDistance(int index) {
-        return getTableData(index).getDistanceMeters();
+    private double getTY(int index) {
+        return getTableData(index).getTY();
     }
 
     /**
@@ -125,7 +125,7 @@ public class FlywheelTable {
      */
     private int findIndex(double distance) {
         for (int i = 0; i < flyTable.size(); i++) {
-            if (distance < getDistance(i)) {
+            if (distance < getTY(i)) {
                 return i;
             }
         }
@@ -159,8 +159,8 @@ public class FlywheelTable {
      */
     private double getInterpolatedValue(TableData bottomTableData, TableData topTableData, double targetDistance, Function<TableData, Double> dependentGetter) {
         return getInterpolatedValue(
-            bottomTableData.getDistanceMeters(),
-            topTableData.getDistanceMeters(),
+            bottomTableData.getTY(),
+            topTableData.getTY(),
             dependentGetter.apply(bottomTableData),
             dependentGetter.apply(topTableData),
             targetDistance
@@ -186,15 +186,15 @@ public class FlywheelTable {
 
     /**
      * Given the distance between the robot and the target, calculate the ideal launcher angle, speed, and lift height to score
-     * @param distance - The distance between the robot and the target.
+     * @param ty - The distance between the robot and the target.
      * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given distance. An Optional.Empty() if the distance is outside the table.
      */
-    public Optional<TableData> getIdealTarget(double distance) {
-        if (flyTable.isEmpty() || distance < m_minDistance || distance > m_maxDistance) {
+    public Optional<TableData> getIdealTarget(double ty) {
+        if (flyTable.isEmpty() || ty < m_minDistance || ty > m_maxDistance) {
             return Optional.empty();
         }
 
-        int initialIndex = findIndex(distance);
+        int initialIndex = findIndex(ty);
         int topIndex = (initialIndex == 0) ? 1 : initialIndex;
         int botIndex = topIndex - 1;
 
@@ -202,15 +202,15 @@ public class FlywheelTable {
         var topTableData = getTableData(topIndex);
 
         // Get interpolated values
-        var interpolatedValues = getInterpolatedData(bottomTableData, topTableData, distance);
+        var interpolatedValues = getInterpolatedData(bottomTableData, topTableData, ty);
 
         // Returns a new TableData value with the interpolated values and discrete values
         return Optional.of(new TableData(
-            distance,
+            ty,
             interpolatedValues.getLauncherSpeedRPM(),
-            topTableData.getSpeedOffsetRPM(), // Default to further row's offset
+            bottomTableData.getSpeedOffsetRPM(), // Default to further row's offset
             interpolatedValues.getTiltAngle().getDegrees(), 
-            topTableData.getHeightMeters() // Default to further row's lift height
+            bottomTableData.getHeightMeters() // Default to further row's lift height
         ));
     }
 

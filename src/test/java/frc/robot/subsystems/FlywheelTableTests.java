@@ -20,9 +20,9 @@ public class FlywheelTableTests {
     @BeforeEach
     public void clean() {    
         String[] cvsLines = {
-            "0,1000,100,10,1",
-            "5,5000,150,20,0.5",
-            "10,10000,200,30,0.1",
+            "0,0,1000,100,10,1",
+            "5,5,5000,150,20,0.5",
+            "10,10,10000,200,30,0.1",
         };
         m_flywheelTable = new FlywheelTable(Arrays.asList(cvsLines));
     }
