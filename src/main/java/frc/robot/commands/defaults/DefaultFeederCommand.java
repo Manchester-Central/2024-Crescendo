@@ -2,24 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.defaults;
 
 import com.chaos131.gamepads.Gamepad;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.LiftConstants;
-import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Feeder;
 
-public class DefaultLiftCommand extends Command {
-  private Lift m_lift;
-  private Gamepad m_operator;
-  public static double MaxLiftSpeed = 1;
+public class DefaultFeederCommand extends Command {
+  private Feeder m_feeder;
+  private Gamepad m_tester;
 
-  /** Creates a new DefaultLiftCommand. */
-  public DefaultLiftCommand(Lift lift, Gamepad operator) {
-    m_lift = lift;
-    m_operator = operator;
-    addRequirements(lift);
+  /** Creates a new DefaultFeederCommand. */
+  public DefaultFeederCommand(Feeder feeder, Gamepad operator) {
+    m_feeder = feeder;
+    m_tester = operator;
+    addRequirements(feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -28,15 +26,10 @@ public class DefaultLiftCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    if(!m_lift.hasSeenBottom()){
-      m_lift.setSpeed(-0.1);
-    } else {
-      // m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
-      m_lift.setSpeed(m_operator.getRightY() * MaxLiftSpeed);
-    }
-    
+  public void execute() { 
+    //m_feeder.grabAndHoldPiece(0.5);
+     m_feeder.setFeederPower(0);
+    // m_feeder.setFeederPower(0, m_tester.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

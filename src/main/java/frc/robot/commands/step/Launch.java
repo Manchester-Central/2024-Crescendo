@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.step;
 
 import java.util.Optional;
 
@@ -10,6 +10,7 @@ import com.chaos131.auto.ParsedCommand;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Launcher;
@@ -68,5 +69,11 @@ public class Launch extends BaseLaunch {
     var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return targets;
+  }
+
+  @Override
+  protected boolean isClearToLaunch() {
+    // TODO - handle logic better for when shooting on the fly
+      return m_vision.getXAngle() < VisionConstants.TxLaunchTolerance;
   }
 }

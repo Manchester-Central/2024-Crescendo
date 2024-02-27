@@ -13,6 +13,13 @@ public class Constants {
 	public static final double robotHeightMeters = 0.876;
 	public static final double robotLengthMeters = 0.9779;
 
+	public static class ControllerConstants {
+		public static final int DriverPort = 0;
+		public static final int OperatorPort = 1;
+		public static final int SimKeyboardPort = 2;
+		public static final int TesterPort = 3;
+	}
+
 	public static class RobotBounds {
 		public static final double ForwardEdge = 0.438;
 		public static final double BackwardEdge = -0.553;
@@ -23,6 +30,7 @@ public class Constants {
 	public static class VisionConstants {
 		public static final boolean UseVisionForOdometry = false;
 		public static final int[] AprilTagPipelines = {0, 1, 2};
+		public static final double TxLaunchTolerance = 2;
 	}
 
 	public static final boolean DebugMode = true;
