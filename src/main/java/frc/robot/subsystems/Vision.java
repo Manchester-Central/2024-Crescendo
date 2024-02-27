@@ -23,6 +23,7 @@ public class Vision extends SubsystemBase {
 	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
 	private NetworkTableEntry m_tx;
 	private NetworkTableEntry m_ty;
+	private NetworkTableEntry m_tv;
 	
 	/**
 	 * Represents which mode the robot is in.
@@ -35,7 +36,9 @@ public class Vision extends SubsystemBase {
 	public enum Mode {
 		BLUE_APRIL_TAGS,
 		RED_APRIL_TAGS,
-		RETROREFLECTIVE
+		RETROREFLECTIVE,
+		BLUE_SPEAKER,
+		RED_SPEAKER
 	}
 
 	private Field2d m_field = new Field2d();
@@ -56,6 +59,7 @@ public class Vision extends SubsystemBase {
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
+		m_tv = m_visionTable.getEntry("tv");
 	}
 
 	public Vision prepSimulation(Supplier<Pose2d> poseSupplier) {
@@ -153,4 +157,16 @@ public class Vision extends SubsystemBase {
 		if(temptx < -90) return null;
 		return temptx;
 	}
+
+	public double getXAngle() {
+		return m_tx.getDouble(0.0);
+	  }
+	
+	  public double getYAngle() {
+		return m_ty.getDouble(0.0);
+	  }
+	
+	  public boolean hasTarget() {
+		return (m_tv.getDouble(0) == 1);
+	  }
 }
