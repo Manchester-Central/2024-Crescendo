@@ -5,64 +5,52 @@
 package frc.robot;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
-import com.chaos131.swerve.BaseSwerveDrive;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import frc.robot.Constants.LauncherConstants;
+import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.DashboardLaunch;
-import frc.robot.commands.DefaultFeederCommand;
-import frc.robot.commands.DefaultIntakeCommand;
-import frc.robot.commands.DefaultLauncherCommand;
-import frc.robot.commands.DefaultLiftCommand;
-import frc.robot.commands.DefaultVisionCommand;
-import frc.robot.commands.DriveToLocation;
-import frc.robot.commands.DriverRelativeDrive;
-import frc.robot.commands.DropInAmp;
-import frc.robot.commands.FireIntoAmp;
-import frc.robot.commands.Launch;
-import frc.robot.commands.LiftClimbAndPull;
-import frc.robot.commands.Outtake;
-import frc.robot.commands.ResetPosition;
-import frc.robot.commands.RobotRelativeDrive;
-import frc.robot.commands.auto.AimForNote;
 import frc.robot.commands.auto.AutoUtil;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Vision.Mode;
-import frc.robot.commands.RunIntake;
-import frc.robot.commands.SimpleControl;
-import frc.robot.commands.SpeakerFocus;
+import frc.robot.commands.defaults.DefaultFeederCommand;
+import frc.robot.commands.defaults.DefaultIntakeCommand;
+import frc.robot.commands.defaults.DefaultLauncherCommand;
+import frc.robot.commands.defaults.DefaultLiftCommand;
+import frc.robot.commands.defaults.DefaultVisionCommand;
+import frc.robot.commands.simpledrive.DriveToLocation;
+import frc.robot.commands.simpledrive.DriverRelativeDrive;
+import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
+import frc.robot.commands.simpledrive.ResetPosition;
+import frc.robot.commands.simpledrive.RobotRelativeDrive;
+import frc.robot.commands.simpledrive.UpdateHeading;
+import frc.robot.commands.step.DashboardLaunch;
+import frc.robot.commands.step.Launch;
+import frc.robot.commands.step.RunIntake;
+import frc.robot.commands.step.SimpleControl;
+import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.util.DriveDirection;
 import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
 
-  private Gamepad m_driver = new Gamepad(0,10,10);
-  private Gamepad m_operator = new Gamepad(1);
-  public static Gamepad SimKeyboard = new Gamepad(2);
-  private Gamepad m_tester = new Gamepad(3);
+  private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
+  private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
+  public static Gamepad SimKeyboard;
+  private Gamepad m_tester;
   private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
@@ -90,18 +78,36 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
-    if(Robot.isSimulation()) {
-      // Stores a lambda to collect the pose without needing an explicit swerve drive reference
-      m_vision.prepSimulation(() -> m_swerveDrive.getPose()); 
-    }
   }
-  
-
 
   private void configureBindings() {
-    var robotRelativeDrive = new RobotRelativeDrive(m_driver, m_swerveDrive);
-    var driverRelativeDrive = new DriverRelativeDrive(m_driver, m_swerveDrive);
+    
+    if (Robot.isSimulation()) {
+      m_vision.prepSimulation(() -> m_swerveDrive.getPose()); 
+      SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
+    }
 
+    configureDefaultCommands();
+    configureDriverCommands();
+    configureOperatorCommands();
+
+    if (Constants.DebugMode) {
+      m_tester = new Gamepad(ControllerConstants.TesterPort);
+      configureTesterCommands();
+    }
+  }
+
+  private void configureDefaultCommands() {
+    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
+    m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
+    // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
+    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
+    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+  }
+
+  private void configureDriverCommands() {
     m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
 
     var slowCommand = new StartEndCommand(
@@ -113,79 +119,69 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
     );
 
-    // Default commands
-    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
-    m_swerveDrive.setDefaultCommand(driverRelativeDrive);
-    // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
-    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
-    m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
-    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+    m_driver.back().onTrue(new RobotRelativeDrive(m_driver, m_swerveDrive)); // Robot Relative
+    m_driver.start().onTrue(new DriverRelativeDrive(m_driver, m_swerveDrive)); // Drive Relative
 
-    // Tester
+    m_driver.povUp().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Away));
+    m_driver.povDown(); // 180 degrees for blue
+    m_driver.povLeft(); // 90 degrees for blue
+    m_driver.povRight(); // -90 degrees for blue
+
+    m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, Rotation2d.fromDegrees(90), 1.0)); // Align angle to amp (but allow translation)
+    m_driver.b(); // Align angle to stage left (but allow translation)
+    m_driver.x(); // Align angle to stage right (but allow translation)
+    m_driver.y();  // Align angle to HP (but allow translation)
+
+    m_driver.leftBumper().whileTrue(slowCommand); // Slow command (and max height shot?)
+    m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder)); // Intake
+    m_driver.rightBumper(); // Amp score
+    m_driver.rightTrigger() // Aim and launch at speaker 
+      .whileTrue( 
+        new SpeakerFocus(m_swerveDrive, m_driver, m_vision).alongWith(
+        new Launch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision)));
+
+    m_driver.leftStick(); //
+    m_driver.rightStick(); //
+  }
+
+  private void configureOperatorCommands() {
+    m_operator.back(); // Enable Automation (?)
+    m_operator.start(); // Disable Automation (?)
+
+    m_operator.povUp().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Reverse Intake (dumb)
+    m_operator.povDown().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Intake (dumb)
+    m_operator.povLeft(); // Reverse intake (dumb) TODO: double check why this was added twice
+    m_operator.povRight(); //
+
+    Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
+    m_operator.a(); // Min height
+    m_operator.b(); // Amp Height
+    m_operator.x(); // HP Height
+    m_operator.y().whileTrue(createGetHeightCommand.apply(LiftConstants.MaxHeightMeters)); // Max height
+
+    m_operator.leftBumper(); // Up Trap
+    m_operator.leftTrigger().whileTrue( // Launch (dumb)
+      (new SimpleControl().flywheel(m_launcher, 1.0).withTimeout(0.5))
+      .andThen(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)));
+    m_operator.rightBumper(); // Amp & Down Trap
+    m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder)); // Intake (smart)
+
+    m_operator.leftStick(); //
+    m_operator.rightStick(); //
+
+    // left stick y - manual angle tilt
+    // right stick y - manual lift height
+  }
+
+  private void configureTesterCommands() {
     m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
     m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
-    // m_tester.rightBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
-    // m_tester.rightTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
-
-    // Driver
-    m_driver.back().onTrue(robotRelativeDrive);
-    m_driver.start().onTrue(driverRelativeDrive);
-
-    // Function<Double, InstantCommand> updateHeading = (Double blueAngle) -> {
-    //   final var angle = Rotation2d.fromDegrees(blueAngle);
-    //   if (DriverStation.getAlliance().get() == Alliance.Red) {
-    //     angle = angle.plus(Rotation2d.fromDegrees(0));
-    //   }
-    //   return new InstantCommand(() -> m_swerveDrive.resetHeading(angle));
-    // };
-
-    m_driver.povUp().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    // m_driver.povDown().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180).)));
-    // m_driver.povLeft().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-    // m_driver.povRight().onTrue(new InstantCommand(() -> m_swerveDrive.resetHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180))));
-
-
-    m_driver.a().whileTrue(new StartEndCommand(() -> Lift.SafeftyLimtEnabled = false, () -> Lift.SafeftyLimtEnabled = true)); // The driver can allow the operator to extend the lift past the safety zone
-    m_driver.b().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver, m_vision));
-    // m_driver.y().whileTrue(new LiftClimbAndPull(m_lift, m_swerveDrive));
-    // m_driver.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_swerveDrive));
-    // TODO: do the other 3 directions (Left, Right, Down)
-
-    //m_driver.x().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver));
-    //m_driver.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
-    //m_driver.b().whileTrue(new Outtake(m_intake, m_lift, m_launcher, m_feeder));
-
-    m_driver.leftBumper().whileTrue(new SpeakerFocus(m_swerveDrive, m_driver, m_vision));
-    m_driver.leftTrigger().whileTrue(slowCommand);
-    m_driver.rightBumper().whileTrue(frozoneSlowCommand);
-    m_driver.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision));
-
-    m_driver.leftStick().whileTrue(slowCommand);
-    m_driver.rightStick().whileTrue(frozoneSlowCommand);
-
-    // Operator
-    // m_operator.a().whileTrue(new RunIntake(m_intake, m_lift, m_launcher, m_feeder));
-    // m_operator.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder));
-    // m_operator.rightTrigger().whileTrue(new Launch(m_lift, m_launcher, m_feeder));
-
-    m_operator.back().whileTrue(frozoneSlowCommand);
-
-    m_operator.a().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Simple Intake
-    // m_operator.a().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MaxHeightMeters), () -> m_lift.setSpeed(0), m_lift));
-    m_operator.b().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Simple spit
-    m_operator.x().whileTrue(new RunIntake(m_intake, m_lift, m_feeder));
-    m_operator.y().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder));
-
-    m_operator.leftBumper().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(LiftConstants.MinLaunchOverHeightMeters), () -> m_lift.setSpeed(0), m_lift)); // Simple Amp
-    m_operator.leftTrigger().whileTrue(new SimpleControl().feeder(m_feeder, -1.0, 1.0).flywheel(m_launcher, -1.0)); // Simple Amp
-
-    m_operator.rightBumper().whileTrue(new SimpleControl().flywheel(m_launcher, 1.0)); // Simple Prepare Flywheel
-    m_operator.rightTrigger().whileTrue(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)); // Simple Speaker Launch
-
-    m_operator.povLeft().whileTrue(new StartEndCommand(() -> DefaultLiftCommand.MaxLiftSpeed = 0.1, () -> DefaultLiftCommand.MaxLiftSpeed = 1)); // Slower manual lift speed
+    // m_tester.leftBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
+    // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
+    
+    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder));
   }
   
   public Command getAutonomousCommand() {

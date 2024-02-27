@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.step;
 
 import java.util.Optional;
 
@@ -51,6 +51,8 @@ public abstract class BaseLaunch extends Command {
 
   protected abstract Optional<TableData> getTargets();
 
+  protected abstract boolean isClearToLaunch();
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -70,7 +72,7 @@ public abstract class BaseLaunch extends Command {
     m_lift.moveToHeight(targetHeight);
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     m_launcher.setTiltAngle(targetTilt);
-    if (m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
+    if (isClearToLaunch() && m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
       m_feeder.setFeederPower(1.0);
     }
   }

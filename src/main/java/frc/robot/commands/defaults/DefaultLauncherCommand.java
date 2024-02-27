@@ -2,22 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.defaults;
 
 import com.chaos131.gamepads.Gamepad;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Launcher;
 
-public class DefaultFeederCommand extends Command {
-  private Feeder m_feeder;
-  private Gamepad m_tester;
+public class DefaultLauncherCommand extends Command {
+  private Launcher m_launcher;
+  private Gamepad m_operator;
+  public static double MaxTiltSpeed = 0.08;
 
-  /** Creates a new DefaultFeederCommand. */
-  public DefaultFeederCommand(Feeder feeder, Gamepad operator) {
-    m_feeder = feeder;
-    m_tester = operator;
-    addRequirements(feeder);
+  /** Creates a new DefaultLauncherCommand. */
+  public DefaultLauncherCommand(Launcher launcher, Gamepad operator) {
+    m_launcher = launcher;
+    m_operator = operator;
+    addRequirements(launcher);
   }
 
   // Called when the command is initially scheduled.
@@ -26,10 +28,10 @@ public class DefaultFeederCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { 
-    //m_feeder.grabAndHoldPiece(0.5);
-     m_feeder.setFeederPower(0);
-    // m_feeder.setFeederPower(0, m_tester.getLeftY());
+  public void execute() {
+    m_launcher.setLauncherPower(0.0);
+    m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
+    // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }
 
   // Called once the command ends or is interrupted.

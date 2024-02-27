@@ -2,24 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.defaults;
 
 import com.chaos131.gamepads.Gamepad;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Launcher;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.subsystems.Lift;
 
-public class DefaultLauncherCommand extends Command {
-  private Launcher m_launcher;
+public class DefaultLiftCommand extends Command {
+  private Lift m_lift;
   private Gamepad m_operator;
-  public static double MaxTiltSpeed = 0.08;
+  public static double MaxLiftSpeed = 1;
 
-  /** Creates a new DefaultLauncherCommand. */
-  public DefaultLauncherCommand(Launcher launcher, Gamepad operator) {
-    m_launcher = launcher;
+  /** Creates a new DefaultLiftCommand. */
+  public DefaultLiftCommand(Lift lift, Gamepad operator) {
+    m_lift = lift;
     m_operator = operator;
-    addRequirements(launcher);
+    addRequirements(lift);
   }
 
   // Called when the command is initially scheduled.
@@ -29,9 +29,14 @@ public class DefaultLauncherCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_launcher.setLauncherPower(0.0);
-    m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
-    // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
+
+    if(!m_lift.hasSeenBottom()){
+      m_lift.setSpeed(-0.1);
+    } else {
+      // m_lift.moveToHeight(LiftConstants.DefaultHoldMeters);
+      m_lift.setSpeed(m_operator.getRightY() * MaxLiftSpeed);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

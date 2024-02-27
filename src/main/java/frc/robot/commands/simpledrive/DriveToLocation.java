@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.simpledrive;
 
 import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;

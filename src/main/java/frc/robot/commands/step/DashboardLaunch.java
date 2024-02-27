@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.step;
 
 import java.util.Optional;
 
@@ -45,5 +45,10 @@ public class DashboardLaunch extends BaseLaunch {
     m_speedOffsetRPM = SmartDashboard.getNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
     return Optional.of(new TableData(0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
+  }
+
+  @Override
+  protected boolean isClearToLaunch() {
+      return true;
   }
 }

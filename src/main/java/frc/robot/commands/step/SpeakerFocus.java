@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.step;
 
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
