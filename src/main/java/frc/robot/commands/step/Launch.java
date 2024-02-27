@@ -74,6 +74,6 @@ public class Launch extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-      return m_vision.getXAngle() < VisionConstants.TxLaunchTolerance;
+      return Math.abs(m_vision.getXAngle()) < VisionConstants.TxLaunchTolerance;
   }
 }
