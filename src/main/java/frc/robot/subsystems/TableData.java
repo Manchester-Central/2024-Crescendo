@@ -11,31 +11,34 @@ import frc.robot.Constants;
 public class TableData {
 
     private double m_distanceMeters;
+    private double m_ty;
     private double m_launcherSpeedRPM;
     private double m_speedOffsetRPM;
     private double m_tiltAngleDegrees;
     private double m_heightMeters;
 
-    public TableData(double distance, double speed, double speedOffset,double launcherAngle, double heightMeters) {
+    public TableData(double ty, double speed, double speedOffset,double launcherAngle, double heightMeters) {
 
-        m_distanceMeters = distance;
+        // m_distanceMeters = distance;
+        m_ty = ty;
         m_launcherSpeedRPM = speed;
         m_speedOffsetRPM = speedOffset;
         m_tiltAngleDegrees = launcherAngle;
         m_heightMeters = heightMeters;
 
-
     }
 
     public static TableData FromCSV(String[] args) throws Exception {
-        var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
-        var launcherSpeedRPM = getValueFromStringArray(args, 1, true, "launcherSpeedRPM");
-        var speedOffsetRPM = getValueFromStringArray(args, 2, true, "speedOffsetRPM");
-        var launcherAngle = getValueFromStringArray(args, 3, true, "tiltAngleDegrees");
-        var heightMeters = getValueFromStringArray(args, 4, true, "heightMeters");
+        // var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
+        var ty = getValueFromStringArray(args, 1, true, "ty");
+        var launcherSpeedRPM = getValueFromStringArray(args, 2, true, "launcherSpeedRPM");
+        var speedOffsetRPM = getValueFromStringArray(args, 3, true, "speedOffsetRPM");
+        var launcherAngle = getValueFromStringArray(args, 4, true, "tiltAngleDegrees");
+        var heightMeters = getValueFromStringArray(args, 5, true, "heightMeters");
 
         return new TableData(
-            Double.parseDouble(distanceMeters),
+            // Double.parseDouble(distanceMeters),
+            Double.parseDouble(ty),
             Double.parseDouble(launcherSpeedRPM),
             Double.parseDouble(speedOffsetRPM),
             Double.parseDouble(launcherAngle), 
@@ -59,20 +62,36 @@ public class TableData {
         return value != null && !value.isBlank();
     }
 
-    public static Comparator<TableData> getComparator() {
+    // public static Comparator<TableData> getComparatorDistanceM() {
+    //     return new Comparator<TableData>() {
+    //         @Override
+    //         public int compare(TableData arg0, TableData arg1) {
+    //             if (arg1.getDistanceMeters() == arg0.getDistanceMeters()){
+    //                 return 0;
+    //             }
+    //             return arg1.getDistanceMeters() < arg0.getDistanceMeters() ? 1 : -1;
+    //         }
+    //     };
+    // }
+
+    public static Comparator<TableData> getComparatorTY() {
         return new Comparator<TableData>() {
             @Override
             public int compare(TableData arg0, TableData arg1) {
-                if (arg1.getDistanceMeters() == arg0.getDistanceMeters()){
+                if (arg1.getTY() == arg0.getTY()){
                     return 0;
                 }
-                return arg1.getDistanceMeters() < arg0.getDistanceMeters() ? 1 : -1;
+                return arg1.getTY() < arg0.getTY() ? 1 : -1;
             }
         };
     }
 
-    public double getDistanceMeters() {
-        return m_distanceMeters;
+    // public double getDistanceMeters() {
+    //     return m_distanceMeters;
+    // }
+
+    public double getTY() {
+        return m_ty;
     }
 
     public double getLauncherSpeedRPM() {

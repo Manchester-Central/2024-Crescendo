@@ -20,9 +20,9 @@ public class FlywheelTableTests {
     @BeforeEach
     public void clean() {    
         String[] cvsLines = {
-            "0,1000,100,10,1",
-            "5,5000,150,20,0.5",
-            "10,10000,200,30,0.1",
+            "0,0,1000,100,10,1",
+            "5,5,5000,150,20,0.5",
+            "10,10,10000,200,30,0.1",
         };
         m_flywheelTable = new FlywheelTable(Arrays.asList(cvsLines));
     }
@@ -58,15 +58,15 @@ public class FlywheelTableTests {
 
     @Test
     public void testDiscreteOffset() {
-        assertEquals(150, m_flywheelTable.getIdealTarget(0.0).get().getSpeedOffsetRPM(), DELTA);
-        assertEquals(150, m_flywheelTable.getIdealTarget(2.5).get().getSpeedOffsetRPM(), DELTA);
-        assertEquals(200, m_flywheelTable.getIdealTarget(5.0).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(100, m_flywheelTable.getIdealTarget(0.0).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(100, m_flywheelTable.getIdealTarget(2.5).get().getSpeedOffsetRPM(), DELTA);
+        assertEquals(150, m_flywheelTable.getIdealTarget(5.0).get().getSpeedOffsetRPM(), DELTA);
     }
 
     @Test
     public void testDiscreteHeight() {
-        assertEquals(0.5, m_flywheelTable.getIdealTarget(0.0).get().getHeightMeters(), DELTA);
-        assertEquals(0.5, m_flywheelTable.getIdealTarget(2.5).get().getHeightMeters(), DELTA);
-        assertEquals(0.1, m_flywheelTable.getIdealTarget(5.0).get().getHeightMeters(), DELTA);
+        assertEquals(1.0, m_flywheelTable.getIdealTarget(0.0).get().getHeightMeters(), DELTA);
+        assertEquals(1.0, m_flywheelTable.getIdealTarget(2.5).get().getHeightMeters(), DELTA);
+        assertEquals(0.5, m_flywheelTable.getIdealTarget(5.0).get().getHeightMeters(), DELTA);
     }
 }

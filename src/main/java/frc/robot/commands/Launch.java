@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.chaos131.auto.ParsedCommand;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
@@ -32,7 +33,7 @@ public class Launch extends BaseLaunch {
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
-    addRequirements(lift, launcher, feeder);
+    addRequirements(lift, launcher, feeder, vision);
   }
 
   @Override
@@ -47,14 +48,25 @@ public class Launch extends BaseLaunch {
 
   @Override
   protected Optional<TableData> getTargets() {
-    var pose = m_vision.getPose();
-    if (pose == null) {
+    // var pose = m_vision.getPose();
+    // if (pose == null) {
+    //   return Optional.empty(); 
+    // }
+    // var distanceMeters = FieldPose2024.Speaker.distanceTo(pose);
+    // if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistance()) {
+    //   m_beenAboveThreshold = true;
+    // }
+    // return (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
+    var ty = m_vision.getYAngle();
+    if (!m_vision.hasTarget()) {
       return Optional.empty(); 
     }
-    var distanceMeters = FieldPose2024.Speaker.distanceTo(pose);
-    if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistance()) {
+    if (ty <= m_flywheelTableLowerHeight.getMinDistance()) {
       m_beenAboveThreshold = true;
     }
-    return (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
+    // var targets =  (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(ty);
+    var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
+    SmartDashboard.putString("launch targets", targets.toString());
+    return targets;
   }
 }
