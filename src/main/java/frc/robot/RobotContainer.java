@@ -17,6 +17,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.commands.auto.AutoUtil;
+import frc.robot.commands.complex.FireIntoAmp;
 import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
@@ -29,6 +30,7 @@ import frc.robot.commands.simpledrive.ResetPosition;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DashboardLaunch;
+import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.SimpleControl;
@@ -122,19 +124,19 @@ public class RobotContainer {
     m_driver.back().onTrue(new RobotRelativeDrive(m_driver, m_swerveDrive)); // Robot Relative
     m_driver.start().onTrue(new DriverRelativeDrive(m_driver, m_swerveDrive)); // Drive Relative
 
-    m_driver.povUp().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Away));
-    m_driver.povDown(); // 180 degrees for blue
-    m_driver.povLeft(); // 90 degrees for blue
-    m_driver.povRight(); // -90 degrees for blue
+    m_driver.povUp().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Away)); // 0 degrees for blue
+    m_driver.povDown().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Towards)); // 180 degrees for blue
+    m_driver.povLeft().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Left)); // 90 degrees for blue
+    m_driver.povRight().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Right)); // -90 degrees for blue
 
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, Rotation2d.fromDegrees(90), 1.0)); // Align angle to amp (but allow translation)
-    m_driver.b(); // Align angle to stage left (but allow translation)
-    m_driver.x(); // Align angle to stage right (but allow translation)
-    m_driver.y();  // Align angle to HP (but allow translation)
+    m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
+    m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
+    m_driver.y().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, Rotation2d.fromDegrees(-90), 1.0));  // Align angle to HP (but allow translation)
 
     m_driver.leftBumper().whileTrue(slowCommand); // Slow command (and max height shot?)
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder)); // Intake
-    m_driver.rightBumper(); // Amp score
+    m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
         new SpeakerFocus(m_swerveDrive, m_driver, m_vision).alongWith(
@@ -150,20 +152,20 @@ public class RobotContainer {
 
     m_operator.povUp().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Intake (dumb)
-    m_operator.povLeft(); // Reverse intake (dumb) TODO: double check why this was added twice
+    m_operator.povLeft(); // 
     m_operator.povRight(); //
 
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
-    m_operator.a(); // Min height
-    m_operator.b(); // Amp Height
-    m_operator.x(); // HP Height
+    m_operator.a().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // Min height
+    m_operator.b().whileTrue(createGetHeightCommand.apply(LiftConstants.AmpMeters)); // Amp Height
+    m_operator.x().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // HP Height
     m_operator.y().whileTrue(createGetHeightCommand.apply(LiftConstants.MaxHeightMeters)); // Max height
 
-    m_operator.leftBumper(); // Up Trap
+    m_operator.leftBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.3, 0.3).flywheel(m_launcher, -0.3)); // Up Trap
     m_operator.leftTrigger().whileTrue( // Launch (dumb)
       (new SimpleControl().flywheel(m_launcher, 1.0).withTimeout(0.5))
       .andThen(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)));
-    m_operator.rightBumper(); // Amp & Down Trap
+    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.3).flywheel(m_launcher, -0.3)); // Amp & Down Trap
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder)); // Intake (smart)
 
     m_operator.leftStick(); //

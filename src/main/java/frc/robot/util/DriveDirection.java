@@ -17,7 +17,11 @@ public enum DriveDirection {
     /** To the driver's left */
     Left(90, 270),
     /** To the driver's right */
-    Right(270, 90);
+    Right(270, 90),
+    /** To Stage Left */
+    FacingStageLeft(120, -60),
+    /** To Stage Right */
+    FacingStageRight(-120, 60);
 
     private Rotation2d m_blueAngle;
     private Rotation2d m_redAngle;
