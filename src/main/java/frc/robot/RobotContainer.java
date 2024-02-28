@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -71,6 +72,8 @@ public class RobotContainer {
   private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
+  private final SendableChooser<Command> m_pathPlannerChooser;
+
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
@@ -86,6 +89,14 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
     m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+
+      // Build an auto chooser. This will use Commands.none() as the default option.
+      m_pathPlannerChooser = com.pathplanner.lib.auto.AutoBuilder.buildAutoChooser();
+
+      // Another option that allows you to specify the default auto by its name
+      // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+  
+      SmartDashboard.putData("Auto Chooser", m_pathPlannerChooser);
   }
 
   private void configureBindings() {
@@ -193,7 +204,8 @@ public class RobotContainer {
   }
   
   public Command getAutonomousCommand() {
-    return m_autoBuilder.createAutoCommand();
+    // return m_autoBuilder.createAutoCommand();
+    return m_pathPlannerChooser.getSelected();
   }
 
   public void periodic() {
