@@ -33,10 +33,10 @@ public class DropInAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(LiftConstants.DefaultAmpMeters);
+    m_lift.moveToHeight(LiftConstants.AmpMeters);
     m_launcher.setLauncherPower(0.0);
     m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
-    if (m_lift.atTargetHeight(LiftConstants.DefaultAmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
+    if (m_lift.atTargetHeight(LiftConstants.AmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
       m_feeder.setFeederPower(-0.3);
     }
   }

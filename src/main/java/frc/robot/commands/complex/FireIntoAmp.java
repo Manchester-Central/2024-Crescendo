@@ -67,7 +67,7 @@ public class FireIntoAmp extends Command {
 	@Override
 	public void execute() {
 		if (state == AmpDropSequence.MoveToArea) {
-			if (m_swerveDrive.atTarget(/* 1.5 */) && m_lift.atTargetHeight(LiftConstants.DefaultAmpMeters)
+			if (m_swerveDrive.atTarget(/* 1.5 */) && m_lift.atTargetHeight(LiftConstants.AmpMeters)
 				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle))
 			{
 				m_swerveDrive.stop();
@@ -82,12 +82,12 @@ public class FireIntoAmp extends Command {
 			Pose2d visionPose = m_vision.getPose();
 			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_finalPose.getTranslation());
 			Rotation2d rotationError = visionPose.getRotation().minus(m_finalPose.getRotation());
-			m_lift.moveToHeight(LiftConstants.AmpHeight);
+			m_lift.moveToHeight(LiftConstants.AmpMeters);
 			m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
 
 			if (translationErrorMeters.getNorm() < VISION_TRANSLATION_TOLERANCE
 				&& rotationError.getDegrees() < VISION_ROTATION_TOLERANCE 
-				&& m_lift.atTargetHeight(LiftConstants.AmpHeight)
+				&& m_lift.atTargetHeight(LiftConstants.AmpMeters)
 				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle))
 			{
 				state = AmpDropSequence.FireIntoAmp;

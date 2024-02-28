@@ -178,4 +178,13 @@ public class Lift extends SubsystemBase {
 		}
 
 	}
+
+	public void changeNeutralMode(NeutralModeValue neutralMode) {
+		var neutralModeConfigLeft = m_liftLeftConfig.MotorOutput;
+		var neutralModeConfigRight = m_liftLeftConfig.MotorOutput;
+		neutralModeConfigLeft.NeutralMode = neutralMode;
+		neutralModeConfigRight.NeutralMode = neutralMode;
+		m_liftLeft.getConfigurator().apply(neutralModeConfigLeft);
+		m_liftRight.getConfigurator().apply(neutralModeConfigRight);
+	}
 }

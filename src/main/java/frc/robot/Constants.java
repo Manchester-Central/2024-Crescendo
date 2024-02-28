@@ -140,12 +140,12 @@ public class Constants {
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
-		public static final double DefaultAmpMeters = 0.7;
+		public static final double AmpMeters = 0.7;
+		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
-		public static final double AmpHeight = 0.43;
 
 	}
 }
