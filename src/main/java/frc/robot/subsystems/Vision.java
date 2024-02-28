@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -129,6 +131,10 @@ public class Vision extends SubsystemBase {
 		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
 
 		return this;
+	}
+
+	public Mode getSpeakerTrackingMode() {
+		return DriverStation.getAlliance().get() == Alliance.Blue ? Vision.Mode.BLUE_SPEAKER : Vision.Mode.RED_SPEAKER;
 	}
 
 	public double getLatencySeconds() {
