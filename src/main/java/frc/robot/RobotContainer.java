@@ -10,6 +10,7 @@ import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -227,11 +228,15 @@ public class RobotContainer {
   private void handleDriverRumble() {
     // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
     var voltage = RobotController.getBatteryVoltage();
-    if (voltage < 12) {
-      // var rumbleValue = 0; // TODO: figure out (0 does nothing)
-      // m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
-    }
-  }
+    var voltageClamp = MathUtil.clamp(voltage, 9, 12);
+    var rumbleValue =  ((voltageClamp/-3) + 4);
+  
+      
+    m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+
+
+
+}
 
   private void handleOperatorRumble() {
     // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time
