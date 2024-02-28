@@ -44,7 +44,8 @@ public abstract class BaseLaunch extends Command {
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
     m_launcher.setTiltSpeed(0);
-    m_launcher.setLauncherPower(0);
+   // m_launcher.setLauncherPower(0);
+    m_launcher.setLauncherRPM(3000, 3000);
     m_feeder.setFeederPower(0);
 
   }

@@ -34,7 +34,7 @@ public class Launch extends BaseLaunch {
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
-    addRequirements(lift, launcher, feeder, vision);
+    addRequirements(lift, launcher, feeder);
   }
 
   @Override

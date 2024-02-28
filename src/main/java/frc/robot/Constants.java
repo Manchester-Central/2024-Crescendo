@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class Constants {
 	public static final boolean Use2022Robot = false;
 
+	public static final boolean DebugMode = false;
+	public static final Alliance DefaultAlliance = Alliance.Blue;
+	public static final double SimUpdateFrequency = 20.0;
+
 	public static final double robotWidthMeters = 0.990;
 	public static final double robotHeightMeters = 0.876;
 	public static final double robotLengthMeters = 0.9779;
@@ -32,11 +36,6 @@ public class Constants {
 		public static final int[] AprilTagPipelines = {0, 1, 2};
 		public static final double TxLaunchTolerance = 2;
 	}
-
-	public static final boolean DebugMode = true;
-	public static final Alliance DefaultAlliance = Alliance.Blue;
-	public static final double SimUpdateFrequency = 20.0;
-	
 
 	public static class CANIdentifiers {
 		public static final int FrontLeftSpeed = 30;
@@ -110,6 +109,7 @@ public class Constants {
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
+		public static final Rotation2d TrapAngle = Rotation2d.fromDegrees(19.5);
 
 		public static final double LauncherToleranceRPM = 150;
 		public static final double DefaultLauncherSpeed = 1.0; // TODO Determine later

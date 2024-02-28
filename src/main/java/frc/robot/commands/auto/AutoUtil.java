@@ -62,9 +62,9 @@ public class AutoUtil {
         return mirrorablePose.getCurrentAlliancePose();
     }
 
-    public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Feeder feeder){
+    public static Command driveAndIntake(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Feeder feeder, Launcher launcher){
         return DriveToLocation.createAutoCommand(parsedCommand, swerveDrive)
-        .raceWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, feeder));
+        .raceWith(RunIntake.createAutoCommand(parsedCommand, intake, lift, feeder, launcher));
     }
 
     public static Command driveAndIntakeSimple(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive, Intake intake, Lift lift, Launcher launcher, Feeder feeder){
