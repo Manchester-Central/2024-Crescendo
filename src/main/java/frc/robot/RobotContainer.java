@@ -11,6 +11,9 @@ import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -68,6 +71,9 @@ public class RobotContainer {
   private Launcher m_launcher = new Launcher();
   private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
+
+  private Timer m_sinceNoteSeenTimer = new Timer();
+  private boolean m_hasNoteSeenTimeStarted = false;
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
@@ -212,6 +218,31 @@ public class RobotContainer {
       distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
     }
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
+
+    // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
+    handleDriverRumble();
+    handleOperatorRumble();
+  }
+
+  private void handleDriverRumble() {
+    // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
+    var voltage = RobotController.getBatteryVoltage();
+    if (voltage < 12) {
+      // var rumbleValue = 0; // TODO: figure out (0 does nothing)
+      // m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+    }
+  }
+
+  private void handleOperatorRumble() {
+    // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time
+    if (!m_hasNoteSeenTimeStarted && m_feeder.hasNote()) {
+      m_sinceNoteSeenTimer.restart();
+      m_hasNoteSeenTimeStarted = true;
+    }
+
+    if (m_hasNoteSeenTimeStarted && m_sinceNoteSeenTimer.hasElapsed(0.25)) {
+      // TODO: figure out rest of logic
+    }
   }
 
   public void autoAndTeleopInit() {
