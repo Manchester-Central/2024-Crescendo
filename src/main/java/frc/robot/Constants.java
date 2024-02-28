@@ -107,8 +107,8 @@ public class Constants {
 		public static final double TiltI = 0;
 		public static final double TiltD = 0;
 
-		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(20);
-		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(40);
+		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
+		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 
 		public static final double LauncherToleranceRPM = 150;
@@ -140,7 +140,7 @@ public class Constants {
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
-		public static final double AmpMeters = 0.7;
+		public static final double AmpMeters = 0.632;
 		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;
