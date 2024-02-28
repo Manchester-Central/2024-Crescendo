@@ -230,8 +230,6 @@ public class RobotContainer {
     var voltage = RobotController.getBatteryVoltage();
     var voltageClamp = MathUtil.clamp(voltage, 9, 12);
     var rumbleValue =  ((voltageClamp/-3) + 4);
-  
-      
     m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
 
 
@@ -245,7 +243,14 @@ public class RobotContainer {
       m_hasNoteSeenTimeStarted = true;
     }
 
+    if (m_hasNoteSeenTimeStarted && !m_sinceNoteSeenTimer.hasElapsed(0.25)) {
+      m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+
+    }
+
     if (m_hasNoteSeenTimeStarted && m_sinceNoteSeenTimer.hasElapsed(0.25)) {
+      m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
+      m_hasNoteSeenTimeStarted = false;
       // TODO: figure out rest of logic
     }
   }
