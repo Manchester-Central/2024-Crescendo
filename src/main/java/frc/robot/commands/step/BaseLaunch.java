@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
@@ -29,6 +30,9 @@ public abstract class BaseLaunch extends Command {
   protected Launcher m_launcher;
   protected Feeder m_feeder;
 
+  private Timer m_launchTimer = new Timer();
+  private boolean m_hasLostNote = false;
+
   /** Creates a new Lanch Partay. */
   public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder) {
     m_lift = lift;
@@ -39,7 +43,11 @@ public abstract class BaseLaunch extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_launchTimer.stop();
+    m_launchTimer.reset();
+    m_hasLostNote = false;
+  }
 
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
@@ -57,6 +65,14 @@ public abstract class BaseLaunch extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (!m_hasLostNote && !m_feeder.hasNoteAtSecondary() && !m_feeder.hasNoteAtPrimary()) {
+      m_hasLostNote = true;
+      m_launchTimer.start();
+    } else if (m_feeder.hasNoteAtPrimary() || m_feeder.hasNoteAtSecondary()) {
+      m_hasLostNote = false;
+      m_launchTimer.stop();
+      m_launchTimer.reset();
+    }
     var targetOptional = getTargets();
     if (targetOptional.isEmpty()) {
       noTargetBehavior();
@@ -82,11 +98,12 @@ public abstract class BaseLaunch extends Command {
   @Override
   public void end(boolean interrupted) {
     m_launcher.setLauncherPower(0);
+    m_feeder.setFeederPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_launchTimer.hasElapsed(0.05);
   }
 }

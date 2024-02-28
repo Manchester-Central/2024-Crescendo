@@ -28,7 +28,7 @@ public class Launcher extends SubsystemBase {
 	private PIDTuner m_flywheelPidTuner;
 
 	private CANSparkFlex m_tiltController = new CANSparkFlex(CANIdentifiers.LauncherTilt, MotorType.kBrushless);
-	private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
+	// private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
 	private PIDTuner m_tiltPIDTuner;
 
 	//Target values
@@ -65,11 +65,11 @@ public class Launcher extends SubsystemBase {
 		m_flywheelLeft.getPIDController().setOutputRange(0, 1);
 		m_flywheelRight.getPIDController().setOutputRange(0, 1);
 
-		m_tiltPot.setInverted(true);
-		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
+		// m_tiltPot.setInverted(true);
+		// m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltController.setIdleMode(IdleMode.kCoast);
-		m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
+		m_tiltController.getPIDController().setFeedbackDevice(m_tiltController.getEncoder());
 		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
@@ -80,7 +80,7 @@ public class Launcher extends SubsystemBase {
 		m_flywheelLeft.burnFlash();
 		m_flywheelRight.burnFlash();
 		m_tiltController.burnFlash();
-		//recalibrateTilt(); ?? TODO: add back in when Abs angle is working again (but check problem with syncing on start up)
+		recalibrateTilt(); // ?? TODO: add back in when Abs angle is working again (but check problem with syncing on start up)
 
 		var logManager = LogManager.getInstance();
 		logManager.addNumber("Launcher/LeftRPM", DebugConstants.LauncherDebugEnable, () -> m_flywheelLeft.getEncoder().getVelocity());
@@ -93,8 +93,8 @@ public class Launcher extends SubsystemBase {
 		logManager.addNumber("Launcher/LeftError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
 		logManager.addNumber("Launcher/RightError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
-		//logManager.addNumber("Launcher/AngleDegrees", DebugConstants.LauncherDebugEnable, () -> getCurrentAngle().getDegrees());
-		logManager.addNumber("Launcher/AbsAngleDegrees", DebugConstants.LauncherDebugEnable, () -> getAbsoluteTiltAngle().getDegrees());
+		logManager.addNumber("Launcher/AngleDegrees", DebugConstants.LauncherDebugEnable, () -> getCurrentAngle().getDegrees());
+		// logManager.addNumber("Launcher/AbsAngleDegrees", true, () -> getAbsoluteTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getAppliedOutput());
 		logManager.addNumber("Launcher/TiltCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getOutputCurrent());
@@ -103,9 +103,9 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public void setTiltSpeed(double speed) {
-		if (getAbsoluteTiltAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
+		if (getCurrentAngle().getDegrees() < LauncherConstants.MinAngle.getDegrees()) {
 			speed = MathUtil.clamp(speed, 0, 1);
-		} else if (getAbsoluteTiltAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
+		} else if (getCurrentAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
 			speed = MathUtil.clamp(speed, -1, 0);
 		} 
 		m_simAnglePower = speed;
@@ -159,15 +159,15 @@ public class Launcher extends SubsystemBase {
 	/**
 	 * Gets the current angle of the launcher
 	 */
-	// public Rotation2d getCurrentAngle() {
-	// 	if (Robot.isSimulation()) {
-	// 		return m_simAngle;
-	// 	}
-	// 	return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
-	// }
+	public Rotation2d getCurrentAngle() {
+		if (Robot.isSimulation()) {
+			return m_simAngle;
+		}
+		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
+	}
 
 	public boolean atTargetAngle(Rotation2d targetAngle) {
-		return Math.abs(getAbsoluteTiltAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
+		return Math.abs(getCurrentAngle().minus(targetAngle).getDegrees()) <= LauncherConstants.TiltToleranceAngle.getDegrees();
 	}
 
 	/**
@@ -192,15 +192,15 @@ public class Launcher extends SubsystemBase {
 		return m_flywheelRight.get();
 	}
 
-	public Rotation2d getAbsoluteTiltAngle() {
-		if (Robot.isSimulation()) {
-			return m_simAngle;
-		}
-		return Rotation2d.fromDegrees(m_tiltPot.getPosition());
-	}
+	// public Rotation2d getAbsoluteTiltAngle() {
+	// 	if (Robot.isSimulation()) {
+	// 		return m_simAngle;
+	// 	}
+	// 	return Rotation2d.fromDegrees(m_tiltPot.getPosition());
+	// }
 
 	public void recalibrateTilt() {
-        m_tiltController.getEncoder().setPosition(getAbsoluteTiltAngle().getDegrees());
+        m_tiltController.getEncoder().setPosition(LauncherConstants.MinAngle.getDegrees());
     }
 
 	public void tuneTiltPID(PIDFValue pidValue){

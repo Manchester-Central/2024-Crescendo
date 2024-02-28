@@ -93,7 +93,7 @@ public class RobotContainer {
     m_vision.updateAprilTagMode(m_swerveDrive.getPose());
 
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
-    // NamedCommands.registerCommand("null", getAutonomousCommand());
+    NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -217,7 +217,7 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getAbsoluteTiltAngle().getDegrees(),
+      m_launcher.getCurrentAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
@@ -248,9 +248,14 @@ public class RobotContainer {
 
   }
 
-  public void autoAndTeleopInit() {
+  public void autoAndTeleopInit(boolean isAuto) {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
-    m_vision.updateAprilTagMode(m_swerveDrive.getPose());m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+    if (isAuto) {
+      // m_intake.setDefaultCommand(new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
+    } else {
+      m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    }
   }
 
   public void delayedDisableInit() {

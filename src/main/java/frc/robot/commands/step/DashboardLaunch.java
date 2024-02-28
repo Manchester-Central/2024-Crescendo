@@ -44,7 +44,7 @@ public class DashboardLaunch extends BaseLaunch {
     m_targetRPM = SmartDashboard.getNumber("DSLaunch Target RPM", m_targetRPM);
     m_speedOffsetRPM = SmartDashboard.getNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
-    return Optional.of(new TableData(0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
+    return Optional.of(new TableData(0, m_targetRPM, m_speedOffsetRPM,m_launcher.getCurrentAngle().getDegrees(), m_targetHeight));
   }
 
   @Override
