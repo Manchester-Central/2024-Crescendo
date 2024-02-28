@@ -7,6 +7,7 @@ package frc.robot;
 import com.chaos131.logging.LogManager;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -15,6 +16,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private LogManager m_logManager = LogManager.getInstance();
+
+  private Timer m_disabledTimer = new Timer();
 
   @Override
   public void robotInit() {
@@ -30,16 +33,26 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_disabledTimer.reset();
+    m_disabledTimer.start();
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    if (m_disabledTimer.hasElapsed(10)) {
+      m_robotContainer.delayedDisableInit();
+      m_disabledTimer.stop();
+      m_disabledTimer.reset();
+    }
+  }
 
   @Override
   public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.autoAndTeleopInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -55,6 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.autoAndTeleopInit();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

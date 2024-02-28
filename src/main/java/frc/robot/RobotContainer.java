@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -209,5 +210,13 @@ public class RobotContainer {
       distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
     }
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
+  }
+
+  public void autoAndTeleopInit() {
+    m_lift.changeNeutralMode(NeutralModeValue.Brake);
+  }
+
+  public void delayedDisableInit() {
+    m_lift.changeNeutralMode(NeutralModeValue.Coast);
   }
 }
