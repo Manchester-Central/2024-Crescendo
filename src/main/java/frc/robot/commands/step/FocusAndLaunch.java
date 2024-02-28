@@ -32,22 +32,22 @@ public class FocusAndLaunch extends BaseLaunch {
 
   /** Creates a new Lanch Partay. */
   public FocusAndLaunch(
-    Lift lift, 
-    Launcher launcher, 
-    Feeder feeder, 
-    FlywheelTable flywheelTableLowerHeight, 
-    FlywheelTable flywheelTableUpperHeight, 
-    Vision vision,
-    BaseSwerveDrive swerveDrive,
-    Gamepad driver
+      Lift lift,
+      Launcher launcher,
+      Feeder feeder,
+      FlywheelTable flywheelTableLowerHeight,
+      FlywheelTable flywheelTableUpperHeight,
+      Vision vision,
+      BaseSwerveDrive swerveDrive,
+      Gamepad driver
   ) {
-    super (lift, launcher, feeder);
+    super(lift, launcher, feeder);
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
     m_swerveDrive = swerveDrive;
-		m_driver = driver;
-    
+    m_driver = driver;
+
     addRequirements(lift, launcher, feeder, vision, swerveDrive);
   }
 
@@ -55,41 +55,43 @@ public class FocusAndLaunch extends BaseLaunch {
   public void initialize() {
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
-		m_vision.setMode(m_vision.getSpeakerTrackingMode());
+    m_vision.setMode(m_vision.getSpeakerTrackingMode());
     super.initialize();
   }
 
   @Override
   public void execute() {
     if (m_vision.hasTarget()) {
-			var currentPose = m_swerveDrive.getPose();
-			var currentRotation = currentPose.getRotation();
-			var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
-			m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), rotation, 1.0);
-		} else {
-			m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
-		}
-      super.execute();
+      var currentPose = m_swerveDrive.getPose();
+      var currentRotation = currentPose.getRotation();
+      var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
+      m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), rotation, 1.0);
+    } else {
+      m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
+    }
+    super.execute();
   }
 
   public static Command createAutoCommand(
-    ParsedCommand parsedCommand, 
-    Lift lift, 
-    Launcher launcher, 
-    Feeder feeder, 
-    FlywheelTable flywheelTableLowerHeight, 
-    FlywheelTable flywheelTableUpperHeight, 
-    Vision vision, 
-    SwerveDrive swerveDrive,
-    Gamepad driver
-  ){
-    return new FocusAndLaunch(lift, launcher, feeder, flywheelTableLowerHeight, flywheelTableUpperHeight, vision, swerveDrive, driver);
+      ParsedCommand parsedCommand,
+      Lift lift,
+      Launcher launcher,
+      Feeder feeder,
+      FlywheelTable flywheelTableLowerHeight,
+      FlywheelTable flywheelTableUpperHeight,
+      Vision vision,
+      SwerveDrive swerveDrive,
+      Gamepad driver
+    ) {
+      return new FocusAndLaunch(lift, launcher, feeder, flywheelTableLowerHeight, flywheelTableUpperHeight, vision,
+      swerveDrive, driver);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
-		m_swerveDrive.stop();
+    m_swerveDrive.stop();
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
     super.end(interrupted);
   }
 
@@ -97,21 +99,23 @@ public class FocusAndLaunch extends BaseLaunch {
   protected Optional<TableData> getTargets() {
     // var pose = m_vision.getPose();
     // if (pose == null) {
-    //   return Optional.empty(); 
+    // return Optional.empty();
     // }
     // var distanceMeters = FieldPose2024.Speaker.distanceTo(pose);
     // if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistance()) {
-    //   m_beenAboveThreshold = true;
+    // m_beenAboveThreshold = true;
     // }
-    // return (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
+    // return (m_beenAboveThreshold ? m_flywheelTableUpperHeight :
+    // m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
     var ty = m_vision.getYAngle();
     if (!m_vision.hasTarget()) {
-      return Optional.empty(); 
+      return Optional.empty();
     }
     if (ty <= m_flywheelTableLowerHeight.getMinDistance()) {
       m_beenAboveThreshold = true;
     }
-    // var targets =  (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(ty);
+    // var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight :
+    // m_flywheelTableLowerHeight).getIdealTarget(ty);
     var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return targets;
@@ -120,6 +124,6 @@ public class FocusAndLaunch extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-      return Math.abs(m_vision.getXAngle()) < VisionConstants.TxLaunchTolerance;
+    return Math.abs(m_vision.getXAngle()) < VisionConstants.TxLaunchTolerance;
   }
 }

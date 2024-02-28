@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.VisionConstants;
 
 
 public class Vision extends SubsystemBase {
@@ -109,6 +110,8 @@ public class Vision extends SubsystemBase {
 			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
 		}
 		SmartDashboard.putData("vision field", m_field);
+
+
 	}
 
 	/**
@@ -186,5 +189,13 @@ public class Vision extends SubsystemBase {
 			return true;
 		}
 		return (m_tv.getDouble(0) == 1);
+	  }
+
+	  public void updateAprilTagMode(Pose2d robotPose){
+		if(robotPose.getX() < VisionConstants.AprilTagXMetersMidPoint){
+			setMode(Mode.BLUE_APRIL_TAGS);
+		}else{
+			setMode(Mode.RED_APRIL_TAGS);
+		}
 	  }
 }

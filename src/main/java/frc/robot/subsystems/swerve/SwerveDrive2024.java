@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants2024;
 
 public class SwerveDrive2024 extends SwerveDrive {
@@ -43,7 +44,7 @@ public class SwerveDrive2024 extends SwerveDrive {
 			// field configs
 			.setDefaultAlliance(Constants.DefaultAlliance) 
 			// Debug/sim
-			.setDebugMode(Constants.DebugMode)
+			.setDebugMode(DebugConstants.DriveDebugEnable)
 			.setUpdateFrequency_hz(Constants.SimUpdateFrequency);
 
 		var speedGearRatio = 6.55; //5.5 

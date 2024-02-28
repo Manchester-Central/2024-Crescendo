@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.IOPorts;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Robot;
@@ -60,22 +61,22 @@ public class Lift extends SubsystemBase {
 		m_liftRightConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = LiftConstants.LiftRampRate;
 		m_liftRight.getConfigurator().apply(m_liftRightConfig);
 
-		m_liftPidTuner = new PIDTuner("Lift", Constants.DebugMode, LiftConstants.LiftP, LiftConstants.LiftI,
+		m_liftPidTuner = new PIDTuner("Lift", DebugConstants.LiftDebugEnable, LiftConstants.LiftP, LiftConstants.LiftI,
 				LiftConstants.LiftD, this::tuneLiftPID);
 
 		var logManager = LogManager.getInstance();
 
-		logManager.addBoolean("Lift/AtBottom", Constants.DebugMode, () -> atBottom());
-		logManager.addBoolean("Lift/SeenBottom", Constants.DebugMode, () -> hasSeenBottom());
+		logManager.addBoolean("Lift/AtBottom", DebugConstants.LiftDebugEnable, () -> atBottom());
+		logManager.addBoolean("Lift/SeenBottom", DebugConstants.LiftDebugEnable, () -> hasSeenBottom());
 
-		logManager.addNumber("Lift/CurrentHeightMeters", Constants.DebugMode, () -> getCurrentHeightMeters());
-		logManager.addNumber("Lift/LeftHeightMeters", Constants.DebugMode, () -> m_liftLeft.getPosition().getValueAsDouble());
-		logManager.addNumber("Lift/RightHeightMeters", Constants.DebugMode, () -> m_liftRight.getPosition().getValueAsDouble());
-		logManager.addNumber("Lift/TargetHeightMeters", Constants.DebugMode, () -> m_targetHeightMeters);
-		logManager.addNumber("Lift/LeftPowerVoltage", Constants.DebugMode, () -> m_liftLeft.getMotorVoltage().getValueAsDouble());
-		logManager.addNumber("Lift/RightPowerVoltage", Constants.DebugMode, () -> m_liftRight.getMotorVoltage().getValueAsDouble());
-		logManager.addNumber("Lift/LeftCurrentAmps", Constants.DebugMode, () -> m_liftLeft.getSupplyCurrent().getValueAsDouble());
-		logManager.addNumber("Lift/RightCurrentAmps", Constants.DebugMode, () -> m_liftRight.getSupplyCurrent().getValueAsDouble());
+		logManager.addNumber("Lift/CurrentHeightMeters", DebugConstants.LiftDebugEnable, () -> getCurrentHeightMeters());
+		logManager.addNumber("Lift/LeftHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getPosition().getValueAsDouble());
+		logManager.addNumber("Lift/RightHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftRight.getPosition().getValueAsDouble());
+		logManager.addNumber("Lift/TargetHeightMeters", DebugConstants.LiftDebugEnable, () -> m_targetHeightMeters);
+		logManager.addNumber("Lift/LeftPowerVoltage", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getMotorVoltage().getValueAsDouble());
+		logManager.addNumber("Lift/RightPowerVoltage", DebugConstants.LiftDebugEnable, () -> m_liftRight.getMotorVoltage().getValueAsDouble());
+		logManager.addNumber("Lift/LeftCurrentAmps", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getSupplyCurrent().getValueAsDouble());
+		logManager.addNumber("Lift/RightCurrentAmps", DebugConstants.LiftDebugEnable, () -> m_liftRight.getSupplyCurrent().getValueAsDouble());
 	}
 
 	public void setSpeed(double speed) {

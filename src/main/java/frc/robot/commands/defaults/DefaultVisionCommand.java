@@ -34,7 +34,7 @@ public class DefaultVisionCommand extends Command {
   public void execute() {
     var pose = m_vision.getPose();
     if (VisionConstants.UseVisionForOdometry && pose != null) {
-      m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      // m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
     }
   }
 

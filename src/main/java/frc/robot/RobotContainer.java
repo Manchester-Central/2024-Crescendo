@@ -10,6 +10,7 @@ import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,6 +84,8 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
   }
 
   private void configureBindings() {
@@ -206,16 +209,32 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
-    var pose = m_vision.getPose();
+    var visionPose = m_vision.getPose();
     var distanceToSpeaker = -1.0;
-    if(pose != null){
-      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
+    if(visionPose != null){
+      m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
+    }else{
+      visionPose = new Pose2d();
     }
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
+
+    var drivePose = m_swerveDrive.getPose();
+    double[] robotAndVision = {
+      drivePose.getX(),
+      drivePose.getY(),
+      drivePose.getRotation().getDegrees(),
+      visionPose.getX(),
+      visionPose.getY(),
+      visionPose.getRotation().getDegrees()
+    };
+    SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
+
   }
 
   public void autoAndTeleopInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());m_vision.updateAprilTagMode(m_swerveDrive.getPose());
   }
 
   public void delayedDisableInit() {
