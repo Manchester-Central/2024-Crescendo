@@ -10,6 +10,7 @@ import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,10 +34,11 @@ import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DashboardLaunch;
 import frc.robot.commands.step.DropInAmp;
-import frc.robot.commands.step.Launch;
+import frc.robot.commands.step.FocusAndLaunch;
+//import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.SimpleControl;
-import frc.robot.commands.step.SpeakerFocus;
+//import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
@@ -74,7 +76,7 @@ public class RobotContainer {
     configureBindings();
     m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision));
+    m_autoBuilder.registerCommand("launch", (pc) -> FocusAndLaunch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
     m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder, m_launcher));
     m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder, m_launcher));
     m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
@@ -82,6 +84,8 @@ public class RobotContainer {
     m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
   }
 
   private void configureBindings() {
@@ -141,8 +145,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new SpeakerFocus(m_swerveDrive, m_driver, m_vision).alongWith(
-        new Launch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision)));
+        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
 
     m_driver.leftStick(); //
     m_driver.rightStick(); //
@@ -206,16 +209,32 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
-    var pose = m_vision.getPose();
+    var visionPose = m_vision.getPose();
     var distanceToSpeaker = -1.0;
-    if(pose != null){
-      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
+    if(visionPose != null){
+      m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
+    }else{
+      visionPose = new Pose2d();
     }
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
+
+    var drivePose = m_swerveDrive.getPose();
+    double[] robotAndVision = {
+      drivePose.getX(),
+      drivePose.getY(),
+      drivePose.getRotation().getDegrees(),
+      visionPose.getX(),
+      visionPose.getY(),
+      visionPose.getRotation().getDegrees()
+    };
+    SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
+
   }
 
   public void autoAndTeleopInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());m_vision.updateAprilTagMode(m_swerveDrive.getPose());
   }
 
   public void delayedDisableInit() {

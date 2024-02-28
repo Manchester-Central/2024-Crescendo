@@ -8,6 +8,7 @@ import com.revrobotics.SparkLimitSwitch;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -39,15 +40,15 @@ public class Feeder extends SubsystemBase {
 		m_feederTrapMotor.burnFlash();
 
 		var logManager = LogManager.getInstance();
-		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());
-		logManager.addBoolean("Feeder/HasNoteAtSecondary", Constants.DebugMode, () -> hasNoteAtSecondary());
+		logManager.addBoolean("Feeder/HasNoteAtPrimary", DebugConstants.FeederDebugEnable, () -> hasNoteAtPrimary());
+		logManager.addBoolean("Feeder/HasNoteAtSecondary", DebugConstants.FeederDebugEnable, () -> hasNoteAtSecondary());
 
-		logManager.addNumber("FeederMain/MotorPosition", Constants.DebugMode, () -> m_feederMainMotor.getEncoder().getPosition());
-		logManager.addNumber("FeederMain/CurrentAmps", Constants.DebugMode, () -> m_feederMainMotor.getOutputCurrent());
-		logManager.addNumber("FeederMain/AppliedOutput", Constants.DebugMode, () -> m_feederMainMotor.getAppliedOutput());
+		logManager.addNumber("FeederMain/MotorPosition", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getEncoder().getPosition());
+		logManager.addNumber("FeederMain/CurrentAmps", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getOutputCurrent());
+		logManager.addNumber("FeederMain/AppliedOutput", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getAppliedOutput());
 
-		logManager.addNumber("FeederTrap/CurrentAmps", Constants.DebugMode, () -> m_feederTrapMotor.getOutputCurrent());
-		logManager.addNumber("FeederTrap/AppliedOutput", Constants.DebugMode, () -> m_feederTrapMotor.getAppliedOutput());
+		logManager.addNumber("FeederTrap/CurrentAmps", DebugConstants.FeederDebugEnable, () -> m_feederTrapMotor.getOutputCurrent());
+		logManager.addNumber("FeederTrap/AppliedOutput", DebugConstants.FeederDebugEnable, () -> m_feederTrapMotor.getAppliedOutput());
 	}
 
 	/**

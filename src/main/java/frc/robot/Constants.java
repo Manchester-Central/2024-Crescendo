@@ -17,6 +17,14 @@ public class Constants {
 	public static final double robotHeightMeters = 0.876;
 	public static final double robotLengthMeters = 0.9779;
 
+	public static class DebugConstants {
+		public static final boolean DriveDebugEnable = true;
+		public static final boolean IntakeDebugEnable = false;
+		public static final boolean FeederDebugEnable = false;
+		public static final boolean LiftDebugEnable = false;
+		public static final boolean LauncherDebugEnable = false;
+	}
+
 	public static class ControllerConstants {
 		public static final int DriverPort = 0;
 		public static final int OperatorPort = 1;
@@ -35,6 +43,7 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = false;
 		public static final int[] AprilTagPipelines = {0, 1, 2};
 		public static final double TxLaunchTolerance = 2;
+		public static final double AprilTagXMetersMidPoint = 8.25; //TODO Confirm
 	}
 
 	public static class CANIdentifiers {
@@ -83,7 +92,7 @@ public class Constants {
 		public static final double DefaultSpeedModifier = 1.0;
 		public static final double SuperSlowSpeedModifier = 0.25;
 
-		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(1.0, 0.0, 0.0);
+		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(0.7, 0.0, 0.2);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
 		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.009, 0.0001, 0.0);
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
