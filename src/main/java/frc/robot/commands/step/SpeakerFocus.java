@@ -48,6 +48,8 @@ public class SpeakerFocus extends Command {
 			var currentRotation = currentPose.getRotation();
 			var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
 			m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), rotation, 1.0);
+		} else {
+			m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
 		}
 		// // "I need bed please" - Anthony 2024
 	}
