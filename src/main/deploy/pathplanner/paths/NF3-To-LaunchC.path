@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.734452238135247,
-        "y": 4.124382094918037
+        "x": 5.596315038783925,
+        "y": 3.9270432387018626
       },
       "isLocked": false,
       "linkedName": "NF3"
     },
     {
       "anchor": {
-        "x": 3.6919950762978466,
-        "y": 5.318282175025889
+        "x": 2.912506594243959,
+        "y": 5.3577499462691245
       },
       "prevControl": {
-        "x": 5.872589437486566,
-        "y": 3.6014341259451754
+        "x": 5.300306754459664,
+        "y": 3.986244895566715
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

@@ -94,6 +94,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 

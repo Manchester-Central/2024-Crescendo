@@ -24,15 +24,51 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NC2-To_NC1"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "NC1-To-NC3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
           }
         },
         {
@@ -45,6 +81,12 @@
           "type": "path",
           "data": {
             "pathName": "NF3-To-LaunchC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
           }
         }
       ]
