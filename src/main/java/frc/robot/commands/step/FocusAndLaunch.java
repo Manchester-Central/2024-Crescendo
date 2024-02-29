@@ -114,9 +114,8 @@ public class FocusAndLaunch extends BaseLaunch {
     if (ty <= m_flywheelTableLowerHeight.getMinDistance()) {
       m_beenAboveThreshold = true;
     }
-    // var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight :
-    // m_flywheelTableLowerHeight).getIdealTarget(ty);
-    var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
+    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(ty);
+    // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return targets;
   }
