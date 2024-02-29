@@ -217,7 +217,7 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getCurrentAngle().getDegrees(),
+      m_launcher.getAbsoluteTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
