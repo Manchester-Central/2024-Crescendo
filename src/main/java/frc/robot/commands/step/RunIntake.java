@@ -42,7 +42,7 @@ public class RunIntake extends Command {
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
     m_launcher.setLauncherPower(-0.1);
 
-    if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
+    if(m_launcher.getCurrentAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
       m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     }
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {

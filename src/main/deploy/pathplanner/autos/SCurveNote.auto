@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4028643441863595,
+      "y": 5.57482268810156
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SCurveNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SCurveNote2ndPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

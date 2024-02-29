@@ -6,12 +6,15 @@ package frc.robot;
 
 import java.util.function.Function;
 
-import com.chaos131.auto.AutoBuilder;
+// import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -57,7 +60,7 @@ public class RobotContainer {
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
   public static Gamepad SimKeyboard;
   private Gamepad m_tester;
-  private final AutoBuilder m_autoBuilder = new AutoBuilder();
+  // private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
@@ -71,21 +74,33 @@ public class RobotContainer {
   private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
+  private final SendableChooser<Command> m_pathPlannerChooser;
+
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
-    m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
-    m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-    m_autoBuilder.registerCommand("launch", (pc) -> FocusAndLaunch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
-    m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder, m_launcher));
-    m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder, m_launcher));
-    m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
-    m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
-    m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
-    m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
-    m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+    // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
+    // m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
+    // m_autoBuilder.registerCommand("launch", (pc) -> FocusAndLaunch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+    // m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder, m_launcher));
+    // m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder, m_launcher));
+    // m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    // m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
+    // m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
+    // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
     m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+
+    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+    NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+  
+    SmartDashboard.putData("Auto Chooser", m_pathPlannerChooser);
   }
 
   private void configureBindings() {
@@ -193,7 +208,8 @@ public class RobotContainer {
   }
   
   public Command getAutonomousCommand() {
-    return m_autoBuilder.createAutoCommand();
+    // return m_autoBuilder.createAutoCommand();
+    return m_pathPlannerChooser.getSelected();
   }
 
   public void periodic() {
@@ -201,7 +217,7 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getAbsoluteTiltAngle().getDegrees(),
+      m_launcher.getCurrentAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
@@ -232,9 +248,10 @@ public class RobotContainer {
 
   }
 
-  public void autoAndTeleopInit() {
+  public void autoAndTeleopInit(boolean isAuto) {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
-    m_vision.updateAprilTagMode(m_swerveDrive.getPose());m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+  
   }
 
   public void delayedDisableInit() {
