@@ -104,8 +104,9 @@ public class Vision extends SubsystemBase {
 	}
 
 	public void periodic() {
-		if(getPose() != null) {
-			m_field.setRobotPose(getPose());
+		var pose = getPose();
+		if(pose != null) {
+			m_field.setRobotPose(pose);
 		} else {
 			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
 		}

@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "SCurveNote",
   "previewStartingState": {
     "rotation": -179.9999999995262,
     "velocity": 0
