@@ -251,11 +251,7 @@ public class RobotContainer {
   public void autoAndTeleopInit(boolean isAuto) {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
     m_vision.updateAprilTagMode(m_swerveDrive.getPose());
-    if (isAuto) {
-      // m_intake.setDefaultCommand(new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
-    } else {
-      m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
-    }
+  
   }
 
   public void delayedDisableInit() {

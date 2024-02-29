@@ -18,11 +18,11 @@ public class Constants {
 	public static final double robotLengthMeters = 0.9779;
 
 	public static class DebugConstants {
-		public static final boolean DriveDebugEnable = true;
+		public static final boolean DriveDebugEnable = false;
 		public static final boolean IntakeDebugEnable = false;
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
-		public static final boolean LauncherDebugEnable = false;
+		public static final boolean LauncherDebugEnable = true;
 	}
 
 	public static class ControllerConstants {

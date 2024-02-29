@@ -93,11 +93,12 @@ public class Launcher extends SubsystemBase {
 		logManager.addNumber("Launcher/LeftError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
 		logManager.addNumber("Launcher/RightError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
-		logManager.addNumber("Launcher/AngleDegrees", DebugConstants.LauncherDebugEnable, () -> getCurrentAngle().getDegrees());
+		logManager.addNumber("Launcher/AngleDegrees", true, () -> getCurrentAngle().getDegrees());
 		// logManager.addNumber("Launcher/AbsAngleDegrees", true, () -> getAbsoluteTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getAppliedOutput());
 		logManager.addNumber("Launcher/TiltCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getOutputCurrent());
+		logManager.addNumber("Launcher/TiltRawPosition", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getEncoder().getPosition());
 
 		
 	}
@@ -200,7 +201,7 @@ public class Launcher extends SubsystemBase {
 	// }
 
 	public void recalibrateTilt() {
-        m_tiltController.getEncoder().setPosition(LauncherConstants.MinAngle.getDegrees());
+        m_tiltController.getEncoder().setPosition(0); // TODO Don't Do This
     }
 
 	public void tuneTiltPID(PIDFValue pidValue){
