@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.407706324685116,
-        "y": 3.50154012718867
+        "x": 1.3725738150477713,
+        "y": 4.321298685393376
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4382599407138885,
-        "y": 3.688913511921175
+        "x": 2.2860190656187283,
+        "y": 4.262744502664468
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NF4SourceLaunch"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 2.5905008158090483,
+        "y": 4.321298685393376
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 1.6770555652380903,
+        "y": 4.496961233580098
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 147.77124256490146,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "6329Frwends",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 136.08092418666075,
     "velocity": 0
   },
   "useDefaultConstraints": true

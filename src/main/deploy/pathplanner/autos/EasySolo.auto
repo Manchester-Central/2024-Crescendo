@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3633965729469937,
+      "y": 5.545221859674489
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SCenter-To_NC2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NC2-To_NC1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NC1-To-NC3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NC3-To-NF3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NF3-To-LaunchC"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
