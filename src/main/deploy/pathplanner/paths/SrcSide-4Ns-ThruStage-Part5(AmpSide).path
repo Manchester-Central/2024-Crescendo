@@ -3,37 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.807408999433385,
-        "y": 5.574822688106915
+        "x": 7.974248256188821,
+        "y": 4.144115980539654
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3415515387817507,
-        "y": 5.574822688106915
+        "x": 7.234227545378168,
+        "y": 3.8481076962153926
       },
       "isLocked": false,
-      "linkedName": "EasySolo-Begin-End"
+      "linkedName": "SrcSide-4Ns-ThruStage-Part4-End"
     },
     {
       "anchor": {
-        "x": 2.85516572174953,
-        "y": 5.586069032344679
+        "x": 4.866161270784081,
+        "y": 4.144115980539654
       },
       "prevControl": {
-        "x": 2.5722044942867006,
-        "y": 5.5648142456416805
+        "x": 5.225977485079843,
+        "y": 3.6528284571742864
+      },
+      "nextControl": {
+        "x": 4.35308024462203,
+        "y": 4.844668920107071
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.7511967331626983,
+        "y": 5.555088802485298
+      },
+      "prevControl": {
+        "x": 4.165608331216664,
+        "y": 5.278814403782653
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NC2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
-      "waypointRelativePos": 0,
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,14 +72,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -179.17221222504057,
+    "velocity": 0,
+    "rotation": -179.8496177219284,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "EasySolo",
+  "folder": "SrcSide-4Ns-ThruStage",
   "previewStartingState": {
-    "rotation": -178.73400099960526,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

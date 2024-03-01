@@ -2,22 +2,16 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3633965729469937,
-      "y": 5.545221859674489
+      "x": 0.9983196889470716,
+      "y": 4.213184580215315
     },
-    "rotation": 180.0
+    "rotation": 124.67474178307253
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "EasySolo-Begin"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "launch"
@@ -26,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SCenter-To_NC2"
+            "pathName": "SrcSide-4Ns-ThruStage-Part1"
           }
         },
         {
@@ -44,13 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NC2-To_NC1"
+            "pathName": "SrcSide-4Ns-ThruStage-Part2"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "intakeWait"
+            "pathName": "SrcSide-4Ns-ThruStage-Part3"
           }
         },
         {
@@ -62,31 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NC1-To-NC3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeWait"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
+            "pathName": "SrcSide-4Ns-ThruStage-Part4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NC3-To-NF3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF3-To-LaunchC"
+            "pathName": "SrcSide-4Ns-ThruStage-Part5(AmpSide)"
           }
         },
         {
@@ -98,6 +74,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "SrcSide-4Ns-ThruStage",
   "choreoAuto": false
 }
