@@ -187,7 +187,7 @@ public class RobotContainer {
     m_operator.leftTrigger().whileTrue( // Launch (dumb)
       (new SimpleControl().flywheel(m_launcher, 1.0).withTimeout(0.5))
       .andThen(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)));
-    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.25).flywheel(m_launcher, -0.25)); // Amp & Down Trap
+    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1).flywheel(m_launcher, -0.1)); // Amp & Down Trap
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher)); // Intake (smart)
 
     m_operator.leftStick(); //
