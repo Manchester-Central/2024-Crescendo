@@ -22,7 +22,7 @@ public class Constants {
 		public static final boolean IntakeDebugEnable = false;
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
-		public static final boolean LauncherDebugEnable = true;
+		public static final boolean LauncherDebugEnable = false;
 	}
 
 	public static class ControllerConstants {
@@ -106,7 +106,7 @@ public class Constants {
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // actual 1.5 - 2.8 is a safe limit
 		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
