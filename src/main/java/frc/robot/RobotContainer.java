@@ -13,9 +13,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -76,6 +80,9 @@ public class RobotContainer {
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
   private final SendableChooser<Command> m_pathPlannerChooser;
+
+  private double m_noteSeenTime = 0;
+  private boolean m_noteRumbleDebounce = false;
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
@@ -251,6 +258,38 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
+
+    // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
+    handleDriverRumble();
+    handleOperatorRumble();
+  }
+
+  // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
+  private void handleDriverRumble() {
+    var voltage = RobotController.getBatteryVoltage();
+    var voltageClamp = MathUtil.clamp(voltage, 8, 10);
+    var rumbleValue =  ((voltageClamp/-2) + 5);
+    m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+}
+
+  // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time
+  private void handleOperatorRumble() {
+
+    // If this is the first time seeing this note in the intake
+    if(m_feeder.hasNote() && m_noteRumbleDebounce == false) {
+      m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+      m_noteSeenTime = Timer.getFPGATimestamp();
+      m_noteRumbleDebounce = true;
+    }
+
+    // If we have no note or it's been more than 250` milliseconds since we first saw this note
+    if(Timer.getFPGATimestamp() - m_noteSeenTime >= 0.25 && m_noteRumbleDebounce == true ) {
+      m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
+    }
+
+    if(!m_feeder.hasNote()) {
+      m_noteRumbleDebounce = false;
+    }
   }
 
   public void autoAndTeleopInit(boolean isAuto) {

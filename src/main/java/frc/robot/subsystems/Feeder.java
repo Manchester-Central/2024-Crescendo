@@ -96,6 +96,13 @@ public class Feeder extends SubsystemBase {
 		return m_hasNoteAtSecondary;
 	}
 
+	/**
+	 * Checks is there is a note at either sensor
+	 */
+	public boolean hasNote() {
+		return hasNoteAtPrimary() || hasNoteAtSecondary();
+	}
+
 	/** 
 	 * Gets the current duty cycle power [-1, 1] of the feeder
 	 */

@@ -52,7 +52,7 @@ public class DropInAmp extends Command {
     if (m_lift.atTargetHeight(LiftConstants.AmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
       m_feeder.setFeederPower(-1.0);
     }
-    if (!m_hasLostNote && !m_feeder.hasNoteAtSecondary() && !m_feeder.hasNoteAtPrimary()) {
+    if (!m_hasLostNote && !m_feeder.hasNote()) {
       m_hasLostNote = true;
       m_spitTimer.start();
     }

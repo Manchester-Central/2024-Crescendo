@@ -47,7 +47,7 @@ public class RunIntake extends Command {
     }
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
     var atIntakeHeight = m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom());
-    var hasPiece = m_feeder.hasNoteAtPrimary() || m_feeder.hasNoteAtSecondary();
+    var hasPiece = m_feeder.hasNote();
     if (atIntakeHeight && !hasPiece) {
       m_intake.setIntakePower(1);
     }else{
