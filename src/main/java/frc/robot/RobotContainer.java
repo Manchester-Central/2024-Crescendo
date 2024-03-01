@@ -244,8 +244,11 @@ public class RobotContainer {
     }
 
     // If we have no note or it's been more than 25 milliseconds since we first saw this note
-    if(!m_feeder.hasNote() || Timer.getFPGATimestamp() - m_noteSeenTime >= 0.25) {
+    if(Timer.getFPGATimestamp() - m_noteSeenTime >= 0.25) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
+    }
+
+    if(!m_feeder.hasNote()) {
       m_noteRumbleDebounce = false;
     }
   }
