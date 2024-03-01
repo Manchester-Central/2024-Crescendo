@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.912506594243959,
+        "y": 6.975928567241751
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.274144702135559,
+        "y": 7.104198823782264
+      },
+      "isLocked": false,
+      "linkedName": "AmpSide-5Ns-AroundStage-Part5-End"
+    },
+    {
+      "anchor": {
+        "x": 8.299857368945508,
+        "y": 7.410074050917332
+      },
+      "prevControl": {
+        "x": 6.847773216483517,
+        "y": 7.410074050917332
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "AmpSide-5Ns-AroundStage-Part6-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "AmpSide-5Ns-AroundStage",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0.0
+  },
+  "useDefaultConstraints": true
+}
