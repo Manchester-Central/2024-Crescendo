@@ -73,8 +73,8 @@ public class RobotContainer {
   private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
-  private Timer m_sinceNoteSeenTimer = new Timer();
-  private boolean m_hasNoteSeenTimeStarted = false;
+  private double m_noteSeenTime = 0;
+  private boolean m_noteRumbleDebounce = false;
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
@@ -225,32 +225,28 @@ public class RobotContainer {
     handleOperatorRumble();
   }
 
+  // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
   private void handleDriverRumble() {
-    // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
     var voltage = RobotController.getBatteryVoltage();
     var voltageClamp = MathUtil.clamp(voltage, 8, 10);
     var rumbleValue =  ((voltageClamp/-2) + 5);
     m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
-
-
-
 }
 
+  // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time
   private void handleOperatorRumble() {
-    // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time
-    if (!m_hasNoteSeenTimeStarted && m_feeder.hasNote()) {
-      m_sinceNoteSeenTimer.restart();
-      m_hasNoteSeenTimeStarted = true;
-    }
 
-    if (m_hasNoteSeenTimeStarted && !m_sinceNoteSeenTimer.hasElapsed(1)) {
+    // If this is the first time seeing this note in the intake
+    if(m_feeder.hasNote() && m_noteRumbleDebounce == false) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-
+      m_noteSeenTime = Timer.getFPGATimestamp();
+      m_noteRumbleDebounce = true;
     }
 
-    if (m_hasNoteSeenTimeStarted && m_sinceNoteSeenTimer.hasElapsed(1)) {
+    // If we have no note or it's been more than 25 milliseconds since we first saw this note
+    if(!m_feeder.hasNote() || Timer.getFPGATimestamp() - m_noteSeenTime >= 0.25) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
-      m_hasNoteSeenTimeStarted = false;
+      m_noteRumbleDebounce = false;
     }
   }
 
