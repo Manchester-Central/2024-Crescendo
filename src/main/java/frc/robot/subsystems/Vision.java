@@ -93,10 +93,10 @@ public class Vision extends SubsystemBase {
 		if(m_mode == Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
 		}
-		double[] defaults = {0, 0, 0, 0, 0, 0, 0};
+		double[] defaults = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		double[] values = m_botpose.getDoubleArray(defaults);
 		// If the limelight is returning bad values, return null
-		if(values[0] == 0 && values[1] == 0) { 
+		if((values[0] == 0 && values[1] == 0) || values[9] > 2.5) { 
 			return null;
 		} else {
 			return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));
