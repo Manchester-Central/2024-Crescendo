@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.000907299960106,
-        "y": 2.1899264340611406
+        "x": 8.14198628397257,
+        "y": 2.308864617729237
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.932668124965351,
-        "y": 0.9602885967540826
+        "x": 5.0737471089778134,
+        "y": 1.079226780422179
       },
       "isLocked": false,
       "linkedName": "NF4"
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

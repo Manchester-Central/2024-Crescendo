@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2860190656187283,
-        "y": 4.262744502664468
+        "x": 1.837009827865811,
+        "y": 4.785467263242219
       },
       "isLocked": false,
       "linkedName": "NF4SourceLaunch"
@@ -20,8 +20,8 @@
         "y": 4.321298685393376
       },
       "prevControl": {
-        "x": 1.6770555652380903,
-        "y": 4.496961233580098
+        "x": 1.8567437134874287,
+        "y": 4.765733377620602
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

@@ -8,29 +8,53 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.123151169379263,
-        "y": 2.7035423301615844
+        "x": 5.438443953810986,
+        "y": 1.0952306519997665
       },
       "isLocked": false,
       "linkedName": "NF5SourceLaunch"
     },
     {
       "anchor": {
-        "x": 8.000907299960106,
-        "y": 2.1899264340611406
+        "x": 8.14198628397257,
+        "y": 2.308864617729237
       },
       "prevControl": {
-        "x": 6.787273334230636,
-        "y": 0.6309494699533656
+        "x": 6.0205935796487,
+        "y": 0.7301537679998451
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "NF4"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": -144.16694129991706,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
