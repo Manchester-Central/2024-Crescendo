@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -229,7 +230,10 @@ public class RobotContainer {
     var visionPose = m_vision.getPose();
     var distanceToSpeaker = -1.0;
     if(visionPose != null){
-      m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      if (!DriverStation.isTeleopEnabled()) {
+        // temp change - disable odometry estimations when in teleop until we have tested better and got the back limelight tested too
+        m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      }
       distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
     }else{
       visionPose = new Pose2d();
