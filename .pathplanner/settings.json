@@ -5,11 +5,13 @@
   "pathFolders": [
     "6329Frwends",
     "EasySolo",
-    "SimpleAuto",
+    "SrcSide-5Ns-AroundStage",
     "SCurveNote",
+    "SimpleAuto",
     "Test Paths"
   ],
   "autoFolders": [
+    "SrcSide-AroundStage",
     "Simple Autos"
   ],
   "defaultMaxVel": 3.0,
