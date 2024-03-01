@@ -43,6 +43,7 @@ import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DashboardLaunch;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.FocusAndLaunch;
+import frc.robot.commands.step.PassNote;
 //import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.SimpleControl;
@@ -83,6 +84,11 @@ public class RobotContainer {
 
   private double m_noteSeenTime = 0;
   private boolean m_noteRumbleDebounce = false;
+
+  private Command m_slowCommand = new StartEndCommand(
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
+      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
+  );
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
@@ -142,15 +148,6 @@ public class RobotContainer {
   private void configureDriverCommands() {
     m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier);
 
-    var slowCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
-    );
-    var frozoneSlowCommand = new StartEndCommand(
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SuperSlowSpeedModifier),
-      () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
-    );
-
     m_driver.back().onTrue(new RobotRelativeDrive(m_driver, m_swerveDrive)); // Robot Relative
     m_driver.start().onTrue(new DriverRelativeDrive(m_driver, m_swerveDrive)); // Drive Relative
 
@@ -164,7 +161,8 @@ public class RobotContainer {
     m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
     m_driver.y().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, () -> FieldPose2024.Source.getCurrentAlliancePose().getRotation(), 1.0));  // Align angle to HP (but allow translation)
 
-    m_driver.leftBumper().whileTrue(slowCommand); // Slow command (and max height shot?)
+    // m_driver.leftBumper().whileTrue(m_slowCommand); // Slow command (and max height shot?)
+    m_driver.leftBumper().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher));
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher)); // Intake
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
@@ -189,7 +187,7 @@ public class RobotContainer {
     m_operator.a().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // Min height
     m_operator.b().whileTrue(createGetHeightCommand.apply(LiftConstants.AmpMeters)); // Amp Height
     m_operator.x().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // HP Height
-    m_operator.y().whileTrue(createGetHeightCommand.apply(LiftConstants.MaxHeightMeters).alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle))); // Max height
+    m_operator.y().whileTrue(createGetHeightCommand.apply(LiftConstants.MaxHeightMeters).alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle)).alongWith(m_slowCommand)); // Max height
 
     m_operator.leftBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.3, 0.3).flywheel(m_launcher, -0.3)); // Up Trap
     m_operator.leftTrigger().whileTrue( // Launch (dumb)
@@ -266,10 +264,16 @@ public class RobotContainer {
 
   // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
   private void handleDriverRumble() {
-    var voltage = RobotController.getBatteryVoltage();
-    var voltageClamp = MathUtil.clamp(voltage, 8, 10);
-    var rumbleValue =  ((voltageClamp/-2) + 5);
-    m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+    // var voltage = RobotController.getBatteryVoltage();
+    // var voltageClamp = MathUtil.clamp(voltage, 8, 10);
+    // var rumbleValue =  ((voltageClamp/-2) + 5);
+    // m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+    if (m_feeder.hasNoteAtSecondary() && DriverStation.isTeleop()) {
+      m_driver.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+    } else {
+      m_driver.getHID().setRumble(RumbleType.kBothRumble, 0);
+    }
+     
 }
 
   // Rumble the operator controller for 0.25 seconds after getting a note and then stop until the next time

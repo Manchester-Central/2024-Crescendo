@@ -116,6 +116,7 @@ public class Constants {
 		public static final double TiltD = 0;
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
+		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(3);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 		public static final Rotation2d TrapAngle = Rotation2d.fromDegrees(19.5);
@@ -153,6 +154,7 @@ public class Constants {
 		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;
+		public static final double PassNoteHeight = 0.15;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 
