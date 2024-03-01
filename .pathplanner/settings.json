@@ -1,0 +1,22 @@
+{
+  "robotWidth": 0.88,
+  "robotLength": 0.99,
+  "holonomicMode": true,
+  "pathFolders": [
+    "6329Frwends",
+    "EasySolo",
+    "SrcSide-5Ns-AroundStage",
+    "SCurveNote",
+    "SimpleAuto",
+    "Test Paths"
+  ],
+  "autoFolders": [
+    "SrcSide-AroundStage",
+    "Simple Autos"
+  ],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "maxModuleSpeed": 5.8
+}

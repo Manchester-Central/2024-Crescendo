@@ -40,9 +40,9 @@ public class RunIntake extends Command {
   @Override
   public void execute() {
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
+    m_launcher.setLauncherPower(-0.1);
 
     if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
-      m_launcher.setLauncherPower(0.0);
       m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     }
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
@@ -65,6 +65,7 @@ public class RunIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     m_intake.setIntakePower(0);
+    m_launcher.setLauncherPower(0.0);
   }
 
   // Returns true when the command should end.

@@ -1,0 +1,8 @@
+resetPosition?X=1.333&Y=5.631&Angle=180
+launch?TimeMs=1500
+driveAndIntake?X=2.7&Y=5.631&Angle=180&TimeMs=5000
+launch?TimeMs=1500
+drive?X=2.7&Y=5.631&Angle=270
+driveAndIntake?X=2.7&Y=7.052&Angle=270
+drive?X=2&Y=6.5&Angle=-150
+launch?TimeMs=1500

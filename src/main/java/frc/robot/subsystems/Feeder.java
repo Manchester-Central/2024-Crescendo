@@ -5,9 +5,12 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -15,6 +18,11 @@ import frc.robot.RobotContainer;
 public class Feeder extends SubsystemBase {
 	private SparkLimitSwitch m_feederSensorPrimary;
 	private SparkLimitSwitch m_feederSensorSecondary;
+	private Debouncer m_primaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private Debouncer m_secondaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private boolean m_hasNoteAtPrimary = false;
+	private boolean m_hasNoteAtSecondary = false;
+
 	CANSparkFlex m_feederMainMotor = new CANSparkFlex(CANIdentifiers.FeederMain, MotorType.kBrushless);
 	CANSparkFlex m_feederTrapMotor = new CANSparkFlex(CANIdentifiers.FeederTrap, MotorType.kBrushless);
 
@@ -39,15 +47,15 @@ public class Feeder extends SubsystemBase {
 		m_feederTrapMotor.burnFlash();
 
 		var logManager = LogManager.getInstance();
-		logManager.addBoolean("Feeder/HasNoteAtPrimary", Constants.DebugMode, () -> hasNoteAtPrimary());
-		logManager.addBoolean("Feeder/HasNoteAtSecondary", Constants.DebugMode, () -> hasNoteAtSecondary());
+		logManager.addBoolean("Feeder/HasNoteAtPrimary", true, () -> hasNoteAtPrimary());
+		logManager.addBoolean("Feeder/HasNoteAtSecondary", true, () -> hasNoteAtSecondary());
 
-		logManager.addNumber("FeederMain/MotorPosition", Constants.DebugMode, () -> m_feederMainMotor.getEncoder().getPosition());
-		logManager.addNumber("FeederMain/CurrentAmps", Constants.DebugMode, () -> m_feederMainMotor.getOutputCurrent());
-		logManager.addNumber("FeederMain/AppliedOutput", Constants.DebugMode, () -> m_feederMainMotor.getAppliedOutput());
+		logManager.addNumber("FeederMain/MotorPosition", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getEncoder().getPosition());
+		logManager.addNumber("FeederMain/CurrentAmps", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getOutputCurrent());
+		logManager.addNumber("FeederMain/AppliedOutput", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getAppliedOutput());
 
-		logManager.addNumber("FeederTrap/CurrentAmps", Constants.DebugMode, () -> m_feederTrapMotor.getOutputCurrent());
-		logManager.addNumber("FeederTrap/AppliedOutput", Constants.DebugMode, () -> m_feederTrapMotor.getAppliedOutput());
+		logManager.addNumber("FeederTrap/CurrentAmps", DebugConstants.FeederDebugEnable, () -> m_feederTrapMotor.getOutputCurrent());
+		logManager.addNumber("FeederTrap/AppliedOutput", DebugConstants.FeederDebugEnable, () -> m_feederTrapMotor.getAppliedOutput());
 	}
 
 	/**
@@ -66,7 +74,7 @@ public class Feeder extends SubsystemBase {
 	
 	public void grabAndHoldPiece(double grabSpeed) {
 		if (hasNoteAtSecondary()) {
-			setFeederPower(-0.3);
+			setFeederPower(-0.2);
 		} else if(hasNoteAtPrimary()) {
 			setFeederPower(0);
 		} else {
@@ -78,14 +86,14 @@ public class Feeder extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
 		}
-		return m_feederSensorPrimary.isPressed();
+		return m_hasNoteAtPrimary;
 	}
 
 	public boolean hasNoteAtSecondary(){
 		if (Robot.isSimulation()) {
 			return RobotContainer.SimKeyboard.a().getAsBoolean(); //z on keyboard 0
 		}
-		return m_feederSensorSecondary.isPressed();
+		return m_hasNoteAtSecondary;
 	}
 
 	/**
@@ -108,6 +116,7 @@ public class Feeder extends SubsystemBase {
 	@Override
 	public void periodic() {
 		super.periodic();
-
+		m_hasNoteAtPrimary = m_primaryDebouncer.calculate(m_feederSensorPrimary.isPressed());
+		m_hasNoteAtSecondary = m_secondaryDebouncer.calculate(m_feederSensorSecondary.isPressed());
 	}
 }

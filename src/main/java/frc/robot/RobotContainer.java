@@ -6,12 +6,17 @@ package frc.robot;
 
 import java.util.function.Function;
 
-import com.chaos131.auto.AutoBuilder;
+// import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -37,10 +42,11 @@ import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DashboardLaunch;
 import frc.robot.commands.step.DropInAmp;
-import frc.robot.commands.step.Launch;
+import frc.robot.commands.step.FocusAndLaunch;
+//import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.SimpleControl;
-import frc.robot.commands.step.SpeakerFocus;
+//import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
@@ -59,7 +65,7 @@ public class RobotContainer {
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
   public static Gamepad SimKeyboard;
   private Gamepad m_tester;
-  private final AutoBuilder m_autoBuilder = new AutoBuilder();
+  // private final AutoBuilder m_autoBuilder = new AutoBuilder();
 
   private SwerveDrive m_swerveDrive = Constants.Use2022Robot 
     ? SwerveDrive2022.createSwerveDrive() 
@@ -73,22 +79,37 @@ public class RobotContainer {
   private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
   private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
 
+  private final SendableChooser<Command> m_pathPlannerChooser;
+
   private double m_noteSeenTime = 0;
   private boolean m_noteRumbleDebounce = false;
 
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
-    m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
-    m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
-    m_autoBuilder.registerCommand("launch", (pc) -> Launch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision));
-    m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder, m_launcher));
-    m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder, m_launcher));
-    m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
-    m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
-    m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
-    m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
-    m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+    // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
+    // m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
+    // m_autoBuilder.registerCommand("launch", (pc) -> FocusAndLaunch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+    // m_autoBuilder.registerCommand("intake", (pc) -> RunIntake.createAutoCommand(pc, m_intake, m_lift, m_feeder, m_launcher));
+    // m_autoBuilder.registerCommand("driveAndIntake", (pc)-> AutoUtil.driveAndIntake(pc, m_swerveDrive, m_intake, m_lift, m_feeder, m_launcher));
+    // m_autoBuilder.registerCommand("driveAndIntakeSimple", (pc)-> AutoUtil.driveAndIntakeSimple(pc, m_swerveDrive, m_intake, m_lift, m_launcher, m_feeder));
+    // m_autoBuilder.registerCommand("flyWheelOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0));
+    // m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
+    // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+
+    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+    NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+  
+    SmartDashboard.putData("Auto Chooser", m_pathPlannerChooser);
   }
 
   private void configureBindings() {
@@ -148,8 +169,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new SpeakerFocus(m_swerveDrive, m_driver, m_vision).alongWith(
-        new Launch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision)));
+        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
 
     m_driver.leftStick(); //
     m_driver.rightStick(); //
@@ -175,7 +195,7 @@ public class RobotContainer {
     m_operator.leftTrigger().whileTrue( // Launch (dumb)
       (new SimpleControl().flywheel(m_launcher, 1.0).withTimeout(0.5))
       .andThen(new SimpleControl().feeder(m_feeder, 1.0).flywheel(m_launcher, 1.0)));
-    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.3).flywheel(m_launcher, -0.3)); // Amp & Down Trap
+    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1).flywheel(m_launcher, -0.1)); // Amp & Down Trap
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher)); // Intake (smart)
 
     m_operator.leftStick(); //
@@ -197,7 +217,8 @@ public class RobotContainer {
   }
   
   public Command getAutonomousCommand() {
-    return m_autoBuilder.createAutoCommand();
+    // return m_autoBuilder.createAutoCommand();
+    return m_pathPlannerChooser.getSelected();
   }
 
   public void periodic() {
@@ -213,12 +234,30 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
-    var pose = m_vision.getPose();
+    var visionPose = m_vision.getPose();
     var distanceToSpeaker = -1.0;
-    if(pose != null){
-      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(pose);
+    if(visionPose != null){
+      if (!DriverStation.isTeleopEnabled()) {
+        // temp change - disable odometry estimations when in teleop until we have tested better and got the back limelight tested too
+        m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
+      }
+      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
+    }else{
+      visionPose = new Pose2d();
     }
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
+
+    var drivePose = m_swerveDrive.getPose();
+    double[] robotAndVision = {
+      drivePose.getX(),
+      drivePose.getY(),
+      drivePose.getRotation().getDegrees(),
+      visionPose.getX(),
+      visionPose.getY(),
+      visionPose.getRotation().getDegrees()
+    };
+    SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
+
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     handleDriverRumble();
@@ -253,8 +292,10 @@ public class RobotContainer {
     }
   }
 
-  public void autoAndTeleopInit() {
+  public void autoAndTeleopInit(boolean isAuto) {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
+    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
+  
   }
 
   public void delayedDisableInit() {

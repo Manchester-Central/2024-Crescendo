@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.Constants.DebugConstants;
 
 public class SwerveDrive2022 extends SwerveDrive {
 	private SwerveDrive2022(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
@@ -42,7 +43,7 @@ public class SwerveDrive2022 extends SwerveDrive {
 			// field configs
 			.setDefaultAlliance(Alliance.Blue)
 			// Debug/sim
-			.setDebugMode(true)
+			.setDebugMode(DebugConstants.DriveDebugEnable)
 			.setUpdateFrequency_hz(20);
 
 		var halfWidthMeters = 0.2957;

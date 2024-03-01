@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 
 public class Intake extends SubsystemBase {
 
@@ -32,10 +33,10 @@ public class Intake extends SubsystemBase {
 		m_intakeLower.burnFlash();
 
 		var logManager = LogManager.getInstance();
-		logManager.addNumber("Intake/UpperCurrentAmps", Constants.DebugMode, () -> m_intakeUpper.getOutputCurrent());
-		logManager.addNumber("Intake/LowerCurrentAmps", Constants.DebugMode, () -> m_intakeLower.getOutputCurrent());
-		logManager.addNumber("Intake/UpperAppliedOutput", Constants.DebugMode, () -> m_intakeUpper.getAppliedOutput());
-		logManager.addNumber("Intake/LowerAppliedOutput", Constants.DebugMode, () -> m_intakeLower.getAppliedOutput());
+		logManager.addNumber("Intake/UpperCurrentAmps", DebugConstants.IntakeDebugEnable, () -> m_intakeUpper.getOutputCurrent());
+		logManager.addNumber("Intake/LowerCurrentAmps", DebugConstants.IntakeDebugEnable, () -> m_intakeLower.getOutputCurrent());
+		logManager.addNumber("Intake/UpperAppliedOutput", DebugConstants.IntakeDebugEnable, () -> m_intakeUpper.getAppliedOutput());
+		logManager.addNumber("Intake/LowerAppliedOutput", DebugConstants.IntakeDebugEnable, () -> m_intakeLower.getAppliedOutput());
 
 	}
 

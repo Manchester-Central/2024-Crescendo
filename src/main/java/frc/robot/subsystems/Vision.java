@@ -9,10 +9,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.VisionConstants;
 
 
 public class Vision extends SubsystemBase {
@@ -101,12 +104,15 @@ public class Vision extends SubsystemBase {
 	}
 
 	public void periodic() {
-		if(getPose() != null) {
-			m_field.setRobotPose(getPose());
+		var pose = getPose();
+		if(pose != null) {
+			m_field.setRobotPose(pose);
 		} else {
 			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
 		}
 		SmartDashboard.putData("vision field", m_field);
+
+
 	}
 
 	/**
@@ -129,6 +135,10 @@ public class Vision extends SubsystemBase {
 		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
 
 		return this;
+	}
+
+	public Mode getSpeakerTrackingMode() {
+		return DriverStation.getAlliance().get() == Alliance.Blue ? Vision.Mode.BLUE_SPEAKER : Vision.Mode.RED_SPEAKER;
 	}
 
 	public double getLatencySeconds() {
@@ -180,5 +190,13 @@ public class Vision extends SubsystemBase {
 			return true;
 		}
 		return (m_tv.getDouble(0) == 1);
+	  }
+
+	  public void updateAprilTagMode(Pose2d robotPose){
+		if(robotPose.getX() < VisionConstants.AprilTagXMetersMidPoint){
+			setMode(Mode.BLUE_APRIL_TAGS);
+		}else{
+			setMode(Mode.RED_APRIL_TAGS);
+		}
 	  }
 }

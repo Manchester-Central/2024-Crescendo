@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.000907299960106,
+        "y": 2.1899264340611406
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.932668124965351,
+        "y": 0.9602885967540826
+      },
+      "isLocked": false,
+      "linkedName": "NF4"
+    },
+    {
+      "anchor": {
+        "x": 1.3725738150477713,
+        "y": 4.321298685393376
+      },
+      "prevControl": {
+        "x": 2.66650864915907,
+        "y": 2.9293278217852374
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NF4SourceLaunch"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 118.92642583525357,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "6329Frwends",
+  "previewStartingState": {
+    "rotation": 176.76029970389789,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.6855669095914907,
+        "y": 4.0750473808586385
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6658330239752273,
+        "y": 4.0750473808586385
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3106230827846286,
+        "y": 4.242785408647741
+      },
+      "prevControl": {
+        "x": 2.567353274644308,
+        "y": 4.242785408647741
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 150.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SCurveNote",
+  "previewStartingState": {
+    "rotation": -179.9999999995262,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

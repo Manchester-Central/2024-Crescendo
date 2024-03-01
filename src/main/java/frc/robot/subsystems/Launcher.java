@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.CANIdentifiers;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.LauncherConstants;
 
 public class Launcher extends SubsystemBase {
@@ -54,7 +55,7 @@ public class Launcher extends SubsystemBase {
 		
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 		m_flywheelRight.setIdleMode(IdleMode.kCoast);
-		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", Constants.DebugMode, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
+		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", DebugConstants.LauncherDebugEnable, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
 		m_flywheelLeft.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 		m_flywheelRight.getEncoder().setVelocityConversionFactor(LauncherConstants.FlywheelEncoderConversionFactor);
 		m_flywheelLeft.setClosedLoopRampRate(LauncherConstants.FlywheelRampRate);
@@ -72,31 +73,32 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
-		m_tiltController.getEncoder().setPosition(LauncherConstants.MaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
-		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", Constants.DebugMode, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
+		// m_tiltController.getEncoder().setPosition(LauncherConstants.MaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
+		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", DebugConstants.LauncherDebugEnable, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
 		
-
+		
 		m_flywheelLeft.burnFlash();
 		m_flywheelRight.burnFlash();
 		m_tiltController.burnFlash();
-		//recalibrateTilt(); ?? TODO: add back in when Abs angle is working again (but check problem with syncing on start up)
+		// recalibrateTilt(); // ?? TODO: add back in when Abs angle is working again (but check problem with syncing on start up)
 
 		var logManager = LogManager.getInstance();
-		logManager.addNumber("Launcher/LeftRPM", Constants.DebugMode, () -> m_flywheelLeft.getEncoder().getVelocity());
-		logManager.addNumber("Launcher/RightRPM", Constants.DebugMode, () -> m_flywheelRight.getEncoder().getVelocity());
-		logManager.addNumber("Launcher/TargetRPM", Constants.DebugMode, () -> m_targetRPM);
-		logManager.addNumber("Launcher/LeftCurrentAmps", Constants.DebugMode, () -> m_flywheelLeft.getOutputCurrent());
-		logManager.addNumber("Launcher/RightCurrentAmps", Constants.DebugMode, () -> m_flywheelRight.getOutputCurrent());
-		logManager.addNumber("Launcher/LeftAppliedOutput", Constants.DebugMode, () -> m_flywheelLeft.getAppliedOutput());
-		logManager.addNumber("Launcher/RightAppliedOutput", Constants.DebugMode, () -> m_flywheelRight.getAppliedOutput());
-		logManager.addNumber("Launcher/LeftError", Constants.DebugMode, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
-		logManager.addNumber("Launcher/RightError", Constants.DebugMode, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
+		logManager.addNumber("Launcher/LeftRPM", DebugConstants.LauncherDebugEnable, () -> m_flywheelLeft.getEncoder().getVelocity());
+		logManager.addNumber("Launcher/RightRPM", DebugConstants.LauncherDebugEnable, () -> m_flywheelRight.getEncoder().getVelocity());
+		logManager.addNumber("Launcher/TargetRPM", DebugConstants.LauncherDebugEnable, () -> m_targetRPM);
+		logManager.addNumber("Launcher/LeftCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_flywheelLeft.getOutputCurrent());
+		logManager.addNumber("Launcher/RightCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_flywheelRight.getOutputCurrent());
+		logManager.addNumber("Launcher/LeftAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_flywheelLeft.getAppliedOutput());
+		logManager.addNumber("Launcher/RightAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_flywheelRight.getAppliedOutput());
+		logManager.addNumber("Launcher/LeftError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelLeft.getEncoder().getVelocity());
+		logManager.addNumber("Launcher/RightError", DebugConstants.LauncherDebugEnable, () -> m_targetRPM - m_flywheelRight.getEncoder().getVelocity());
 
-		//logManager.addNumber("Launcher/AngleDegrees", Constants.DebugMode, () -> getCurrentAngle().getDegrees());
-		logManager.addNumber("Launcher/AbsAngleDegrees", Constants.DebugMode, () -> getAbsoluteTiltAngle().getDegrees());
-		logManager.addNumber("Launcher/TargetAngleDegrees", Constants.DebugMode, () -> m_targetAngle.getDegrees());
-		logManager.addNumber("Launcher/TiltAppliedOutput", Constants.DebugMode, () -> m_tiltController.getAppliedOutput());
-		logManager.addNumber("Launcher/TiltCurrentAmps", Constants.DebugMode, () -> m_tiltController.getOutputCurrent());
+		// logManager.addNumber("Launcher/AngleDegrees", true, () -> getCurrentAngle().getDegrees());
+		logManager.addNumber("Launcher/AbsAngleDegrees", true, () -> getAbsoluteTiltAngle().getDegrees());
+		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.getDegrees());
+		logManager.addNumber("Launcher/TiltAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getAppliedOutput());
+		logManager.addNumber("Launcher/TiltCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getOutputCurrent());
+		logManager.addNumber("Launcher/TiltRawPosition", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getEncoder().getPosition());
 
 		
 	}
@@ -199,7 +201,7 @@ public class Launcher extends SubsystemBase {
 	}
 
 	public void recalibrateTilt() {
-        m_tiltController.getEncoder().setPosition(getAbsoluteTiltAngle().getDegrees());
+        m_tiltController.getEncoder().setPosition(0); // TODO Don't Do This
     }
 
 	public void tuneTiltPID(PIDFValue pidValue){

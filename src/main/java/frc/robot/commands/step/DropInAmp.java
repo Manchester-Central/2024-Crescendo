@@ -35,12 +35,14 @@ public class DropInAmp extends Command {
   @Override
   public void initialize() {
     m_spitTimer.reset();
+    m_spitTimer.stop();
+    m_hasLostNote = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_spitTimer.hasElapsed(1)) {
+    if (m_spitTimer.hasElapsed(0.25)) {
       m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
       return;
     }

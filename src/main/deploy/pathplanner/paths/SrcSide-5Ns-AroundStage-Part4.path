@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.007995808227811,
+        "y": 2.621518550855582
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.493213992442201,
+        "y": 1.2695192585573802
+      },
+      "isLocked": false,
+      "linkedName": "SrcSide-5Ns-AroundStage-Part3-End"
+    },
+    {
+      "anchor": {
+        "x": 1.7408686539625677,
+        "y": 3.3947355374207744
+      },
+      "prevControl": {
+        "x": 6.167648945467382,
+        "y": -0.12208689261555616
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SrcSide-5Ns-AroundStage-CommonReturn"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 127.73255967049091,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SrcSide-5Ns-AroundStage",
+  "previewStartingState": {
+    "rotation": 147.2952664229981,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
