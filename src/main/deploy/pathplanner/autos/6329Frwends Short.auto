@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2055254879740545,
+      "y": 3.9467771243234795
+    },
+    "rotation": 119.19748604606451
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartSource-To-NF5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NF5-To-SourceLaunch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NF5SourceLaunch-To-NF4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NF4-To-SourceLaunch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
