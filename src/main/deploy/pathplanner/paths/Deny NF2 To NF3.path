@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 5.742560715890662
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.28012348332389,
+        "y": 4.742560715890662
+      },
+      "isLocked": false,
+      "linkedName": "PushNF2"
+    },
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 4.114515152107228
+      },
+      "prevControl": {
+        "x": 8.28012348332389,
+        "y": 5.061998578738716
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Deny NF3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "MidDenial",
+  "previewStartingState": {
+    "rotation": 90.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

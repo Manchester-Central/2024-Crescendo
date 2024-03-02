@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.254860202028098,
+        "y": 4.01584572399914
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.560286043649012,
+        "y": 1.5096422500537308
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 2.4272679314589416
+      },
+      "prevControl": {
+        "x": 5.152302612297534,
+        "y": 1.3912389363240272
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "DenyNF4"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -165.6364572847459,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "BloopDrive",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "seaCucumber"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -160.90650799951447,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "MidDenial",
+  "previewStartingState": {
+    "rotation": 128.88449643371462,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

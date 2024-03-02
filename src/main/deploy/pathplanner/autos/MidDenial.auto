@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.254860202028098,
+      "y": 4.01584572399914
+    },
+    "rotation": 129.47245984834382
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Push NF2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF2 To NF3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF3Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny GoBackNF4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF4 Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Deny",
+  "choreoAuto": false
+}

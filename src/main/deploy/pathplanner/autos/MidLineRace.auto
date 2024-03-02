@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.284461030460524,
+      "y": 3.818506867782967
+    },
+    "rotation": 125.98929045318236
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRace"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRaceLaunch2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRaceNF3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRaceLaunch3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "MidLineRace",
+  "choreoAuto": false
+}

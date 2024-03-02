@@ -4,8 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "6329Frwends",
-    "EasySolo",
     "AmpSide-5Ns-AroundStage",
+    "EasySolo",
+    "MidLineRace",
+    "MidDenial",
     "SCurveNote",
     "SimpleAuto",
     "SrcSide-4Ns-ThruStage",
@@ -14,6 +16,8 @@
   ],
   "autoFolders": [
     "AmpSide-5Ns-AroundStage",
+    "MidLineRace",
+    "Deny",
     "Simple Autos",
     "SrcSide-4Ns-ThruStage",
     "SrcSide-AroundStage"

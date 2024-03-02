@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.151853226783379,
+        "y": 2.387800160215706
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.359508411324516,
+        "y": 1.0656298235673392
+      },
+      "isLocked": false,
+      "linkedName": "MidRaceN4"
+    },
+    {
+      "anchor": {
+        "x": 2.182352826244115,
+        "y": 3.404095269729001
+      },
+      "prevControl": {
+        "x": 4.31374364338782,
+        "y": 1.5591284868739088
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "MidRaceLaunch2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 145.23480276342323,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "MidLineRace",
+  "previewStartingState": {
+    "rotation": -154.41,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
