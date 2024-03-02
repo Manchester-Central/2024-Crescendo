@@ -108,6 +108,7 @@ public class RobotContainer {
     m_vision.updateAprilTagMode(m_swerveDrive.getPose());
 
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
     NamedCommands.registerCommand("seaCucumber", new SeaCucumber(m_intake, m_lift, m_feeder, m_launcher));

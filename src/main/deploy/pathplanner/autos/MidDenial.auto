@@ -12,9 +12,15 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Deny Begin"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "launch"
+            "name": "launchWithTimeout"
           }
         },
         {
