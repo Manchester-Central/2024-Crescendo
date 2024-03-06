@@ -16,15 +16,17 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
-// TODO: Implement actual control logic
-public class SeaCucumber extends Command {
+/**
+ * A command to spit notes out the launcher side of the robot (originally called SeaCucumber based on a comment Dan made)
+ */
+public class LaunchSpit extends Command {
   private Intake m_intake;
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
 
-  /** Creates a new SeaCucumber. */
-  public SeaCucumber(Intake intake, Lift lift, Feeder feeder, Launcher launcher) {
+  /** Creates a new LaunchSpit. */
+  public LaunchSpit(Intake intake, Lift lift, Feeder feeder, Launcher launcher) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
@@ -39,18 +41,18 @@ public class SeaCucumber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(LiftConstants.SeaCucumberHeightMeters);
+    m_lift.moveToHeight(LiftConstants.LaunchSpitHeightMeters);
 
-    m_launcher.setTiltAngle(LauncherConstants.SeaCucumberAngle);
+    m_launcher.setTiltAngle(LauncherConstants.LaunchSpitAngle);
 
     m_feeder.setFeederPower(1.0);
 
     m_launcher.setLauncherRPM(650, 650);
 
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
-    var atHeight = m_lift.atTargetHeight(LiftConstants.SeaCucumberHeightMeters);
+    var atHeight = m_lift.atTargetHeight(LiftConstants.LaunchSpitHeightMeters);
     var hasPiece = m_feeder.hasNote();
-    if (atHeight && !hasPiece && m_launcher.atTargetAngle(LauncherConstants.SeaCucumberAngle)) {
+    if (atHeight && !hasPiece && m_launcher.atTargetAngle(LauncherConstants.LaunchSpitAngle)) {
       m_intake.setIntakePower(1);
     }else{
       m_intake.setIntakePower(0);
@@ -59,7 +61,7 @@ public class SeaCucumber extends Command {
   }
 
   public static Command createAutoCommand(ParsedCommand parsedCommand, Intake intake, Lift lift, Feeder feeder, Launcher launcher){
-    return new SeaCucumber(intake, lift, feeder, launcher);
+    return new LaunchSpit(intake, lift, feeder, launcher);
   }
 
   // Called once the command ends or is interrupted.

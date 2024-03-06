@@ -46,7 +46,7 @@ import frc.robot.commands.step.FocusAndLaunch;
 import frc.robot.commands.step.PassNote;
 //import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
-import frc.robot.commands.step.SeaCucumber;
+import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.SimpleControl;
 //import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
@@ -111,7 +111,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
-    NamedCommands.registerCommand("seaCucumber", new SeaCucumber(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -183,7 +183,7 @@ public class RobotContainer {
     m_operator.povUp().whileTrue(new SimpleControl().intake(m_intake, -0.2).feeder(m_feeder, -0.2).flywheel(m_launcher, -0.2)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new SimpleControl().intake(m_intake, 0.7)); // Intake (dumb)
     m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
-    m_operator.povRight().whileTrue(new SeaCucumber(m_intake, m_lift, m_feeder, m_launcher)); // 
+    m_operator.povRight().whileTrue(new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher)); // 
 
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
     Function<Rotation2d, StartEndCommand> createGetTiltCommand = (Rotation2d angle) -> new StartEndCommand(() -> m_launcher.setTiltAngle(angle), () -> m_launcher.setTiltSpeed(0), m_launcher);
