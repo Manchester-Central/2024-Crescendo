@@ -3,36 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 1.8172759422441938,
+        "y": 4.153982923350462
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 1.7876751138117675,
+        "y": 1.716848049080714
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Deny Begin"
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 8.28012348332389,
+        "y": 2.4272679314589416
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 5.0832340126218725,
+        "y": 1.0952306519997665
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "DenyNF4"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -165.6364572847459,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "BloopDrive",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "launchSpit"
               }
             }
           ]
@@ -57,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": -160.90650799951447,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "MidDenial",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": 141.37818628908937,
     "velocity": 0
   },
   "useDefaultConstraints": true

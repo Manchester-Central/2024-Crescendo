@@ -16,15 +16,17 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
-// TODO: Implement actual control logic
-public class RunIntake extends Command {
+/**
+ * A command to spit notes out the launcher side of the robot (originally called SeaCucumber based on a comment Dan made)
+ */
+public class LaunchSpit extends Command {
   private Intake m_intake;
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
 
-  /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher) {
+  /** Creates a new LaunchSpit. */
+  public LaunchSpit(Intake intake, Lift lift, Feeder feeder, Launcher launcher) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
@@ -39,26 +41,27 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
-    m_launcher.setLauncherPower(-0.1);
+    m_lift.moveToHeight(LiftConstants.LaunchSpitHeightMeters);
 
-    if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
-      m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
-    }
+    m_launcher.setTiltAngle(LauncherConstants.LaunchSpitAngle);
+
+    m_feeder.setFeederPower(1.0);
+
+    m_launcher.setLauncherRPM(650, 650);
+
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
-    var atIntakeHeight = m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom());
+    var atHeight = m_lift.atTargetHeight(LiftConstants.LaunchSpitHeightMeters);
     var hasPiece = m_feeder.hasNote();
-    if (atIntakeHeight && !hasPiece) {
+    if (atHeight && !hasPiece && m_launcher.atTargetAngle(LauncherConstants.LaunchSpitAngle)) {
       m_intake.setIntakePower(1);
     }else{
       m_intake.setIntakePower(0);
     }
 
-    m_feeder.grabAndHoldPiece(0.5);
   }
 
   public static Command createAutoCommand(ParsedCommand parsedCommand, Intake intake, Lift lift, Feeder feeder, Launcher launcher){
-    return new RunIntake(intake, lift, feeder, launcher);
+    return new LaunchSpit(intake, lift, feeder, launcher);
   }
 
   // Called once the command ends or is interrupted.

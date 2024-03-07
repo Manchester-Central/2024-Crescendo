@@ -3,37 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 2.1626189406224983,
+        "y": 3.2758250131884883
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 4.244543873703133,
+        "y": 2.752877044215627
+      },
+      "isLocked": false,
+      "linkedName": "SrcSide-4Ns-ThruStage-Part3-End"
+    },
+    {
+      "anchor": {
+        "x": 5.02403235575702,
+        "y": 3.8579746390262013
+      },
+      "prevControl": {
+        "x": 3.928801703757255,
+        "y": 3.3547605556749582
+      },
+      "nextControl": {
+        "x": 6.186832475208653,
+        "y": 4.392234153368839
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 7.974248256188821,
+        "y": 4.144115980539654
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 5.541726649077745,
+        "y": 4.144115980539654
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "SrcSide-4Ns-ThruStage-Part4-End"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
-      "waypointRelativePos": 0,
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -57,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": -179.2838400545296,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "SrcSide-4Ns-ThruStage",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": 155.82,
     "velocity": 0
   },
   "useDefaultConstraints": true

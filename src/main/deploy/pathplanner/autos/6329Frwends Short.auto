@@ -52,24 +52,6 @@
           "data": {
             "name": "launch"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF4SourceLaunch-To-NC3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeWait"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
         }
       ]
     }

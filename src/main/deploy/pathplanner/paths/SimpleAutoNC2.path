@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 1.44283883432246,
+        "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 2.44283883432246,
+        "y": 5.562647359246215
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 2.9066934025451485,
+        "y": 5.562647359246215
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 1.9066934025451485,
+        "y": 5.562647359246215
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 179.840784958122,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "SimpleAuto",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": 179.56921278299137,
     "velocity": 0
   },
   "useDefaultConstraints": true

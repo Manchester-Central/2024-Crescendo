@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.44283883432246,
+      "y": 5.562647359246215
+    },
+    "rotation": -179.6373733260375
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeWait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SimpleAutoNC2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Simple Autos",
+  "choreoAuto": false
+}

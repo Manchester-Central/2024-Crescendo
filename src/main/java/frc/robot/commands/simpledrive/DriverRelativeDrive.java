@@ -31,8 +31,6 @@ public class DriverRelativeDrive extends Command {
   @Override
   public void execute() {
     m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
-    m_driver.getHID().setRumble(RumbleType.kBothRumble, m_driver.getSlewLeftY());
-    // m_swerveDrive.moveFieldRelative(m_driver.getLeftY(), 0, 0);
   }
 
   // Called once the command ends or is interrupted.

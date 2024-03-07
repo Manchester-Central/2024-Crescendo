@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 8.28012348332389,
+        "y": 4.114515152107228
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 6.119263007756786,
+        "y": 4.25265235145855
+      },
+      "isLocked": false,
+      "linkedName": "Deny NF3"
+    },
+    {
+      "anchor": {
+        "x": 4.757624899865186,
+        "y": 3.709970496864071
+      },
+      "prevControl": {
+        "x": 5.122198859286215,
+        "y": 3.9530198031447568
+      },
+      "nextControl": {
+        "x": 4.047205017486959,
+        "y": 3.236357241945254
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 2.389558625271098,
+        "y": 3.2462241847560627
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 3.8005314472167417,
+        "y": 2.3285985033508547
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "Deny NF3Launch"
     }
   ],
   "rotationTargets": [],
@@ -57,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 135.23675807190713,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "MidDenial",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": 90.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

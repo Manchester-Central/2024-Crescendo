@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2055254879740545,
-      "y": 3.9467771243234795
+      "x": 1.216347189392028,
+      "y": 3.7022136373414356
     },
-    "rotation": 119.19748604606451
+    "rotation": 131.1287437680144
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartSource-To-NF5"
+            "pathName": "SrcSide-5Ns-AroundStage-Part1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF5-To-SourceLaunch"
+            "pathName": "SrcSide-5Ns-AroundStage-Part2"
           }
         },
         {
@@ -38,31 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NF5SourceLaunch-To-NF4"
+            "pathName": "SrcSide-5Ns-AroundStage-Part3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF4-To-SourceLaunch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF4SourceLaunch-To-NC3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeWait"
+            "pathName": "SrcSide-5Ns-AroundStage-Part4"
           }
         },
         {
@@ -74,6 +56,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "SrcSide-AroundStage",
   "choreoAuto": false
 }

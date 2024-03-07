@@ -4,12 +4,23 @@
   "holonomicMode": true,
   "pathFolders": [
     "6329Frwends",
+    "AmpSide-5Ns-AroundStage",
     "EasySolo",
+    "MidLineRace",
+    "MidDenial",
     "SCurveNote",
+    "SimpleAuto",
+    "SrcSide-4Ns-ThruStage",
+    "SrcSide-5Ns-AroundStage",
     "Test Paths"
   ],
   "autoFolders": [
-    "New Folder"
+    "AmpSide-5Ns-AroundStage",
+    "MidLineRace",
+    "Deny",
+    "Simple Autos",
+    "SrcSide-4Ns-ThruStage",
+    "SrcSide-AroundStage"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 1.216347189392028,
+        "y": 3.7022136373414356
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 3.698780672575014,
+        "y": 1.9568232466153288
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 8.01703928175489,
+        "y": 0.8806498968930139
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 5.584344902970835,
+        "y": 1.47751914968018
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "SrcSide-5Ns-AroundStage-Part1-End"
     }
   ],
   "rotationTargets": [],
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 162.84477033136537,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "SrcSide-5Ns-AroundStage",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": 129.77605240373157,
     "velocity": 0
   },
   "useDefaultConstraints": true

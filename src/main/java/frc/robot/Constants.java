@@ -22,7 +22,7 @@ public class Constants {
 		public static final boolean IntakeDebugEnable = false;
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
-		public static final boolean LauncherDebugEnable = true;
+		public static final boolean LauncherDebugEnable = false;
 	}
 
 	public static class ControllerConstants {
@@ -43,6 +43,7 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = false;
 		public static final int[] AprilTagPipelines = {0, 1, 2};
 		public static final double TxLaunchTolerance = 2;
+		public static final double AprilTagAverageDistanceThresholdMeters = 2.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
 		public static final double AprilTagXMetersMidPoint = 8.25; //TODO Confirm
 	}
 
@@ -106,7 +107,7 @@ public class Constants {
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // actual 1.5 - 2.8 is a safe limit
 		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(52);
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
@@ -116,6 +117,8 @@ public class Constants {
 		public static final double TiltD = 0;
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
+		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
+		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(3);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 		public static final Rotation2d TrapAngle = Rotation2d.fromDegrees(19.5);
@@ -153,6 +156,8 @@ public class Constants {
 		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;
+		public static final double LaunchSpitHeightMeters = 0.1;
+		public static final double PassNoteHeight = 0.15;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 

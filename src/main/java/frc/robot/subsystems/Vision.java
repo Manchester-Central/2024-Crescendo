@@ -93,10 +93,13 @@ public class Vision extends SubsystemBase {
 		if(m_mode == Mode.RETROREFLECTIVE) {
 			return null; // Do not run if we are currently in a non april tag pipeline
 		}
-		double[] defaults = {0, 0, 0, 0, 0, 0, 0};
+		double[] defaults = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		double[] values = m_botpose.getDoubleArray(defaults);
+		var xMeters = values[0];
+		var yMeters = values[1];
+		var avgTagDistanceMeters = values[9];
 		// If the limelight is returning bad values, return null
-		if(values[0] == 0 && values[1] == 0) { 
+		if((xMeters == 0 && yMeters == 0) || avgTagDistanceMeters > VisionConstants.AprilTagAverageDistanceThresholdMeters) { 
 			return null;
 		} else {
 			return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));

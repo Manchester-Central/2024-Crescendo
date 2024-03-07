@@ -3,36 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 8.28012348332389,
+        "y": 2.4272679314589416
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 6.5632754342431765,
+        "y": 1.7267149918915226
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DenyNF4"
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 8.28012348332389,
+        "y": 5.742560715890662
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 6.9678200894863345,
+        "y": 4.469725093296342
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "PushNF2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -118.83418693530929,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "Deny",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "launchSpit"
               }
             }
           ]
@@ -57,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 91.75340486007148,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "MidDenial",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": -153.67670173219005,
     "velocity": 0
   },
   "useDefaultConstraints": true

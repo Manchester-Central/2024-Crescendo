@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "EasySolo-Begin"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "launch"

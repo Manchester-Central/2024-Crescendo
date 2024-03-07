@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 7.194759774134935,
+        "y": 2.2299290752427665
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 5.408843125378559,
+        "y": 1.4701744788104976
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Deny GoBackNF4"
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 2.389558625271098,
+        "y": 3.2462241847560627
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 3.7511967331626983,
+        "y": 1.7464488775131404
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "Deny NF3Launch"
     }
   ],
   "rotationTargets": [],
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 135.60056269572758,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "MidDenial",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": -162.74000187799214,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.6373441619921745,
+        "y": 4.04023860829462
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.192332373252477,
+        "y": 4.0519494448404005
+      },
+      "isLocked": false,
+      "linkedName": "SimpleAutoNC3"
+    },
+    {
+      "anchor": {
+        "x": 1.7707422576043426,
+        "y": 4.344720358484939
+      },
+      "prevControl": {
+        "x": 2.192332373252477,
+        "y": 4.005106098657276
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 143.77505574447972,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SimpleAuto",
+  "previewStartingState": {
+    "rotation": 178.97696981133222,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 8.28012348332389,
+        "y": 2.417400988648132
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 5.487778667865028,
+        "y": 1.0952306519997652
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MidRaceN4"
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 2.182352826244115,
+        "y": 3.404095269729001
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 4.31374364338782,
+        "y": 1.5591284868739088
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "MidRaceLaunch2"
     }
   ],
   "rotationTargets": [],
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 145.23480276342323,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "MidLineRace",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
+    "rotation": -154.41,
     "velocity": 0
   },
   "useDefaultConstraints": true

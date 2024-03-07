@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2055254879740545,
-      "y": 3.9467771243234795
+      "x": 1.284461030460524,
+      "y": 3.818506867782967
     },
-    "rotation": 119.19748604606451
+    "rotation": 125.98929045318236
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartSource-To-NF5"
+            "pathName": "MidRace"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF5-To-SourceLaunch"
+            "pathName": "MidRaceLaunch2"
           }
         },
         {
@@ -38,31 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NF5SourceLaunch-To-NF4"
+            "pathName": "MidRaceNF3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF4-To-SourceLaunch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF4SourceLaunch-To-NC3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeWait"
+            "pathName": "MidRaceLaunch3"
           }
         },
         {
@@ -74,6 +56,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "MidLineRace",
   "choreoAuto": false
 }

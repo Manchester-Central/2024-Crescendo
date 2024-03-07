@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2055254879740545,
-        "y": 3.9467771243234795
+        "x": 2.912506594243959,
+        "y": 6.975928567241751
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6298040288388285,
-        "y": 3.512631640647897
+        "x": 4.274144702135559,
+        "y": 7.104198823782264
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AmpSide-5Ns-AroundStage-Part5-End"
     },
     {
       "anchor": {
-        "x": 8.151853226783379,
-        "y": 0.779488482053888
+        "x": 8.299857368945508,
+        "y": 7.410074050917332
       },
       "prevControl": {
-        "x": 3.208514878568222,
-        "y": 1.2333678513510882
+        "x": 6.847773216483517,
+        "y": 7.410074050917332
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "AmpSide-5Ns-AroundStage-Part6-End"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "Start intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -57,14 +57,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.40885972880548,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "6329Frwends",
+  "folder": "AmpSide-5Ns-AroundStage",
   "previewStartingState": {
-    "rotation": 125.01503979535667,
-    "velocity": 0
+    "rotation": 180.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

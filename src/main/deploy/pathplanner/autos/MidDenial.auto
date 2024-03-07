@@ -2,16 +2,52 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2055254879740545,
-      "y": 3.9467771243234795
+      "x": 1.254860202028098,
+      "y": 4.01584572399914
     },
-    "rotation": 119.19748604606451
+    "rotation": 129.47245984834382
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Deny Begin"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launchWithTimeout"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Push NF2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF2 To NF3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Deny NF3Launch"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "launch"
@@ -20,49 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartSource-To-NF5"
+            "pathName": "Deny GoBackNF4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF5-To-SourceLaunch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF5SourceLaunch-To-NF4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF4-To-SourceLaunch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF4SourceLaunch-To-NC3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeWait"
+            "pathName": "Deny NF4 Launch"
           }
         },
         {
@@ -74,6 +74,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Deny",
   "choreoAuto": false
 }
