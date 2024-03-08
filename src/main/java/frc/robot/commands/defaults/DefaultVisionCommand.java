@@ -32,10 +32,7 @@ public class DefaultVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var pose = m_vision.getPose();
-    if (VisionConstants.UseVisionForOdometry && pose != null) {
-      // m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
-    }
+    //
   }
 
   // Called once the command ends or is interrupted.

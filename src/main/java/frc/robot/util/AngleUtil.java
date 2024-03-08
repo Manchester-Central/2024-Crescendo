@@ -7,12 +7,14 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 
 public class AngleUtil {
 
     public static Rotation2d GetEstimatedAngleToGoal(Vision camera, Pose2d currentPose, Rotation2d currentAngle) {
-        if (camera.hasTarget()) {
-            var aimXAngle = -camera.getXAngle();
+		var frontcam = camera.getCamera(CameraDirection.front);
+        if (frontcam.hasTarget()) {
+            var aimXAngle = -frontcam.getTargetAzimuth(true);
             var aimCurrentAngle = currentAngle;
             var targetAngle = Rotation2d.fromDegrees(aimXAngle).plus(aimCurrentAngle).getDegrees();
             targetAngle = AngleUtil.clampAngle(targetAngle);
