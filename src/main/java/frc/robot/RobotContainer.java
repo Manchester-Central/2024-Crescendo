@@ -73,7 +73,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision("limelight-front");
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -124,7 +124,7 @@ public class RobotContainer {
   private void configureBindings() {
     
     if (Robot.isSimulation()) {
-      m_vision.prepSimulation(() -> m_swerveDrive.getPose()); 
+      m_vision.prepSimulation(); 
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
     }
 
@@ -235,27 +235,14 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
-    var visionPose = m_vision.getPose();
-    var distanceToSpeaker = -1.0;
-    if(visionPose != null){
-      if (!DriverStation.isTeleopEnabled()) {
-        // temp change - disable odometry estimations when in teleop until we have tested better and got the back limelight tested too
-        m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
-      }
-      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
-    }else{
-      visionPose = new Pose2d();
-    }
-    SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
-
     var drivePose = m_swerveDrive.getPose();
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      visionPose.getX(),
-      visionPose.getY(),
-      visionPose.getRotation().getDegrees()
+      // visionPose.getX(),
+      // visionPose.getY(),
+      // visionPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
