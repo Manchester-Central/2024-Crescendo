@@ -17,12 +17,14 @@ public class FlywheelTable {
 
     public static final String FlywheelTableLowerHeight = "FlywheelTableLowerHeight.csv";
     public static final String FlywheelTableUpperHeight = "FlywheelTableUpperHeight.csv";
-    private double m_minDistance = 0;
-    private double m_maxDistance = 0;
+    private double m_minTY = 0;
+    private double m_maxTY = 0;
+    private double m_minDistanceMeters = 0;
+    private double m_maxDistanceMeters = 0;
 
     // holds an ArrayList with a key (distance) as reference to [key]
-    ArrayList<TableData> flyTable = new ArrayList<TableData>();
-
+    ArrayList<TableData> flyTableByTY = new ArrayList<TableData>();
+    ArrayList<TableData> flyTableByDistance = new ArrayList<TableData>();
 
     /**
      * Creates a FlyWheel table for the given fileName in the deploy directory
@@ -78,8 +80,9 @@ public class FlywheelTable {
      * @param lines the string array of the CSV file (with no header row) 
      */
     public void parseLines(List<String> lines) {
-        flyTable.clear();
-        
+        flyTableByTY.clear();
+        flyTableByDistance.clear();
+
         String[] data;
 
         // If found, read the FlywheelTable file
@@ -89,15 +92,19 @@ public class FlywheelTable {
                 addData(TableData.FromCSV(data));
             }
 
-            flyTable.sort(TableData.getComparatorTY()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
-            for (TableData dataRow : flyTable) {
+            flyTableByTY.sort(TableData.getComparatorTY()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
+            flyTableByDistance.sort(TableData.getComparatorDistanceM());
+            for (TableData dataRow : flyTableByTY) {
                 System.out.println(dataRow.toString());
             }
 
             // set the min and max distances
-            if (flyTable.size() > 0) {
-                m_minDistance = getTY(0);
-                m_maxDistance = getTY(flyTable.size() - 1);
+            if (flyTableByTY.size() > 0) {
+                var lastRowIndex = flyTableByTY.size() - 1;
+                m_minTY = getTY(0);
+                m_maxTY = getTY(lastRowIndex);
+                m_minDistanceMeters = getDistanceMeters(0);
+                m_maxDistanceMeters = getDistanceMeters(lastRowIndex);
             }
         } catch (Exception ie) {
             ie.printStackTrace();
@@ -107,15 +114,37 @@ public class FlywheelTable {
 
     // takes raw data, adds to data structure
     private void addData(TableData data) {
-        flyTable.add(data);
+        flyTableByTY.add(data);
+        flyTableByDistance.add(data);
     }
 
-    private TableData getTableData(int index) {
-        return flyTable.get(index);
+    private TableData getTYTableData(int index) {
+        return flyTableByTY.get(index);
+    }
+
+    private TableData getDistanceTableData(int index) {
+        return flyTableByDistance.get(index);
     }
 
     private double getTY(int index) {
-        return getTableData(index).getTY();
+        return getTYTableData(index).getTY();
+    }
+    private double getDistanceMeters(int index) {
+        return getDistanceTableData(index).getDistanceMeters();
+    }
+
+    /**
+     * Finds the index of the first element whose value is less than distance.
+     * @param ty - The distance between the robot and the target.
+     * @return The index of the first element in flyTable with a value less than distance.
+     */
+    private int findIndexByTY(double ty) {
+        for (int i = 0; i < flyTableByTY.size(); i++) {
+            if (ty < getTY(i)) {
+                return i;
+            }
+        }
+        return flyTableByTY.size() - 1;
     }
 
     /**
@@ -123,13 +152,13 @@ public class FlywheelTable {
      * @param distance - The distance between the robot and the target.
      * @return The index of the first element in flyTable with a value less than distance.
      */
-    private int findIndex(double distance) {
-        for (int i = 0; i < flyTable.size(); i++) {
-            if (distance < getTY(i)) {
+    private int findIndexByDistance(double distance) {
+        for (int i = 0; i < flyTableByDistance.size(); i++) {
+            if (distance < getDistanceMeters(i)) {
                 return i;
             }
         }
-        return flyTable.size() - 1;
+        return flyTableByDistance.size() - 1;
     }
 
     /**
@@ -138,14 +167,14 @@ public class FlywheelTable {
      * @param distance2 the second distance value
      * @param dependent1 the first dependent value (speed, tilt, etc)
      * @param dependent2 the second dependent value (speed, tilt, etc)
-     * @param targetDistance the point to interpolate a value at
+     * @param target the point to interpolate a value at
      * @return the interpolated dependent value
      */
-    private double getInterpolatedValue(double distance1, double distance2, double dependent1, double dependent2, double targetDistance) {
+    private double getInterpolatedValue(double distance1, double distance2, double dependent1, double dependent2, double target) {
         double slope = (dependent2 - dependent1) / (distance2 - distance1);
         double intercept = dependent1 - (slope * distance1);
 
-        return (slope * targetDistance) + intercept;
+        return (slope * target) + intercept;
     }
 
 
@@ -153,17 +182,17 @@ public class FlywheelTable {
      * Gets the interpolated value between a TableData's dependent variable
      * @param bottomTableData the row with the lower distance
      * @param topTableData the row with the higher distance
-     * @param targetDistance the point to interpolate the value at
+     * @param target the point to interpolate the value at
      * @param dependentGetter a lambda function to get the dependent variable
      * @return the interpolated dependent value
      */
-    private double getInterpolatedValue(TableData bottomTableData, TableData topTableData, double targetDistance, Function<TableData, Double> dependentGetter) {
+    private double getInterpolatedValue(TableData bottomTableData, TableData topTableData, double target, Function<TableData, Double> dependentGetter) {
         return getInterpolatedValue(
             bottomTableData.getTY(),
             topTableData.getTY(),
             dependentGetter.apply(bottomTableData),
             dependentGetter.apply(topTableData),
-            targetDistance
+            target
         );
     }
 
@@ -171,12 +200,31 @@ public class FlywheelTable {
      * Creates a new TableData with all dependent variables interpolated
      * @param bottomTableData the row with the lower distance
      * @param topTableData the row with the higher distance
+     * @param targetTY the point to interpolate the values at
+     * @return the new TableData with interpolated values
+     */
+    private TableData getInterpolatedDataByTY(TableData bottomTableData, TableData topTableData, double targetTY) {
+        return new TableData(
+            0,
+            targetTY,
+            getInterpolatedValue(bottomTableData, topTableData, targetTY, td -> td.getLauncherSpeedRPM()),
+            getInterpolatedValue(bottomTableData, topTableData, targetTY, td -> td.getSpeedOffsetRPM()),
+            getInterpolatedValue(bottomTableData, topTableData, targetTY, td -> td.getTiltAngle().getDegrees()),
+            getInterpolatedValue(bottomTableData, topTableData, targetTY, td -> td.getHeightMeters())
+        );
+    }
+
+     /**
+     * Creates a new TableData with all dependent variables interpolated
+     * @param bottomTableData the row with the lower distance
+     * @param topTableData the row with the higher distance
      * @param targetDistance the point to interpolate the values at
      * @return the new TableData with interpolated values
      */
-    private TableData getInterpolatedData(TableData bottomTableData, TableData topTableData, double targetDistance) {
+    private TableData getInterpolatedDataByDistance(TableData bottomTableData, TableData topTableData, double targetDistance) {
         return new TableData(
             targetDistance,
+            0,
             getInterpolatedValue(bottomTableData, topTableData, targetDistance, td -> td.getLauncherSpeedRPM()),
             getInterpolatedValue(bottomTableData, topTableData, targetDistance, td -> td.getSpeedOffsetRPM()),
             getInterpolatedValue(bottomTableData, topTableData, targetDistance, td -> td.getTiltAngle().getDegrees()),
@@ -189,23 +237,24 @@ public class FlywheelTable {
      * @param ty - The distance between the robot and the target.
      * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given distance. An Optional.Empty() if the distance is outside the table.
      */
-    public Optional<TableData> getIdealTarget(double ty) {
-        if (flyTable.isEmpty() || ty < m_minDistance || ty > m_maxDistance) {
+    public Optional<TableData> getIdealTargetByTY(double ty) {
+        if (flyTableByTY.isEmpty() || ty < m_minTY || ty > m_maxTY) {
             return Optional.empty();
         }
 
-        int initialIndex = findIndex(ty);
+        int initialIndex = findIndexByTY(ty);
         int topIndex = (initialIndex == 0) ? 1 : initialIndex;
         int botIndex = topIndex - 1;
 
-        var bottomTableData = getTableData(botIndex);
-        var topTableData = getTableData(topIndex);
+        var bottomTableData = getTYTableData(botIndex);
+        var topTableData = getTYTableData(topIndex);
 
         // Get interpolated values
-        var interpolatedValues = getInterpolatedData(bottomTableData, topTableData, ty);
+        var interpolatedValues = getInterpolatedDataByTY(bottomTableData, topTableData, ty);
 
         // Returns a new TableData value with the interpolated values and discrete values
         return Optional.of(new TableData(
+            0,
             ty,
             interpolatedValues.getLauncherSpeedRPM(),
             bottomTableData.getSpeedOffsetRPM(), // Default to further row's offset
@@ -214,11 +263,50 @@ public class FlywheelTable {
         ));
     }
 
-    public double getMinDistance() {
-        return m_minDistance;
+    /**
+     * Given the distance between the robot and the target, calculate the ideal launcher angle, speed, and lift height to score
+     * @param distance - The distance between the robot and the target.
+     * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given distance. An Optional.Empty() if the distance is outside the table.
+     */
+    public Optional<TableData> getIdealTargetByDistance(double distance) {
+        if (flyTableByDistance.isEmpty() || distance < m_minDistanceMeters || distance > m_maxDistanceMeters) {
+            return Optional.empty();
+        }
+
+        int initialIndex = findIndexByDistance(distance);
+        int topIndex = (initialIndex == 0) ? 1 : initialIndex;
+        int botIndex = topIndex - 1;
+
+        var bottomTableData = getDistanceTableData(botIndex);
+        var topTableData = getDistanceTableData(topIndex);
+
+        // Get interpolated values
+        var interpolatedValues = getInterpolatedDataByDistance(bottomTableData, topTableData, distance);
+
+        // Returns a new TableData value with the interpolated values and discrete values
+        return Optional.of(new TableData(
+            distance,
+            0,
+            interpolatedValues.getLauncherSpeedRPM(),
+            bottomTableData.getSpeedOffsetRPM(), // Default to further row's offset
+            interpolatedValues.getTiltAngle().getDegrees(), 
+            bottomTableData.getHeightMeters() // Default to further row's lift height
+        ));
     }
 
-    public double getMaxDistance() {
-        return m_maxDistance;
+    public double getMinTY() {
+        return m_minTY;
+    }
+
+    public double getMaxTY() {
+        return m_maxTY;
+    }
+
+    public double getMinDistanceMeters() {
+        return m_minDistanceMeters;
+    }
+
+     public double getMaxDistanceMeters() {
+        return m_maxDistanceMeters;
     }
 }
