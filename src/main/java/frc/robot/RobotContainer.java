@@ -54,6 +54,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
@@ -235,13 +236,14 @@ public class RobotContainer {
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
     var drivePose = m_swerveDrive.getPose();
+    var camraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      // visionPose.getX(),
-      // visionPose.getY(),
-      // visionPose.getRotation().getDegrees()
+      camraPose.getX(),
+      camraPose.getY(),
+      camraPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
@@ -295,6 +297,7 @@ public class RobotContainer {
   }
 
   public void updatePoseEstimator(VisionData data) {
-    throw new UnsupportedOperationException("Unimplemented method 'updatePoseEstimator'");
+    m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());;
   }
+
 }
