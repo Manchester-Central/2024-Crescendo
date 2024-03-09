@@ -95,7 +95,7 @@ public class RobotContainer {
   );
 
   public RobotContainer() {
-    m_PDH.setSwitchableChannel(true);
+    m_PDH.setSwitchableChannel(false);
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
     // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
@@ -249,6 +249,8 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
+    var distanceToSpeaker = FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation().getDistance(m_swerveDrive.getPose().getTranslation());
+    SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     handleDriverRumble();
