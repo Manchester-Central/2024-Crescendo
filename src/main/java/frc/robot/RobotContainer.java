@@ -9,6 +9,7 @@ import java.util.function.Function;
 // import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix.music.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -62,7 +63,8 @@ import frc.robot.util.DriveDirection;
 import frc.robot.util.FieldPose2024;
 
 public class RobotContainer {
-
+  
+  private Orchestra m_Orchestra = new Orchestra();
   private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
   public static Gamepad SimKeyboard;
@@ -94,6 +96,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
+    m_Orchestra.addInstrument(m_lift.getLeftMotor()); // add talonFX
     // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
     // m_autoBuilder.registerCommand("resetPosition", (pc) -> ResetPosition.createAutoCommand(pc, m_swerveDrive));
     // m_autoBuilder.registerCommand("launch", (pc) -> FocusAndLaunch.createAutoCommand(pc, m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
@@ -119,6 +122,7 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
   
     SmartDashboard.putData("Auto Chooser", m_pathPlannerChooser);
+
   }
 
   private void configureBindings() {
@@ -308,5 +312,13 @@ public class RobotContainer {
 
   public void delayedDisableInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Coast);
+  }
+
+   public void playMusic() {
+    if(!m_Orchestra.isPlaying()) {
+
+    m_Orchestra.loadMusic("chaos2024.chrp");
+    m_Orchestra.play();
+    }
   }
 }

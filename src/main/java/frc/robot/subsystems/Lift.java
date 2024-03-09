@@ -188,4 +188,12 @@ public class Lift extends SubsystemBase {
 		m_liftLeft.getConfigurator().apply(neutralModeConfigLeft);
 		m_liftRight.getConfigurator().apply(neutralModeConfigRight);
 	}
+
+	public TalonFX getLeftMotor() {
+		return m_liftLeft;
+	}
+
+	public TalonFX getRightMotor() {
+		return m_liftRight;
+	}
 }
