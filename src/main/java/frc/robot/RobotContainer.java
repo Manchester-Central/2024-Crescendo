@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -236,14 +237,15 @@ public class RobotContainer {
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
     var drivePose = m_swerveDrive.getPose();
-    var camraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
+    var cameraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
+    cameraPose = cameraPose != null ? cameraPose : new Pose2d();
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      camraPose.getX(),
-      camraPose.getY(),
-      camraPose.getRotation().getDegrees()
+      cameraPose.getX(),
+      cameraPose.getY(),
+      cameraPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
