@@ -83,6 +83,7 @@ public class LimeLightCamera implements CameraInterface {
 		m_ty = m_visionTable.getEntry("ty");
 		m_tv = m_visionTable.getEntry("tv");
 		m_simPoseSupplier = poseSupplier;
+		m_poseUpdator = poseConsumer;
 
 		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueAll),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
@@ -108,9 +109,10 @@ public class LimeLightCamera implements CameraInterface {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
-		
-		var frontpose = new Pose3d(data[idxX], data[idxY], data[idxZ], new Rotation3d(data[idxRoll],data[idxPitch],data[idxYaw]));
-		
+
+		var frontpose = new Pose3d(data[idxX], data[idxY], data[idxZ], new Rotation3d(data[idxRoll] * Math.PI / 180, 
+			data[idxPitch] * Math.PI / 180, data[idxYaw]  * Math.PI / 180));
+
 		var conf = calculateConfidence(frontpose, (int)data[idxTagCount], data[idxTagDistance]);
 		if (conf < CONFIDENCE_REQUIREMENT) {
 			m_mostRecentData = Optional.empty();
