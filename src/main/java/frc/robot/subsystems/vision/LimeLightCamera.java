@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 
 public class LimeLightCamera implements CameraInterface {
@@ -24,6 +25,7 @@ public class LimeLightCamera implements CameraInterface {
 	private Supplier<Pose2d> m_simPoseSupplier; // supplies data when in simulation
 	private Consumer<VisionData> m_poseUpdator; // sends the data back to the swerve pose estimator
 	private Optional<VisionData> m_mostRecentData; // caches the most recent data, including no-datas
+	private Supplier<Pose3d> m_offset;
 
 	private NetworkTable m_visionTable;
 	private NetworkTableEntry m_botpose;
@@ -44,11 +46,16 @@ public class LimeLightCamera implements CameraInterface {
 	 * This is typically for intake cameras, which may not be the forward camera.
 	 */
 	public enum Mode {
-		BLUE_APRIL_TAGS,
-		RED_APRIL_TAGS,
-		RETROREFLECTIVE,
-		BLUE_SPEAKER,
-		RED_SPEAKER
+		BLUE_APRIL_TAGS(0),
+		RED_APRIL_TAGS(1),
+		RETROREFLECTIVE(2),
+		BLUE_SPEAKER(3),
+		RED_SPEAKER(4);
+		public final Integer pipelineId;
+
+    private Mode(Integer pipelineId) {
+        this.pipelineId = pipelineId;
+    }
 	}
 
 	private final double EPSILON = 1e-8;
@@ -86,8 +93,8 @@ public class LimeLightCamera implements CameraInterface {
 	}
 
 	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'calculateConfidence'");
+		// TODO Actually calculate confidence
+		return 1.0;
 	}
 
 	/**
@@ -134,14 +141,13 @@ public class LimeLightCamera implements CameraInterface {
 	 */
 	public LimeLightCamera setMode(Mode mode) {
 		m_mode = mode;
-		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
+		m_visionTable.getEntry("pipeline").setNumber(mode.pipelineId);
 
 		return this;
 	}
 
 	private boolean isCorrectPipeline() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'isCorrectPipeline'");
+	return m_visionTable.getEntry("getpipe").getInteger(-1) == m_mode.pipelineId;
 	}
 
 	/**
@@ -154,15 +160,6 @@ public class LimeLightCamera implements CameraInterface {
 	 * 
 	 * @return - The azimuth angle in degrees where +theta is to the right (typically opposite from robot drive)
 	 */
-	public Double getNoteAzimuth() {
-		if (m_mode != Mode.RETROREFLECTIVE) {
-			setMode(Mode.RETROREFLECTIVE);
-			return null;
-		}
-		Double temptx = m_tx.getDouble(-100);
-		if(temptx < -90) return null;
-		return temptx;
-	}
 
 	public void setToDefaultMode(Pose2d robotPose){
 		if(robotPose.getX() < VisionConstants.XMetersMidPoint){
@@ -174,37 +171,45 @@ public class LimeLightCamera implements CameraInterface {
 
 	@Override
 	public Pose2d getMostRecentPose() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getMostRecentPose'");
+		if(Robot.isSimulation()) {
+			return m_simPoseSupplier.get();
+
+		}
+		if(m_mostRecentData.isPresent()) {
+			return m_mostRecentData.get().getPose2d();
+		}
+		return null;
 	}
 
 	@Override
 	public boolean hasTarget() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'hasTarget'");
+		return m_tv.getInteger(-1) == 1;
 	}
 
 	@Override
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'setOffsetHandler'");
+	m_offset = offsetHandler;
 	}
 
 	@Override
 	public double getTargetAzimuth(boolean cameraRelative) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getTargetAzimuth'");
+		Double temptx = m_tx.getDouble(-100);
+		if(temptx < -90) return -90;
+		return temptx;
 	}
 
 	@Override
 	public double getTargetElevation(boolean cameraRelative) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getTargetElevation'");
+		Double tempty = m_ty.getDouble(-100);
+		if(tempty < -90) return -90;
+		return tempty;
 	}
 
+	/**
+	 * ID must be the number of the tag you want to track. -1 to reset it.
+	 */
 	@Override
 	public void setPriorityID(int id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'setPriorityID'");
+	m_visionTable.getEntry("priorityId").setNumber(id);
 	}
 }
