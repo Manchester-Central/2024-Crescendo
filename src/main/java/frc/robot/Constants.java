@@ -80,7 +80,7 @@ public class Constants {
 	}
 
 	public static class IOPorts {
-	
+		public static final int IntakeNoteSensor = 0;
 		public static final int LiftBottomSensor = 9;
 	}
 
