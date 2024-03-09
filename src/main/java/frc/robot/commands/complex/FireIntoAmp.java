@@ -20,6 +20,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.util.FieldPose2024;
 
 public class FireIntoAmp extends Command {
@@ -79,7 +80,7 @@ public class FireIntoAmp extends Command {
 		} else if(state == AmpDropSequence.VisionMoveAdjust) { 
 
 			// Calculate the error according to the Vision system
-			Pose2d visionPose = m_vision.getPose();
+			Pose2d visionPose = m_vision.getCamera(CameraDirection.back).getMostRecentPose();
 			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_finalPose.getTranslation());
 			Rotation2d rotationError = visionPose.getRotation().minus(m_finalPose.getRotation());
 			m_lift.moveToHeight(LiftConstants.AmpMeters);

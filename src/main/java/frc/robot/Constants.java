@@ -40,11 +40,11 @@ public class Constants {
 	}
 
 	public static class VisionConstants {
-		public static final boolean UseVisionForOdometry = false;
-		public static final int[] AprilTagPipelines = {0, 1, 2};
+		public static final boolean UseVisionForOdometry = true;
+		public static final int[] AprilTagPipelines = {0, 1, 2, 3, 4};
 		public static final double TxLaunchTolerance = 2;
 		public static final double AprilTagAverageDistanceThresholdMeters = 2.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
-		public static final double AprilTagXMetersMidPoint = 8.25; //TODO Confirm
+		public static final double XMetersMidPoint = 8.25; //TODO Confirm
 	}
 
 	public static class CANIdentifiers {

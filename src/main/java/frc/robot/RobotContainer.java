@@ -12,12 +12,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,6 +55,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.subsystems.vision.VisionData;
 import frc.robot.util.DriveDirection;
 import frc.robot.util.FieldPose2024;
 
@@ -73,7 +71,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision("limelight-front");
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data));
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -105,8 +103,6 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
-    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
-
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
     NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
@@ -124,7 +120,6 @@ public class RobotContainer {
   private void configureBindings() {
     
     if (Robot.isSimulation()) {
-      m_vision.prepSimulation(() -> m_swerveDrive.getPose()); 
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
     }
 
@@ -235,27 +230,14 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
-    var visionPose = m_vision.getPose();
-    var distanceToSpeaker = -1.0;
-    if(visionPose != null){
-      if (!DriverStation.isTeleopEnabled()) {
-        // temp change - disable odometry estimations when in teleop until we have tested better and got the back limelight tested too
-        m_swerveDrive.addVisionMeasurement(m_vision.getPose(), m_vision.getLatencySeconds());
-      }
-      distanceToSpeaker = FieldPose2024.Speaker.distanceTo(visionPose);
-    }else{
-      visionPose = new Pose2d();
-    }
-    SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
-
     var drivePose = m_swerveDrive.getPose();
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      visionPose.getX(),
-      visionPose.getY(),
-      visionPose.getRotation().getDegrees()
+      // visionPose.getX(),
+      // visionPose.getY(),
+      // visionPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
@@ -302,11 +284,13 @@ public class RobotContainer {
 
   public void autoAndTeleopInit(boolean isAuto) {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
-    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
-  
   }
 
   public void delayedDisableInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Coast);
+  }
+
+  public void updatePoseEstimator(VisionData data) {
+    throw new UnsupportedOperationException("Unimplemented method 'updatePoseEstimator'");
   }
 }

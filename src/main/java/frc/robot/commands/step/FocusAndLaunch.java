@@ -19,6 +19,7 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.TableData;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.AngleUtil;
 
@@ -55,13 +56,13 @@ public class FocusAndLaunch extends BaseLaunch {
   public void initialize() {
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
-    m_vision.setMode(m_vision.getSpeakerTrackingMode());
+    //m_vision.getCamera(CameraDirection.front).setMode(m_vision.getSpeakerTrackingMode());
     super.initialize();
   }
 
   @Override
   public void execute() {
-    if (m_vision.hasTarget()) {
+    if (m_vision.getCamera(CameraDirection.front).hasTarget()) {
       var currentPose = m_swerveDrive.getPose();
       var currentRotation = currentPose.getRotation();
       var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
@@ -91,7 +92,6 @@ public class FocusAndLaunch extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.updateAprilTagMode(m_swerveDrive.getPose());
     super.end(interrupted);
   }
 
@@ -107,8 +107,8 @@ public class FocusAndLaunch extends BaseLaunch {
     // }
     // return (m_beenAboveThreshold ? m_flywheelTableUpperHeight :
     // m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
-    var ty = m_vision.getYAngle();
-    if (!m_vision.hasTarget()) {
+    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
+    if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
     if (ty <= m_flywheelTableLowerHeight.getMinDistance()) {
@@ -123,6 +123,6 @@ public class FocusAndLaunch extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-    return Math.abs(m_vision.getXAngle()) < VisionConstants.TxLaunchTolerance;
+    return Math.abs(m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
   }
 }

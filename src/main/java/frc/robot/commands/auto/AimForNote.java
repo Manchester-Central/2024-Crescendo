@@ -5,6 +5,7 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 
 public class AimForNote extends Command {
 	private BaseSwerveDrive m_swerveDrive;
@@ -24,8 +25,8 @@ public class AimForNote extends Command {
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		Double tx = m_vision.getNoteAzimuth();
-		if(tx == null) return;
+		Double tx = m_vision.getCamera(CameraDirection.back).getTargetAzimuth(true);
+		if(!m_vision.getCamera(CameraDirection.back).hasTarget()) return;
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
 		// TODO: Drive into the note until it is intaken (intook?)

@@ -14,6 +14,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.util.FieldPose2024;
 
 public class LiftClimbAndPull extends Command {
@@ -72,7 +73,7 @@ public class LiftClimbAndPull extends Command {
 		} else if ( state == LiftSequence.VisionMoveAdjust) {
 			// Vision based movement
 
-			Pose2d visionPose = m_vision.getPose();
+			Pose2d visionPose = m_vision.getCamera(CameraDirection.back).getMostRecentPose();
 			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_startClimbPose.getTranslation());
 			Rotation2d rotationError = visionPose.getRotation().minus(m_startClimbPose.getRotation());
 			m_lift.moveToHeight(LiftConstants.StartClimbHeight);

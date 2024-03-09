@@ -1,54 +1,24 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.chaos131.swerve.BaseSwerveDrive;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.CameraInterface;
+import frc.robot.subsystems.vision.LimeLightCamera;
+import frc.robot.subsystems.vision.VisionData;
 
 
 public class Vision extends SubsystemBase {
-	private NetworkTable m_visionTable;
-	private NetworkTableEntry m_botpose;
-	private NetworkTableEntry m_pipelineID;
 
-	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
-	private NetworkTableEntry m_tx;
-	private NetworkTableEntry m_ty;
-	private NetworkTableEntry m_tv;
-	
-	/**
-	 * Represents which mode the robot is in.
-	 * 
-	 * <p>BLUE_APRIL_TAGS - The pipeline corresponding to the tags on the BLUE side of the field.
-	 * <p>RED_APRIL_TAGS - The pipeline corresponding to the tags on the RED side of the field.
-	 * <p>RETROREFLECTIVE - The pipeline used for finding notes on the field.
-	 * This is typically for intake cameras, which may not be the forward camera.
-	 */
-	public enum Mode {
-		BLUE_APRIL_TAGS,
-		RED_APRIL_TAGS,
-		RETROREFLECTIVE,
-		BLUE_SPEAKER,
-		RED_SPEAKER
+	public enum CameraDirection {
+		front, back
 	}
-
-	private Field2d m_field = new Field2d();
-
-	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
-
-	private Supplier<Pose2d> m_simPoseSupplier;
+	
+	private CameraInterface m_FrontLimeLightCamera;
+	private CameraInterface m_BackLimeLightCamera;
 
 	/**
 	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
@@ -56,150 +26,41 @@ public class Vision extends SubsystemBase {
 	 * 
 	 * @param tablename - String of the device name.
 	 */
-	public Vision(String tablename) {
-		m_visionTable = NetworkTableInstance.getDefault().getTable(tablename);
-		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
-		m_pipelineID = m_visionTable.getEntry("getpipe");
-		m_tx = m_visionTable.getEntry("tx");
-		m_ty = m_visionTable.getEntry("ty");
-		m_tv = m_visionTable.getEntry("tv");
+	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator) {
+		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator);
+		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator);
 	}
 
-	public Vision prepSimulation(Supplier<Pose2d> poseSupplier) {
-		m_simPoseSupplier = poseSupplier;
-		return this;
+	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {
+		switch (direction) {
+			case front:
+				m_FrontLimeLightCamera.setOffsetHandler(offsetHandler);
+				break;
+
+			case back:
+				m_BackLimeLightCamera.setOffsetHandler(offsetHandler);
+				break;
+
+			default:
+				break;
+		}
 	}
 
-	/**
-	 * Overloaded for convenience to be able to set the initial mode/state.
-	 * 
-	 * @param tablename - String of the device name.
-	 * @param initialState - Whichever state (ie, side of the field) the robot is initializing on.
-	 */
-	public Vision(String tablename, Mode initialState) {
-		this(tablename);
-		m_mode = initialState;
-	} 
+	public CameraInterface getCamera(CameraDirection direction) {
+		switch (direction) {
+			case front:
+				return m_FrontLimeLightCamera;
 
-	/**
-	 * 
-	 * @return The robot's current pose based on limelight april tag readings. When this function returns null,
-	 * it should be ignored in calculations
-	 */
-	public Pose2d getPose() {
-		if (Robot.isSimulation()) {
-			return m_simPoseSupplier.get();
-		}
-		if(m_mode == Mode.RETROREFLECTIVE) {
-			return null; // Do not run if we are currently in a non april tag pipeline
-		}
-		double[] defaults = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		double[] values = m_botpose.getDoubleArray(defaults);
-		var xMeters = values[0];
-		var yMeters = values[1];
-		var avgTagDistanceMeters = values[9];
-		// If the limelight is returning bad values, return null
-		if((xMeters == 0 && yMeters == 0) || avgTagDistanceMeters > VisionConstants.AprilTagAverageDistanceThresholdMeters) { 
-			return null;
-		} else {
-			return new Pose2d(values[0], values[1], Rotation2d.fromDegrees(values[5]));
+			case back:
+				return m_BackLimeLightCamera;
+
+			default:
+				return null;
 		}
 	}
 
 	public void periodic() {
-		var pose = getPose();
-		if(pose != null) {
-			m_field.setRobotPose(pose);
-		} else {
-			m_field.setRobotPose(new Pose2d(0, 0, new Rotation2d(0)));
-		}
-		SmartDashboard.putData("vision field", m_field);
-
-
+		// TODO: Discuss if we run periodic here or in each CameraInterface
+		// It comes down to how to we "lock" the pipelines, and what's the easiest system for that
 	}
-
-	/**
-	 * Pulls the current limelight pipeline number from network tables.
-	 * 
-	 * @return -1 is returned if no value is received from m_pipelineID
-	 */
-	public long getPipeline() {
-		return m_pipelineID.getInteger(-1);
-	}
-
-	/**
-	 * Changes the internal state machine, and updates the limelight to use the specified 
-	 * 
-	 * @param mode - The Mode to switch to (BLUE_APRIL_TAGS, RED_APRIL_TAGS, RETROREFLECTIVE)
-	 * @return - Returns itself for chaining
-	 */
-	public Vision setMode(Mode mode) {
-		m_mode = mode;
-		m_visionTable.getEntry("pipeline").setNumber(mode.ordinal());
-
-		return this;
-	}
-
-	public Mode getSpeakerTrackingMode() {
-		return DriverStation.getAlliance().get() == Alliance.Blue ? Vision.Mode.BLUE_SPEAKER : Vision.Mode.RED_SPEAKER;
-	}
-
-	public double getLatencySeconds() {
-		double[] defaultValues = {0, 0, 0, 0, 0, 0, 0}; // Used if limelight values cannot be retrieved
-		double latencyMilliseconds = m_botpose.getDoubleArray(defaultValues)[6]; // The seventh element is latency in ms
-		double latencySeconds = latencyMilliseconds / 1000;
-		return latencySeconds;
-	}
-
-	/**
-	 * On the first attempt to detect a note from a different pipeline, it will have to tell the limelight to swap back.
-	 * In an effort to reduce bad values leaking into the system, we reject any values that might be there since AprilTags
-	 * still return valid tx and ty values.
-	 * 
-	 * <p>NOTE: (pun intended) that latency in the system could still introduce incorrect values that are ordinarily valid.
-	 * This needs further research, but may not be a problem in practice. Or maybe we just remove values above the horizon?
-	 * 
-	 * @return - The azimuth angle in degrees where +theta is to the right (typically opposite from robot drive)
-	 */
-	public Double getNoteAzimuth() {
-		if (m_mode != Mode.RETROREFLECTIVE) {
-			setMode(Mode.RETROREFLECTIVE);
-			return null;
-		}
-		Double temptx = m_tx.getDouble(-100);
-		if(temptx < -90) return null;
-		return temptx;
-	}
-
-	public double getXAngle() {
-		if (Robot.isSimulation()) {
-			// TODO: calculate value based on sim distance to goal
-			return 0;
-		}
-		return m_tx.getDouble(0.0);
-	  }
-	
-	  public double getYAngle() {
-		if (Robot.isSimulation()) {
-			// TODO: calculate value based on sim distance to goal
-			return 0;
-		}
-		return m_ty.getDouble(0.0);
-	  }
-	
-	  public boolean hasTarget() {
-		if (Robot.isSimulation()) {
-			// TODO: only return true if within a certain angle/distance of the goal
-			return true;
-		}
-		return (m_tv.getDouble(0) == 1);
-	  }
-
-	  public void updateAprilTagMode(Pose2d robotPose){
-		if(robotPose.getX() < VisionConstants.AprilTagXMetersMidPoint){
-			setMode(Mode.BLUE_APRIL_TAGS);
-		}else{
-			setMode(Mode.RED_APRIL_TAGS);
-		}
-	  }
 }
