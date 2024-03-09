@@ -17,9 +17,8 @@ public class TableData {
     private double m_tiltAngleDegrees;
     private double m_heightMeters;
 
-    public TableData(double ty, double speed, double speedOffset,double launcherAngle, double heightMeters) {
-
-        // m_distanceMeters = distance;
+    public TableData(double distance, double ty, double speed, double speedOffset,double launcherAngle, double heightMeters) {
+        m_distanceMeters = distance;
         m_ty = ty;
         m_launcherSpeedRPM = speed;
         m_speedOffsetRPM = speedOffset;
@@ -29,7 +28,7 @@ public class TableData {
     }
 
     public static TableData FromCSV(String[] args) throws Exception {
-        // var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
+        var distanceMeters = getValueFromStringArray(args, 0, true, "distanceMeters");
         var ty = getValueFromStringArray(args, 1, true, "ty");
         var launcherSpeedRPM = getValueFromStringArray(args, 2, true, "launcherSpeedRPM");
         var speedOffsetRPM = getValueFromStringArray(args, 3, true, "speedOffsetRPM");
@@ -37,7 +36,7 @@ public class TableData {
         var heightMeters = getValueFromStringArray(args, 5, true, "heightMeters");
 
         return new TableData(
-            // Double.parseDouble(distanceMeters),
+            Double.parseDouble(distanceMeters),
             Double.parseDouble(ty),
             Double.parseDouble(launcherSpeedRPM),
             Double.parseDouble(speedOffsetRPM),
@@ -62,17 +61,17 @@ public class TableData {
         return value != null && !value.isBlank();
     }
 
-    // public static Comparator<TableData> getComparatorDistanceM() {
-    //     return new Comparator<TableData>() {
-    //         @Override
-    //         public int compare(TableData arg0, TableData arg1) {
-    //             if (arg1.getDistanceMeters() == arg0.getDistanceMeters()){
-    //                 return 0;
-    //             }
-    //             return arg1.getDistanceMeters() < arg0.getDistanceMeters() ? 1 : -1;
-    //         }
-    //     };
-    // }
+    public static Comparator<TableData> getComparatorDistanceM() {
+        return new Comparator<TableData>() {
+            @Override
+            public int compare(TableData arg0, TableData arg1) {
+                if (arg1.getDistanceMeters() == arg0.getDistanceMeters()){
+                    return 0;
+                }
+                return arg1.getDistanceMeters() < arg0.getDistanceMeters() ? 1 : -1;
+            }
+        };
+    }
 
     public static Comparator<TableData> getComparatorTY() {
         return new Comparator<TableData>() {
@@ -86,9 +85,9 @@ public class TableData {
         };
     }
 
-    // public double getDistanceMeters() {
-    //     return m_distanceMeters;
-    // }
+    public double getDistanceMeters() {
+        return m_distanceMeters;
+    }
 
     public double getTY() {
         return m_ty;

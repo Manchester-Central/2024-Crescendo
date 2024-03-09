@@ -22,6 +22,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.AngleUtil;
+import frc.robot.util.FieldPose2024;
 
 public class FocusAndLaunch extends BaseLaunch {
   private FlywheelTable m_flywheelTableLowerHeight;
@@ -97,17 +98,14 @@ public class FocusAndLaunch extends BaseLaunch {
 
   @Override
   protected Optional<TableData> getTargets() {
-    // var pose = m_vision.getPose();
-    // if (pose == null) {
-    // return Optional.empty();
-    // }
-    // var distanceMeters = FieldPose2024.Speaker.distanceTo(pose);
-    // if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistance()) {
-    // m_beenAboveThreshold = true;
-    // }
-    // return (m_beenAboveThreshold ? m_flywheelTableUpperHeight :
-    // m_flywheelTableLowerHeight).getIdealTarget(distanceMeters);
-    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
+    var distanceMeters = FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose());
+    if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistanceMeters()) {
+      m_beenAboveThreshold = true;
+    }
+    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByDistance(distanceMeters);
+    SmartDashboard.putString("launch targets", targets.toString());
+    return targets;
+    /*var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
@@ -117,7 +115,7 @@ public class FocusAndLaunch extends BaseLaunch {
     var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(ty);
     // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
-    return targets;
+    return targets;*/
   }
 
   @Override
