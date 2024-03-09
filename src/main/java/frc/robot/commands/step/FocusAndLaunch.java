@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.FlywheelTable;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.TableData;
@@ -41,9 +42,10 @@ public class FocusAndLaunch extends BaseLaunch {
       FlywheelTable flywheelTableUpperHeight,
       Vision vision,
       BaseSwerveDrive swerveDrive,
-      Gamepad driver
+      Gamepad driver,
+      Intake intake
   ) {
-    super(lift, launcher, feeder);
+    super(lift, launcher, feeder, intake);
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
@@ -74,20 +76,20 @@ public class FocusAndLaunch extends BaseLaunch {
     super.execute();
   }
 
-  public static Command createAutoCommand(
-      ParsedCommand parsedCommand,
-      Lift lift,
-      Launcher launcher,
-      Feeder feeder,
-      FlywheelTable flywheelTableLowerHeight,
-      FlywheelTable flywheelTableUpperHeight,
-      Vision vision,
-      SwerveDrive swerveDrive,
-      Gamepad driver
-    ) {
-      return new FocusAndLaunch(lift, launcher, feeder, flywheelTableLowerHeight, flywheelTableUpperHeight, vision,
-      swerveDrive, driver);
-  }
+  // public static Command createAutoCommand(
+  //     ParsedCommand parsedCommand,
+  //     Lift lift,
+  //     Launcher launcher,
+  //     Feeder feeder,
+  //     FlywheelTable flywheelTableLowerHeight,
+  //     FlywheelTable flywheelTableUpperHeight,
+  //     Vision vision,
+  //     SwerveDrive swerveDrive,
+  //     Gamepad driver
+  //   ) {
+  //     return new FocusAndLaunch(lift, launcher, feeder, flywheelTableLowerHeight, flywheelTableUpperHeight, vision,
+  //     swerveDrive, driver, );
+  // }
 
   @Override
   public void end(boolean interrupted) {

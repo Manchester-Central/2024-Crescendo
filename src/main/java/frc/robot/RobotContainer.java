@@ -107,8 +107,8 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
-    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
-    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
+    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
@@ -169,7 +169,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
 
     m_driver.leftStick(); //
     m_driver.rightStick(); //
@@ -213,7 +213,7 @@ public class RobotContainer {
     // m_tester.leftBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
-    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder));
+    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
   }
   
   public Command getAutonomousCommand() {
@@ -257,7 +257,7 @@ public class RobotContainer {
     // var voltageClamp = MathUtil.clamp(voltage, 8, 10);
     // var rumbleValue =  ((voltageClamp/-2) + 5);
     // m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
-    if (m_feeder.hasNoteAtSecondary() && DriverStation.isTeleop()) {
+    if ((m_feeder.hasNoteAtSecondary() || m_intake.hasNote()) && DriverStation.isTeleop()) {
       m_driver.getHID().setRumble(RumbleType.kBothRumble, 1.0);
     } else {
       m_driver.getHID().setRumble(RumbleType.kBothRumble, 0);
@@ -269,7 +269,7 @@ public class RobotContainer {
   private void handleOperatorRumble() {
 
     // If this is the first time seeing this note in the intake
-    if(m_feeder.hasNote() && m_noteRumbleDebounce == false) {
+    if((m_feeder.hasNote() || m_intake.hasNote()) && m_noteRumbleDebounce == false) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
       m_noteSeenTime = Timer.getFPGATimestamp();
       m_noteRumbleDebounce = true;
@@ -280,7 +280,7 @@ public class RobotContainer {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
 
-    if(!m_feeder.hasNote()) {
+    if(!m_feeder.hasNote() && !m_intake.hasNote()) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_noteRumbleDebounce = false;
     }

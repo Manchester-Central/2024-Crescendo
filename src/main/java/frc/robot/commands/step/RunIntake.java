@@ -49,9 +49,9 @@ public class RunIntake extends Command {
     var atIntakeHeight = m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom());
     var hasPiece = m_feeder.hasNote();
     if (atIntakeHeight && !hasPiece) {
-      m_intake.setIntakePower(1);
+      m_intake.setIntakePower(1.0);
     }else{
-      m_intake.setIntakePower(0);
+      m_intake.setIntakePower(0.0);
     }
 
     m_feeder.grabAndHoldPiece(0.5);

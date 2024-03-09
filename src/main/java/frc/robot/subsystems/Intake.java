@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,11 +15,13 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.IOPorts;
 
 public class Intake extends SubsystemBase {
 
 	CANSparkMax m_intakeUpper = new CANSparkMax(CANIdentifiers.IntakeUpper, MotorType.kBrushless);
 	CANSparkMax m_intakeLower = new CANSparkMax(CANIdentifiers.IntakeLower, MotorType.kBrushless);
+	DigitalInput m_intakeSensor = new DigitalInput(IOPorts.IntakeNoteSensor);
 
 	private double simPower = 0;
 
@@ -37,7 +40,7 @@ public class Intake extends SubsystemBase {
 		logManager.addNumber("Intake/LowerCurrentAmps", DebugConstants.IntakeDebugEnable, () -> m_intakeLower.getOutputCurrent());
 		logManager.addNumber("Intake/UpperAppliedOutput", DebugConstants.IntakeDebugEnable, () -> m_intakeUpper.getAppliedOutput());
 		logManager.addNumber("Intake/LowerAppliedOutput", DebugConstants.IntakeDebugEnable, () -> m_intakeLower.getAppliedOutput());
-
+		logManager.addBoolean("Intake/HasNote", true, () -> hasNote());
 	}
 
 	/**
@@ -58,6 +61,10 @@ public class Intake extends SubsystemBase {
 			return simPower;
 		}
 		return m_intakeUpper.get();
+	}
+
+	public boolean hasNote() {
+		return !m_intakeSensor.get();
 	}
 
 	@Override
