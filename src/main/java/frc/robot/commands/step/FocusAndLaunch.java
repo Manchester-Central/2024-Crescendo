@@ -100,24 +100,24 @@ public class FocusAndLaunch extends BaseLaunch {
 
   @Override
   protected Optional<TableData> getTargets() {
-    var distanceMeters = FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose());
-    if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistanceMeters()) {
-      m_beenAboveThreshold = true;
-    }
-    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByDistance(distanceMeters);
-    SmartDashboard.putString("launch targets", targets.toString());
-    return targets;
-    /*var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
+    // var distanceMeters = FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose());
+    // if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistanceMeters()) {
+    //   m_beenAboveThreshold = true;
+    // }
+    // var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByDistance(distanceMeters);
+    // SmartDashboard.putString("launch targets", targets.toString());
+    // return targets;
+    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
-    if (ty <= m_flywheelTableLowerHeight.getMinDistance()) {
+    if (ty <= m_flywheelTableLowerHeight.getMinTY()) {
       m_beenAboveThreshold = true;
     }
-    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTarget(ty);
+    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByTY(ty);
     // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
-    return targets;*/
+    return targets;
   }
 
   @Override

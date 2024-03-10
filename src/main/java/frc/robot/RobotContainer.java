@@ -301,7 +301,7 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
+    // m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
   }
 
 }
