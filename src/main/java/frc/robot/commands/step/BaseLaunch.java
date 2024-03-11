@@ -6,39 +6,32 @@ package frc.robot.commands.step;
 
 import java.util.Optional;
 
-import com.chaos131.auto.ParsedCommand;
-import com.chaos131.swerve.BaseSwerveDrive;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.LauncherConstants;
-import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.TableData;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.swerve.SwerveDrive;
-import frc.robot.util.FieldPose2024;
 
 // TODO: Implement actual control logic
 public abstract class BaseLaunch extends Command {
   protected Lift m_lift;
   protected Launcher m_launcher;
   protected Feeder m_feeder;
+  protected Intake m_intake;
 
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
 
   /** Creates a new Lanch Partay. */
-  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder) {
+  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake) {
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
-    addRequirements(lift, launcher, feeder);
+    m_intake = intake;
+    addRequirements(lift, launcher, feeder, intake);
   }
 
   // Called when the command is initially scheduled.
@@ -65,10 +58,11 @@ public abstract class BaseLaunch extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_hasLostNote && !m_feeder.hasNoteAtSecondary() && !m_feeder.hasNoteAtPrimary()) {
+    m_intake.setIntakePower(1.0);
+    if (!m_hasLostNote && !m_feeder.hasNote() && !m_intake.hasNote()) {
       m_hasLostNote = true;
       m_launchTimer.start();
-    } else if (m_feeder.hasNoteAtPrimary() || m_feeder.hasNoteAtSecondary()) {
+    } else if (m_feeder.hasNote() || m_intake.hasNote()) {
       m_hasLostNote = false;
       m_launchTimer.stop();
       m_launchTimer.reset();

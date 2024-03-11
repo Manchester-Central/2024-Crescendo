@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -94,7 +95,7 @@ public class RobotContainer {
   );
 
   public RobotContainer() {
-    m_PDH.setSwitchableChannel(true);
+    m_PDH.setSwitchableChannel(false);
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
     // m_autoBuilder.registerCommand("drive", (pc) -> DriveToLocation.createAutoCommand(pc, m_swerveDrive) );
@@ -108,8 +109,8 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
-    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
-    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
+    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
@@ -170,7 +171,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver));
+        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
 
     m_driver.leftStick(); //
     m_driver.rightStick(); //
@@ -214,7 +215,7 @@ public class RobotContainer {
     // m_tester.leftBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
-    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder));
+    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
   }
   
   public Command getAutonomousCommand() {
@@ -236,17 +237,20 @@ public class RobotContainer {
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
     var drivePose = m_swerveDrive.getPose();
-    var camraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
+    var cameraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
+    cameraPose = cameraPose != null ? cameraPose : new Pose2d();
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      camraPose.getX(),
-      camraPose.getY(),
-      camraPose.getRotation().getDegrees()
+      cameraPose.getX(),
+      cameraPose.getY(),
+      cameraPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
+    var distanceToSpeaker = FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation().getDistance(m_swerveDrive.getPose().getTranslation());
+    SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     handleDriverRumble();
@@ -259,7 +263,7 @@ public class RobotContainer {
     // var voltageClamp = MathUtil.clamp(voltage, 8, 10);
     // var rumbleValue =  ((voltageClamp/-2) + 5);
     // m_driver.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
-    if (m_feeder.hasNoteAtSecondary() && DriverStation.isTeleop()) {
+    if ((m_feeder.hasNoteAtSecondary() || m_intake.hasNote()) && DriverStation.isTeleop()) {
       m_driver.getHID().setRumble(RumbleType.kBothRumble, 1.0);
     } else {
       m_driver.getHID().setRumble(RumbleType.kBothRumble, 0);
@@ -271,7 +275,7 @@ public class RobotContainer {
   private void handleOperatorRumble() {
 
     // If this is the first time seeing this note in the intake
-    if(m_feeder.hasNote() && m_noteRumbleDebounce == false) {
+    if((m_feeder.hasNote() || m_intake.hasNote()) && m_noteRumbleDebounce == false) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
       m_noteSeenTime = Timer.getFPGATimestamp();
       m_noteRumbleDebounce = true;
@@ -282,7 +286,7 @@ public class RobotContainer {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
 
-    if(!m_feeder.hasNote()) {
+    if(!m_feeder.hasNote() && !m_intake.hasNote()) {
       m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_noteRumbleDebounce = false;
     }
@@ -296,8 +300,8 @@ public class RobotContainer {
     m_lift.changeNeutralMode(NeutralModeValue.Coast);
   }
 
-  public void updatePoseEstimator(VisionData data) {
-    m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());;
+  public synchronized void updatePoseEstimator(VisionData data) {
+    // m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
   }
 
 }

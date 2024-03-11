@@ -4,6 +4,7 @@ import com.chaos131.logging.LogManager;
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDTuner;
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -28,7 +29,8 @@ public class Launcher extends SubsystemBase {
 	private PIDTuner m_flywheelPidTuner;
 
 	private CANSparkFlex m_tiltController = new CANSparkFlex(CANIdentifiers.LauncherTilt, MotorType.kBrushless);
-	private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
+	// private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
+	private SparkAbsoluteEncoder m_absAngleEncoder;
 	private PIDTuner m_tiltPIDTuner;
 
 	//Target values
@@ -53,6 +55,8 @@ public class Launcher extends SubsystemBase {
 		m_flywheelRight.restoreFactoryDefaults();
 		m_tiltController.restoreFactoryDefaults();
 		
+		m_absAngleEncoder = m_tiltController.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 		m_flywheelRight.setIdleMode(IdleMode.kCoast);
 		m_flywheelPidTuner = new PIDTuner("Launcher/Flywheel", DebugConstants.LauncherDebugEnable, LauncherConstants.FlywheelP, LauncherConstants.FlywheelI, LauncherConstants.FlywheelD, LauncherConstants.FlywheelF, this::tuneFlywheelPID);
@@ -65,11 +69,15 @@ public class Launcher extends SubsystemBase {
 		m_flywheelLeft.getPIDController().setOutputRange(0, 1);
 		m_flywheelRight.getPIDController().setOutputRange(0, 1);
 
-		m_tiltPot.setInverted(true);
-		m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
+		// m_tiltPot.setInverted(true);
+		// m_tiltPot.setPositionConversionFactor(LauncherConstants.TiltPotConversionFactor);
+		m_absAngleEncoder.setInverted(true);
+		m_absAngleEncoder.setPositionConversionFactor(LauncherConstants.TiltAbsoluteEncoderConversionFactor);
+		m_absAngleEncoder.setZeroOffset(LauncherConstants.TiltAbsoluteEncoderOffset);
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltController.setIdleMode(IdleMode.kCoast);
-		m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
+		// m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
+		m_tiltController.getPIDController().setFeedbackDevice(m_absAngleEncoder);
 		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
@@ -197,7 +205,8 @@ public class Launcher extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			return m_simAngle;
 		}
-		return Rotation2d.fromDegrees(m_tiltPot.getPosition());
+		// return Rotation2d.fromDegrees(m_tiltPot.getPosition());
+		return Rotation2d.fromDegrees(m_absAngleEncoder.getPosition());
 	}
 
 	public void recalibrateTilt() {

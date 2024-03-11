@@ -51,16 +51,18 @@ public class LimeLightCamera implements CameraInterface {
 		RETROREFLECTIVE(2),
 		BLUE_SPEAKER(3),
 		RED_SPEAKER(4);
+
 		public final Integer pipelineId;
 
-    private Mode(Integer pipelineId) {
-        this.pipelineId = pipelineId;
-    }
+		private Mode(Integer pipelineId) {
+			this.pipelineId = pipelineId;
+		}
 	}
 
 	private final double EPSILON = 1e-8;
+	// Scale is currently in the range of [0,1]
 	private final double CONFIDENCE_REQUIREMENT = 0.4;
-	private final double DISTANCE_CUTOFF_METERS = 4;
+	private final double DISTANCE_CUTOFF_METERS = 3.5;
 
 	private final int idxX = 0;
 	private final int idxY = 1;
@@ -83,8 +85,9 @@ public class LimeLightCamera implements CameraInterface {
 		m_ty = m_visionTable.getEntry("ty");
 		m_tv = m_visionTable.getEntry("tv");
 		m_simPoseSupplier = poseSupplier;
+		m_poseUpdator = poseConsumer;
 
-		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueAll),
+		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
 										});
@@ -94,6 +97,9 @@ public class LimeLightCamera implements CameraInterface {
 
 	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
 		// TODO Actually calculate confidence
+		if (DISTANCE_CUTOFF_METERS < distance) {
+			return 0;
+		}
 		return 1.0;
 	}
 
@@ -108,17 +114,20 @@ public class LimeLightCamera implements CameraInterface {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
-		
-		var frontpose = new Pose3d(data[idxX], data[idxY], data[idxZ], new Rotation3d(data[idxRoll],data[idxPitch],data[idxYaw]));
-		
-		var conf = calculateConfidence(frontpose, (int)data[idxTagCount], data[idxTagDistance]);
+
+		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
+											data[idxPitch] * Math.PI / 180,
+											data[idxYaw]  * Math.PI / 180);
+
+		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
+
+		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance]);
 		if (conf < CONFIDENCE_REQUIREMENT) {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
 
-		m_mostRecentData = Optional.of(new VisionData(frontpose, timestampSeconds));
-		//sendPoseToDashboard("Vision/FrontLimelightPose", frontpose.getTranslation(), frontpose.getRotation());
+		m_mostRecentData = Optional.of(new VisionData(visionPose, timestampSeconds));
 		if (m_poseUpdator != null && Constants.VisionConstants.UseVisionForOdometry) {
 			m_poseUpdator.accept(m_mostRecentData.get());
 		}
@@ -147,7 +156,7 @@ public class LimeLightCamera implements CameraInterface {
 	}
 
 	private boolean isCorrectPipeline() {
-	return m_visionTable.getEntry("getpipe").getInteger(-1) == m_mode.pipelineId;
+		return m_visionTable.getEntry("getpipe").getInteger(-1) == m_mode.pipelineId;
 	}
 
 	/**
@@ -173,7 +182,6 @@ public class LimeLightCamera implements CameraInterface {
 	public Pose2d getMostRecentPose() {
 		if(Robot.isSimulation()) {
 			return m_simPoseSupplier.get();
-
 		}
 		if(m_mostRecentData.isPresent()) {
 			return m_mostRecentData.get().getPose2d();
@@ -188,7 +196,7 @@ public class LimeLightCamera implements CameraInterface {
 
 	@Override
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler) {
-	m_offset = offsetHandler;
+		m_offset = offsetHandler;
 	}
 
 	@Override
@@ -210,6 +218,6 @@ public class LimeLightCamera implements CameraInterface {
 	 */
 	@Override
 	public void setPriorityID(int id) {
-	m_visionTable.getEntry("priorityId").setNumber(id);
+		m_visionTable.getEntry("priorityId").setNumber(id);
 	}
 }
