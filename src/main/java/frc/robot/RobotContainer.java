@@ -9,7 +9,7 @@ import java.util.function.Function;
 // import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix.music.Orchestra;
+import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -313,6 +313,8 @@ public class RobotContainer {
   public void delayedDisableInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Coast);
   }
+
+
 
    public void playMusic() {
     if(!m_Orchestra.isPlaying()) {
