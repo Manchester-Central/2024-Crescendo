@@ -37,6 +37,12 @@ public class LimeLightCamera implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 
+	public enum LimelightVersion {
+		LL2,
+		LL3,
+		LL3G
+	}
+
 
 	/**
 	 * Represents which mode the robot is in.

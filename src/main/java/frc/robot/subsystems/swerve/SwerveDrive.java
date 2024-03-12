@@ -31,7 +31,7 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     public SwerveDrive(BaseSwerveModule[] swerveModules, SwerveConfigs swerveConfigs,
             Supplier<Rotation2d> getRotation) {
         super(swerveModules, swerveConfigs, getRotation);
-         AutoBuilder.configureHolonomic(
+        AutoBuilder.configureHolonomic(
             this::getPose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE

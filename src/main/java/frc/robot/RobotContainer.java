@@ -93,18 +93,6 @@ public class RobotContainer {
   private double m_noteSeenTime = 0;
   private boolean m_noteRumbleDebounce = false;
 
-  private final int idxX = 0;
-  private final int idxY = 1;
-  private final int idxZ = 2;
-  private final int idxRoll = 3;
-  private final int idxPitch = 4;
-  private final int idxYaw = 5;
-  private final int idxLatency = 6;
-  private final int idxTagCount = 7;
-  private final int idxTagSpan = 8;
-  private final int idxTagDistance = 9;
-  private final int idxTagArea = 10;
-
   private Command m_slowCommand = new StartEndCommand(
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
@@ -126,8 +114,9 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
 
     // Sets up the back camera with a pose offset to correct the pose
+    // This generates the offset from the robot origin to the camera location
     m_vision.getCamera(CameraDirection.back).setOffsetHandler(() -> {
-      var launcherRotation = m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians();
+      var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
       Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
@@ -135,13 +124,15 @@ public class RobotContainer {
 
       LiftOffset = LiftOffset.div(LiftOffset.getNorm());
       var liftheight = LiftOffset.times(m_lift.getCurrentHeightMeters());
+      SmartDashboard.putNumberArray("CameraCalc/LiftHeight", new double[]{liftheight.getX(),liftheight.getY(),liftheight.getZ()});
 
       var rot = new Rotation3d(0, launcherRotation, 0);
+      SmartDashboard.putNumber("CameraCalc/rot", launcherRotation);
       var rotatedLauncherVector = LauncherOffset.rotateBy(rot);
+      SmartDashboard.putNumberArray("CameraCalc/LauncherVector", new double[]{rotatedLauncherVector.getX(),rotatedLauncherVector.getY(),rotatedLauncherVector.getZ()});
 
-      var limelightlocation = rotatedLauncherVector;
-      limelightlocation = limelightlocation.plus(liftheight);
-      limelightlocation = limelightlocation.plus(StaticOffset);
+      var limelightlocation = rotatedLauncherVector.plus(liftheight).plus(StaticOffset);
+      SmartDashboard.putNumberArray("CameraCalc/FinalVector", new double[]{limelightlocation.getX(),limelightlocation.getY(),limelightlocation.getZ()});
 
       var finalRotation = new Rotation3d(0, m_launcher.getAbsoluteTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
       return new Pose3d(limelightlocation, finalRotation);
@@ -339,7 +330,8 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    // m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
+    // TODO: Change this to use deviation data
+    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp());
   }
 }
 
