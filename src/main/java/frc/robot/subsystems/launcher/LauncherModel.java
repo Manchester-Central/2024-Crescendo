@@ -38,6 +38,7 @@ public class LauncherModel {
         double expression = Math.abs((vSquared - sqrtExpression) / gx);
 
         double theta = Math.atan(expression);
+        double launcherSpeedRPM = Double.MAX_VALUE; // TO-DO: Implement me or Gartrand The Destroyer will insert more Double.MAX_VALUE
         return new LauncherTarget(distanceToSpeakerMeters, 0, initialVelocityMPS, 0, Math.toDegrees(theta), liftHeightMeters);
     }
 
