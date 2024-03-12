@@ -127,13 +127,14 @@ public class LimeLightCamera implements CameraInterface {
 
 		if (m_offset != null) {
 			var cameraOffset = m_offset.get();
+			cameraOffset = cameraOffset.rotateBy(new Rotation3d(0, 0, data[idxYaw] * Math.PI / 180));
 			visionPose = new Pose3d(
 				new Translation3d(visionPose.getX() - cameraOffset.getX(),
 								visionPose.getY() - cameraOffset.getY(),
 								visionPose.getZ() - cameraOffset.getZ()),
-				new Rotation3d(poseRotation.getX() - cameraOffset.getRotation().getX(),
-								poseRotation.getY() - cameraOffset.getRotation().getY(),
-								poseRotation.getZ() - cameraOffset.getRotation().getZ())
+				new Rotation3d(0,//poseRotation.getX() - cameraOffset.getRotation().getX(),
+								0,//poseRotation.getY() - cameraOffset.getRotation().getY(),
+								poseRotation.getZ())//- cameraOffset.getRotation().getZ())
 			);
 		}
 
