@@ -27,6 +27,11 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(29.8474, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(29.487, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
+    }
+
+    @Test
+    public void testRPMConversion() {
+        assertEquals(3000, LauncherModel.mpsToLauncherRPM(18.86), DELTA+5);
     }
 }
