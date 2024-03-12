@@ -13,7 +13,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -89,6 +92,18 @@ public class RobotContainer {
   private double m_noteSeenTime = 0;
   private boolean m_noteRumbleDebounce = false;
 
+  private final int idxX = 0;
+	private final int idxY = 1;
+	private final int idxZ = 2;
+	private final int idxRoll = 3;
+	private final int idxPitch = 4;
+	private final int idxYaw = 5;
+	private final int idxLatency = 6;
+	private final int idxTagCount = 7;
+	private final int idxTagSpan = 8;
+	private final int idxTagDistance = 9;
+	private final int idxTagArea = 10;
+
   private Command m_slowCommand = new StartEndCommand(
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.SlowSpeedModifier),
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
@@ -108,7 +123,7 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
-
+    m_vision.getCamera(CameraDirection.back);
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
     NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
@@ -304,4 +319,26 @@ public class RobotContainer {
     // m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
   }
 
+  public Pose3d calculateRearCameraPose(double[] data) {
+
+		// TODO: Track pose values of the lift and launcher tilt. We can pass in a FPGA timestamp later on.
+		var launchertilt = m_launcher.getAbsoluteTiltAngle().getDegrees();
+		var final_angle = 30.0 - launchertilt;
+
+    Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
+    Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
+    Translation3d StaticOffset = new Translation3d(-0.299, 0, 0.277);
+		var liftheight = LiftOffset.times(m_lift.getCurrentHeightMeters());
+    LiftOffset = LiftOffset.div(LiftOffset.getNorm());
+		var rotatedLauncherVector = LauncherOffset.rotateBy(new Rotation3d(0, -(launchertilt-LauncherConstants.MinAngle.getDegrees())*Math.PI/180, 0));
+
+		var limelightlocation = rotatedLauncherVector.times(-1);
+		limelightlocation = limelightlocation.minus(liftheight);
+		limelightlocation = limelightlocation.minus(StaticOffset);
+
+    return new Pose3d(limelightlocation, limelightrotation);
+	}
+
 }
+
+

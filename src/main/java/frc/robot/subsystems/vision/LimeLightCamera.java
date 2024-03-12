@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -120,6 +121,18 @@ public class LimeLightCamera implements CameraInterface {
 											data[idxYaw]  * Math.PI / 180);
 
 		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
+
+		if (m_offset != null) {
+			var cameraOffset = m_offset.get();
+			visionPose = new Pose3d(
+				new Translation3d(visionPose.getX() - cameraOffset.getX(),
+								visionPose.getY() - cameraOffset.getY(),
+								visionPose.getZ() - cameraOffset.getZ()),
+				new Rotation3d(poseRotation.getX() - cameraOffset.getRotation().getX(),
+								poseRotation.getY() - cameraOffset.getRotation().getY(),
+								poseRotation.getZ() - cameraOffset.getRotation().getZ())
+			);
+		}
 
 		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance]);
 		if (conf < CONFIDENCE_REQUIREMENT) {
