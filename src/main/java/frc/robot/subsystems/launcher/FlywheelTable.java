@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.launcher;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,8 +23,8 @@ public class FlywheelTable {
     private double m_maxDistanceMeters = 0;
 
     // holds an ArrayList with a key (distance) as reference to [key]
-    ArrayList<TableData> flyTableByTY = new ArrayList<TableData>();
-    ArrayList<TableData> flyTableByDistance = new ArrayList<TableData>();
+    ArrayList<LauncherTarget> flyTableByTY = new ArrayList<LauncherTarget>();
+    ArrayList<LauncherTarget> flyTableByDistance = new ArrayList<LauncherTarget>();
 
     /**
      * Creates a FlyWheel table for the given fileName in the deploy directory
@@ -89,12 +89,12 @@ public class FlywheelTable {
         try {
             for (String row: lines) {
                 data = row.split(",");
-                addData(TableData.FromCSV(data));
+                addData(LauncherTarget.FromCSV(data));
             }
 
-            flyTableByTY.sort(TableData.getComparatorTY()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
-            flyTableByDistance.sort(TableData.getComparatorDistanceM());
-            for (TableData dataRow : flyTableByTY) {
+            flyTableByTY.sort(LauncherTarget.getComparatorTY()); // Sort flyTable by each TableData's distanceMeters attribute (lowest to highest)
+            flyTableByDistance.sort(LauncherTarget.getComparatorDistanceM());
+            for (LauncherTarget dataRow : flyTableByTY) {
                 System.out.println(dataRow.toString());
             }
 
@@ -113,16 +113,16 @@ public class FlywheelTable {
     }
 
     // takes raw data, adds to data structure
-    private void addData(TableData data) {
+    private void addData(LauncherTarget data) {
         flyTableByTY.add(data);
         flyTableByDistance.add(data);
     }
 
-    private TableData getTYTableData(int index) {
+    private LauncherTarget getTYTableData(int index) {
         return flyTableByTY.get(index);
     }
 
-    private TableData getDistanceTableData(int index) {
+    private LauncherTarget getDistanceTableData(int index) {
         return flyTableByDistance.get(index);
     }
 
@@ -186,7 +186,7 @@ public class FlywheelTable {
      * @param dependentGetter a lambda function to get the dependent variable
      * @return the interpolated dependent value
      */
-    private double getInterpolatedValue(TableData bottomTableData, TableData topTableData, double target, Function<TableData, Double> dependentGetter) {
+    private double getInterpolatedValue(LauncherTarget bottomTableData, LauncherTarget topTableData, double target, Function<LauncherTarget, Double> dependentGetter) {
         return getInterpolatedValue(
             bottomTableData.getTY(),
             topTableData.getTY(),
@@ -203,8 +203,8 @@ public class FlywheelTable {
      * @param targetTY the point to interpolate the values at
      * @return the new TableData with interpolated values
      */
-    private TableData getInterpolatedDataByTY(TableData bottomTableData, TableData topTableData, double targetTY) {
-        return new TableData(
+    private LauncherTarget getInterpolatedDataByTY(LauncherTarget bottomTableData, LauncherTarget topTableData, double targetTY) {
+        return new LauncherTarget(
             0,
             targetTY,
             getInterpolatedValue(bottomTableData, topTableData, targetTY, td -> td.getLauncherSpeedRPM()),
@@ -221,8 +221,8 @@ public class FlywheelTable {
      * @param targetDistance the point to interpolate the values at
      * @return the new TableData with interpolated values
      */
-    private TableData getInterpolatedDataByDistance(TableData bottomTableData, TableData topTableData, double targetDistance) {
-        return new TableData(
+    private LauncherTarget getInterpolatedDataByDistance(LauncherTarget bottomTableData, LauncherTarget topTableData, double targetDistance) {
+        return new LauncherTarget(
             targetDistance,
             0,
             getInterpolatedValue(bottomTableData, topTableData, targetDistance, td -> td.getLauncherSpeedRPM()),
@@ -237,7 +237,7 @@ public class FlywheelTable {
      * @param ty - The distance between the robot and the target.
      * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given distance. An Optional.Empty() if the distance is outside the table.
      */
-    public Optional<TableData> getIdealTargetByTY(double ty) {
+    public Optional<LauncherTarget> getIdealTargetByTY(double ty) {
         if (flyTableByTY.isEmpty() || ty < m_minTY || ty > m_maxTY) {
             return Optional.empty();
         }
@@ -253,7 +253,7 @@ public class FlywheelTable {
         var interpolatedValues = getInterpolatedDataByTY(bottomTableData, topTableData, ty);
 
         // Returns a new TableData value with the interpolated values and discrete values
-        return Optional.of(new TableData(
+        return Optional.of(new LauncherTarget(
             0,
             ty,
             interpolatedValues.getLauncherSpeedRPM(),
@@ -268,7 +268,7 @@ public class FlywheelTable {
      * @param distance - The distance between the robot and the target.
      * @return - A TableData object representing the optimal flywheel speed, tilt, and launcher height for the given distance. An Optional.Empty() if the distance is outside the table.
      */
-    public Optional<TableData> getIdealTargetByDistance(double distance) {
+    public Optional<LauncherTarget> getIdealTargetByDistance(double distance) {
         if (flyTableByDistance.isEmpty() || distance < m_minDistanceMeters || distance > m_maxDistanceMeters) {
             return Optional.empty();
         }
@@ -284,7 +284,7 @@ public class FlywheelTable {
         var interpolatedValues = getInterpolatedDataByDistance(bottomTableData, topTableData, distance);
 
         // Returns a new TableData value with the interpolated values and discrete values
-        return Optional.of(new TableData(
+        return Optional.of(new LauncherTarget(
             distance,
             0,
             interpolatedValues.getLauncherSpeedRPM(),

@@ -13,8 +13,8 @@ import frc.robot.commands.simpledrive.DriveToLocation;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.util.FieldPose2024;
 
 public class AutoUtil {

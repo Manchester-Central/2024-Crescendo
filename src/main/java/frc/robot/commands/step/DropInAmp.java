@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.launcher.Launcher;
 
 // TODO: Implement actual control logic
 public class DropInAmp extends Command {

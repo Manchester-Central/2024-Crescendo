@@ -17,10 +17,10 @@ import frc.robot.Constants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.util.FieldPose2024;
 
 public class FireIntoAmp extends Command {

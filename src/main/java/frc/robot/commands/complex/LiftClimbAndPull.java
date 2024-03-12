@@ -11,10 +11,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LiftConstants;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.util.FieldPose2024;
 
 public class LiftClimbAndPull extends Command {
