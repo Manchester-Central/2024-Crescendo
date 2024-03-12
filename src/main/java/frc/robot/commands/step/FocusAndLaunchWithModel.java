@@ -32,6 +32,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
   private boolean m_beenAboveThreshold = false;
+  private double m_initialLiftHeightMeters = 0;
 
   /** Creates a new Lanch Partay. */
   public FocusAndLaunchWithModel(
@@ -53,6 +54,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
 
   @Override
   public void initialize() {
+    m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
     //m_vision.getCamera(CameraDirection.front).setMode(m_vision.getSpeakerTrackingMode());
@@ -85,11 +87,16 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
-    double distanceToSpeakerMeters = 0; // TO-DO: Convert ty to distance.
-    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), distanceToSpeakerMeters);
+    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToDistanceMeters(ty); // TO-DO: Convert ty to distance.
+    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters);
     // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return Optional.ofNullable(targets);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 
   @Override

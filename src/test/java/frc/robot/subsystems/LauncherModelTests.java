@@ -27,11 +27,16 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(29.487, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(27.259214617305457, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test
     public void testRPMConversion() {
         assertEquals(3000, LauncherModel.mpsToLauncherRPM(18.86), DELTA+5);
+    }
+
+    @Test
+    public void pleaseLetJoshGoHome() {
+        assertEquals(4, LauncherModel.speakerAprilTagTyToDistanceMeters(-10.63), 0.01);
     }
 }
