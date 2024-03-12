@@ -61,9 +61,6 @@ public class LimeLightCamera implements CameraInterface {
 	}
 
 	private final double EPSILON = 1e-8;
-	// Scale is currently in the range of [0,1]
-	private final double CONFIDENCE_REQUIREMENT = 0.4;
-	private final double DISTANCE_CUTOFF_METERS = 3.5;
 
 	private final int idxX = 0;
 	private final int idxY = 1;
@@ -98,7 +95,7 @@ public class LimeLightCamera implements CameraInterface {
 
 	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
 		// TODO Actually calculate confidence
-		if (DISTANCE_CUTOFF_METERS < distance) {
+		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance) {
 			return 0;
 		}
 		return 1.0;
@@ -135,7 +132,7 @@ public class LimeLightCamera implements CameraInterface {
 		}
 
 		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance]);
-		if (conf < CONFIDENCE_REQUIREMENT) {
+		if (conf < VisionConstants.ConfidenceRequirement) {
 			m_mostRecentData = Optional.empty();
 			return;
 		}

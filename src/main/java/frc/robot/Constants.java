@@ -4,6 +4,7 @@ import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
@@ -43,8 +44,11 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = true;
 		public static final int[] AprilTagPipelines = {0, 1, 2, 3, 4};
 		public static final double TxLaunchTolerance = 2;
-		public static final double AprilTagAverageDistanceThresholdMeters = 2.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
+		public static final double AprilTagAverageDistanceThresholdMeters = 3.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
 		public static final double XMetersMidPoint = 8.25; //TODO Confirm
+		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
+		// Scale is currently in the range of [0,1]
+		public static final double ConfidenceRequirement = 0.4;
 	}
 
 	public static class CANIdentifiers {
