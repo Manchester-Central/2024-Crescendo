@@ -22,6 +22,7 @@ public class LauncherModel {
     private static final double kFrontLimelightHeightMeters = 0.452;
     private static final double kAprilTagLimelightHeightDifferenceMeters = kAprilTagHeightMeters - kFrontLimelightHeightMeters;
     private static final double kFrontLimelightOffsetAngleDegrees = 24.89;
+    private static final double kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters = 0.2664;
 
     public enum LauncherHeightTarget {
         Floor(0.0),
@@ -32,17 +33,17 @@ public class LauncherModel {
         }
     }
 
-    public static LauncherTarget getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToSpeakerMeters) {
-        double initialVelocityMPS = interpolateInitialVelocity(distanceToSpeakerMeters);
+    public static LauncherTarget getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetMeters) {
+        double initialVelocityMPS = interpolateInitialVelocity(distanceToTargetMeters);
         double height = heightTarget.heightMeters - kLauncherPivotHeightMeters - liftHeightMeters - getLauncherHeightAbovePivotMeters();
         double vSquared = Math.pow(initialVelocityMPS, 2);
-        double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(distanceToSpeakerMeters, 2) + 2 * -height * Math.pow(initialVelocityMPS, 2)));
-        double gx =  (kGravity * distanceToSpeakerMeters);
+        double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(distanceToTargetMeters, 2) + 2 * -height * Math.pow(initialVelocityMPS, 2)));
+        double gx =  (kGravity * distanceToTargetMeters);
         double expression = Math.abs((vSquared - sqrtExpression) / gx);
 
         double launcherRPM = mpsToLauncherRPM(initialVelocityMPS);
         double theta = Math.atan(expression);
-        return new LauncherTarget(distanceToSpeakerMeters, 0, launcherRPM, 0, Math.toDegrees(theta), liftHeightMeters);
+        return new LauncherTarget(distanceToTargetMeters, 0, launcherRPM, 0, Math.toDegrees(theta), liftHeightMeters);
     }
 
     public static double interpolateInitialVelocity(double distance) {
@@ -64,6 +65,6 @@ public class LauncherModel {
 
     public static double speakerAprilTagTyToDistanceMeters(double ty) {
         double distanceMeters = kAprilTagLimelightHeightDifferenceMeters / Math.tan(Math.toRadians(kFrontLimelightOffsetAngleDegrees + ty));
-        return distanceMeters;
+        return distanceMeters + kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
     }
 }

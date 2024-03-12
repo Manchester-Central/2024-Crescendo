@@ -87,8 +87,8 @@ public class Constants {
 	public static class SwerveConstants2024 {
 
 		// Speeds
-		public static final double MaxRobotSpeed_mps =  5.8;
-		public static final double MaxRobotRotation_radps =  6.75; // untested
+		public static final double MaxRobotSpeed_mps =  4.8; // 4.8 is maximum with a 6.55:1 (22:24 planet ratio)
+		public static final double MaxRobotRotation_radps =  12.0; // 12.21157 is maximum with a 6.55:1 (22:24 planet ratio)
 		public static final double SlowSpeedModifier = 0.65;
 		public static final double DefaultSpeedModifier = 1.0;
 		public static final double SuperSlowSpeedModifier = 0.25;

@@ -10,6 +10,8 @@ import com.chaos131.auto.ParsedCommand;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
@@ -57,7 +59,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
-    //m_vision.getCamera(CameraDirection.front).setMode(m_vision.getSpeakerTrackingMode());
+    m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
   }
 
@@ -78,6 +80,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
+    m_vision.getCamera(CameraDirection.front).setPriorityID(-1);
     super.end(interrupted);
   }
 
