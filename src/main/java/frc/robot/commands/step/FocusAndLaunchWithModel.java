@@ -91,7 +91,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
       return Optional.empty();
     }
     double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToDistanceMeters(ty); // TO-DO: Convert ty to distance.
-    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters);
+    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle());
     // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return Optional.ofNullable(targets);

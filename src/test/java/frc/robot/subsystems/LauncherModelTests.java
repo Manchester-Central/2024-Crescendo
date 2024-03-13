@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
@@ -27,7 +28,7 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(27.684, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(26.973, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle).getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test

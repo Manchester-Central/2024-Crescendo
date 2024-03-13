@@ -23,6 +23,11 @@ public class LauncherModel {
     private static final double kAprilTagLimelightHeightDifferenceMeters = kAprilTagHeightMeters - kFrontLimelightHeightMeters;
     private static final double kFrontLimelightOffsetAngleDegrees = 24.89;
     private static final double kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters = 0.2664;
+    private static final double kLaunchAxisOffsetMeters = 0.065;
+    private static final double kLaunchExitOffsetMeters = 0.239;
+    private static final double kDistanceFromLimelightToBotCenterMeters = 0.177306;
+    private static final double kDistanceFromBotCenterToPivotMeters = 0.299;
+    private static final Rotation2d kLiftAngle = Rotation2d.fromDegrees(10); 
 
     public enum LauncherHeightTarget {
         Floor(0.0),
@@ -33,18 +38,19 @@ public class LauncherModel {
         }
     }
 
-    public static LauncherTarget getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetMeters) {
-        double initialVelocityMPS = interpolateInitialVelocity(distanceToTargetMeters);
-        double adjustedLiftHeightMeters = Math.min(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(distanceToTargetMeters));
-        double height = heightTarget.heightMeters - kLauncherPivotHeightMeters - adjustedLiftHeightMeters - getLauncherHeightAbovePivotMeters();
+    public static LauncherTarget getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetMeters, Rotation2d currentTiltAngle) {
+        double adjustedDistanceMeters = distanceToTargetMeters + kDistanceFromLimelightToBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(currentTiltAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
+        double initialVelocityMPS = interpolateInitialVelocity(adjustedDistanceMeters);
+        double adjustedLiftHeightMeters = Math.min(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        double height = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
         double vSquared = Math.pow(initialVelocityMPS, 2);
-        double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(distanceToTargetMeters, 2) + 2 * -height * Math.pow(initialVelocityMPS, 2)));
-        double gx =  (kGravity * distanceToTargetMeters);
+        double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(adjustedDistanceMeters, 2) + 2 * -height * Math.pow(initialVelocityMPS, 2)));
+        double gx =  (kGravity * adjustedDistanceMeters);
         double expression = Math.abs((vSquared - sqrtExpression) / gx);
 
         double launcherRPM = mpsToLauncherRPM(initialVelocityMPS);
         double theta = Math.atan(expression);
-        return new LauncherTarget(distanceToTargetMeters, 0, launcherRPM, 0, Math.toDegrees(theta), adjustedLiftHeightMeters);
+        return new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, Math.toDegrees(theta), adjustedLiftHeightMeters);
     }
 
     public static double interpolateInitialVelocity(double distance) {
@@ -59,9 +65,34 @@ public class LauncherModel {
         return drivenRPM;
     }
 
-    public static double getLauncherHeightAbovePivotMeters() {
-        double launcherHeightAbovePivotMeters = 0.160;
+    public static double getLauncherHeightAbovePivotMeters(Rotation2d currentTiltAngle) {
+        // double launcherHeightAbovePivotMeters = 0.160;
+        double tiltAngleRadians = currentTiltAngle.getRadians();
+
+        // =(COS(RADIANS(I30))*J9) + (sin(RADIANS(I30))*J10)
+        double launcherHeightAbovePivotMeters = (Math.cos(tiltAngleRadians) * kLaunchAxisOffsetMeters) + (Math.sin(tiltAngleRadians) * kLaunchExitOffsetMeters);
+
         return launcherHeightAbovePivotMeters;
+    }
+
+    public static double getLauncherDistanceToPivotMeters(Rotation2d currentTiltAngle) {
+        // double launcherHeightAbovePivotMeters = 0.160;
+        double tiltAngleRadians = currentTiltAngle.getRadians();
+
+        //-(sin(RADIANS(I30))*J9) + (COS(RADIANS(I30))*J10)
+        double launcherHeightAbovePivotMeters = -(Math.sin(tiltAngleRadians) * kLaunchAxisOffsetMeters) + (Math.cos(tiltAngleRadians) * kLaunchExitOffsetMeters);
+
+        return launcherHeightAbovePivotMeters;
+    }
+
+    public static double getLiftHeightOffsetMeters(double currentLiftHeight) {
+        // COS(RADIANS(10))*B21
+        return Math.cos(kLiftAngle.getRadians()) * currentLiftHeight;
+    }
+
+    public static double getLiftDistanceOffsetMeters(double currentLiftHeight) {
+        // SIN(RADIANS(10))*B21
+        return Math.sin(kLiftAngle.getRadians()) * currentLiftHeight;
     }
 
     public static double speakerAprilTagTyToDistanceMeters(double ty) {
