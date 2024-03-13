@@ -35,7 +35,8 @@ public class LauncherModel {
 
     public static LauncherTarget getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetMeters) {
         double initialVelocityMPS = interpolateInitialVelocity(distanceToTargetMeters);
-        double height = heightTarget.heightMeters - kLauncherPivotHeightMeters - liftHeightMeters - getLauncherHeightAbovePivotMeters();
+        double adjustedLiftHeightMeters = Math.min(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(distanceToTargetMeters));
+        double height = heightTarget.heightMeters - kLauncherPivotHeightMeters - adjustedLiftHeightMeters - getLauncherHeightAbovePivotMeters();
         double vSquared = Math.pow(initialVelocityMPS, 2);
         double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(distanceToTargetMeters, 2) + 2 * -height * Math.pow(initialVelocityMPS, 2)));
         double gx =  (kGravity * distanceToTargetMeters);
@@ -43,7 +44,7 @@ public class LauncherModel {
 
         double launcherRPM = mpsToLauncherRPM(initialVelocityMPS);
         double theta = Math.atan(expression);
-        return new LauncherTarget(distanceToTargetMeters, 0, launcherRPM, 0, Math.toDegrees(theta), liftHeightMeters);
+        return new LauncherTarget(distanceToTargetMeters, 0, launcherRPM, 0, Math.toDegrees(theta), adjustedLiftHeightMeters);
     }
 
     public static double interpolateInitialVelocity(double distance) {
@@ -65,6 +66,11 @@ public class LauncherModel {
 
     public static double speakerAprilTagTyToDistanceMeters(double ty) {
         double distanceMeters = kAprilTagLimelightHeightDifferenceMeters / Math.tan(Math.toRadians(kFrontLimelightOffsetAngleDegrees + ty));
-        return distanceMeters + kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
+        return distanceMeters - kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
+    }
+
+    public static double getMinLiftHeightMetersForDistanceMeters(double distanceMeters) {
+        //-0.191 + 0.117x + -0.0141x^2 + 6.06E-04x^3
+        return -0.191 + (0.117 * distanceMeters) + (-0.0141 * Math.pow(distanceMeters, 2)) + (0.000606 * Math.pow(distanceMeters, 3));
     }
 }

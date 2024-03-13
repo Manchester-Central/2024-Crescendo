@@ -27,7 +27,7 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(27.259214617305457, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(27.684, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327).getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test
@@ -37,6 +37,12 @@ public class LauncherModelTests {
 
     @Test
     public void pleaseLetJoshGoHome() {
-        assertEquals(4, LauncherModel.speakerAprilTagTyToDistanceMeters(-10.63), 0.01);
+        assertEquals(3.74, LauncherModel.speakerAprilTagTyToDistanceMeters(-10.63), 0.01);
+    }
+
+    @Test
+    public void testLauncherLiftHeight() {
+        assertEquals(0.002493615927, LauncherModel.getMinLiftHeightMetersForDistanceMeters(2.167), DELTA);
+        assertEquals(0.137675494, LauncherModel.getMinLiftHeightMetersForDistanceMeters(6.272), DELTA);
     }
 }
