@@ -6,6 +6,7 @@ package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.LiftConstants;
 
 /** Add your docs here. */
 public class LauncherModel {
@@ -102,6 +103,9 @@ public class LauncherModel {
 
     public static double getMinLiftHeightMetersForDistanceMeters(double distanceMeters) {
         //-0.191 + 0.117x + -0.0141x^2 + 6.06E-04x^3
+        if (distanceMeters < 2.167) {
+            return LiftConstants.MinHeightMeters;
+        }
         return -0.191 + (0.117 * distanceMeters) + (-0.0141 * Math.pow(distanceMeters, 2)) + (0.000606 * Math.pow(distanceMeters, 3));
     }
 }

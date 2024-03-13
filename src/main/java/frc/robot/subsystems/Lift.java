@@ -66,10 +66,10 @@ public class Lift extends SubsystemBase {
 
 		var logManager = LogManager.getInstance();
 
-		logManager.addBoolean("Lift/AtBottom", DebugConstants.LiftDebugEnable, () -> atBottom());
+		logManager.addBoolean("Lift/AtBottom", true, () -> atBottom());
 		logManager.addBoolean("Lift/SeenBottom", DebugConstants.LiftDebugEnable, () -> hasSeenBottom());
 
-		logManager.addNumber("Lift/CurrentHeightMeters", DebugConstants.LiftDebugEnable, () -> getCurrentHeightMeters());
+		logManager.addNumber("Lift/CurrentHeightMeters", true, () -> getCurrentHeightMeters());
 		logManager.addNumber("Lift/LeftHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getPosition().getValueAsDouble());
 		logManager.addNumber("Lift/RightHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftRight.getPosition().getValueAsDouble());
 		logManager.addNumber("Lift/TargetHeightMeters", DebugConstants.LiftDebugEnable, () -> m_targetHeightMeters);
@@ -170,8 +170,8 @@ public class Lift extends SubsystemBase {
 		m_liftPidTuner.tune();
 		if (atBottom() && !hasSeenBottom()){
 			m_hasSeenBottom = true;
-			m_liftLeft.setPosition(LiftConstants.MinHeightMeters + 0.05);
-			m_liftRight.setPosition(LiftConstants.MinHeightMeters + 0.05);
+			m_liftLeft.setPosition(0);
+			m_liftRight.setPosition(0);
 		}
 
 		if (Robot.isSimulation()) {
