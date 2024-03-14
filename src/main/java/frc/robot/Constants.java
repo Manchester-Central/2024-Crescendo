@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class Constants {
 	public static final boolean Use2022Robot = false;
 
-	public static final boolean DebugMode = false;
+	public static final boolean DebugMode = true;
 	public static final Alliance DefaultAlliance = Alliance.Blue;
 	public static final double SimUpdateFrequency = 20.0;
 
@@ -35,7 +35,7 @@ public class Constants {
 
 	public static class RobotBounds {
 		public static final double ForwardEdge = 0.438;
-		public static final double BackwardEdge = -0.553;
+		public static final double BackwardEdge = -0.64; //-0.553;
 		public static final double LeftEdge = 0.438;
 		public static final double RightEdge = -0.438;
 	}
@@ -158,7 +158,7 @@ public class Constants {
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
-		public static final double AmpMeters = 0.632;
+		public static final double AmpMeters = 0.74;//0.632;
 		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;

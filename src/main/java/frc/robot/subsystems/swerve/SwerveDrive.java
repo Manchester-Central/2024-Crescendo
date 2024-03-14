@@ -18,6 +18,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -104,5 +105,36 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
         var speedModifierClamped = MathUtil.clamp(speedModifier, 0.0, 1.0);
         BaseSwerveDrive.TranslationSpeedModifier = speedModifierClamped;
         BaseSwerveDrive.RotationSpeedModifier = speedModifierClamped;
+    }
+
+    @Override
+      /**
+   * Moves the robot to the target location and orientation at a percentage of the total speed. This
+   * relies on the moveFieldRelativeForPID functionality.
+   *
+   * @param maxTranslationSpeedPercent
+   */
+    public void moveToTarget(double maxTranslationSpeedPercent) {
+        Pose2d pose = getPose();
+
+        Translation2d difference = pose.getTranslation().minus(
+            new Translation2d(m_XPid.getSetpoint(),
+                                m_YPid.getSetpoint())
+        );
+
+        var normalizedDifference = difference.div(difference.getNorm());
+
+        double x =
+          MathUtil.clamp(
+              m_XPid.calculate(pose.getX()),
+              -(maxTranslationSpeedPercent*normalizedDifference.getX()),
+               (maxTranslationSpeedPercent*normalizedDifference.getX()));
+        double y =
+          MathUtil.clamp(
+              m_YPid.calculate(pose.getY()),
+              -(maxTranslationSpeedPercent*normalizedDifference.getY()),
+               (maxTranslationSpeedPercent*normalizedDifference.getY()));
+        double angle = m_AngleDegreesPid.calculate(pose.getRotation().getDegrees());
+        moveFieldRelativeForPID(x, y, angle);
     }
 }
