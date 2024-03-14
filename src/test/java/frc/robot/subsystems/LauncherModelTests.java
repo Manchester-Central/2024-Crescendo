@@ -1,14 +1,10 @@
 package frc.robot.subsystems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import frc.robot.Constants.LauncherConstants;
-import frc.robot.subsystems.launcher.FlywheelTable;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
 
@@ -17,18 +13,18 @@ public class LauncherModelTests {
 
     @Test
     public void testInterpolateInitialVelocity() {
-        assertEquals(18.8, LauncherModel.interpolateInitialVelocity(3), DELTA);
-        assertEquals(32, LauncherModel.interpolateInitialVelocity(6), DELTA);
+        assertEquals(18.8, LauncherModel.interpolateInitialVelocityMps(3), DELTA);
+        assertEquals(32, LauncherModel.interpolateInitialVelocityMps(6), DELTA);
 
-        assertEquals(18.8, LauncherModel.interpolateInitialVelocity(0), DELTA);
-        assertEquals(32, LauncherModel.interpolateInitialVelocity(20), DELTA);
+        assertEquals(18.8, LauncherModel.interpolateInitialVelocityMps(0), DELTA);
+        assertEquals(32, LauncherModel.interpolateInitialVelocityMps(20), DELTA);
 
-        assertEquals(25.4, LauncherModel.interpolateInitialVelocity(4.5), DELTA);
+        assertEquals(25.4, LauncherModel.interpolateInitialVelocityMps(4.5), DELTA);
     }
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(26.973, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(27.891493053835667, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle).getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test
@@ -37,13 +33,15 @@ public class LauncherModelTests {
     }
 
     @Test
-    public void pleaseLetJoshGoHome() {
-        assertEquals(3.74, LauncherModel.speakerAprilTagTyToDistanceMeters(-10.63), 0.01);
+    public void testSpeakerTyToDistanceMeters() {
+        assertEquals(3.912, LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(-10.63), 0.01);
     }
 
     @Test
     public void testLauncherLiftHeight() {
-        assertEquals(0.002493615927, LauncherModel.getMinLiftHeightMetersForDistanceMeters(2.167), DELTA);
+        assertEquals(LiftConstants.MinHeightMeters, LauncherModel.getMinLiftHeightMetersForDistanceMeters(1), DELTA);
+        assertEquals(LiftConstants.MinHeightMeters, LauncherModel.getMinLiftHeightMetersForDistanceMeters(2.167), DELTA);
         assertEquals(0.137675494, LauncherModel.getMinLiftHeightMetersForDistanceMeters(6.272), DELTA);
+        assertEquals(0.1593999813, LauncherModel.getMinLiftHeightMetersForDistanceMeters(8.772), DELTA);
     }
 }

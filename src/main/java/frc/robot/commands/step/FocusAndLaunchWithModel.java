@@ -6,34 +6,28 @@ package frc.robot.commands.step;
 
 import java.util.Optional;
 
-import com.chaos131.auto.ParsedCommand;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
-import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
-import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
-import frc.robot.subsystems.swerve.SwerveDrive;
+import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.AngleUtil;
-import frc.robot.util.FieldPose2024;
 
 public class FocusAndLaunchWithModel extends BaseLaunch {
   private Vision m_vision;
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
-  private boolean m_beenAboveThreshold = false;
   private double m_initialLiftHeightMeters = 0;
 
   /** Creates a new Lanch Partay. */
@@ -57,7 +51,6 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   @Override
   public void initialize() {
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
-    m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
     m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
@@ -90,9 +83,8 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
-    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToDistanceMeters(ty); // TO-DO: Convert ty to distance.
+    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
     var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle());
-    // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
     SmartDashboard.putString("launch targets", targets.toString());
     return Optional.ofNullable(targets);
   }
