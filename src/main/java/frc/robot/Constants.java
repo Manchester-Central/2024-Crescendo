@@ -4,12 +4,13 @@ import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
 	public static final boolean Use2022Robot = false;
 
-	public static final boolean DebugMode = false;
+	public static final boolean DebugMode = true;
 	public static final Alliance DefaultAlliance = Alliance.Blue;
 	public static final double SimUpdateFrequency = 20.0;
 
@@ -34,7 +35,7 @@ public class Constants {
 
 	public static class RobotBounds {
 		public static final double ForwardEdge = 0.438;
-		public static final double BackwardEdge = -0.553;
+		public static final double BackwardEdge = -0.64; //-0.553;
 		public static final double LeftEdge = 0.438;
 		public static final double RightEdge = -0.438;
 	}
@@ -43,8 +44,11 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = true;
 		public static final int[] AprilTagPipelines = {0, 1, 2, 3, 4};
 		public static final double TxLaunchTolerance = 2;
-		public static final double AprilTagAverageDistanceThresholdMeters = 2.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
+		public static final double AprilTagAverageDistanceThresholdMeters = 3.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
 		public static final double XMetersMidPoint = 8.25; //TODO Confirm
+		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
+		// Scale is currently in the range of [0,1]
+		public static final double ConfidenceRequirement = 0.4;
 	}
 
 	public static class CANIdentifiers {
@@ -154,7 +158,7 @@ public class Constants {
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
 		public static final double DefaultLaunchMeters = 0.6;
-		public static final double AmpMeters = 0.632;
+		public static final double AmpMeters = 0.74;//0.632;
 		public static final double SourceMeters = 0.4;
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = 0.1;

@@ -13,7 +13,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +30,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.auto.AutoUtil;
 import frc.robot.commands.complex.FireIntoAmp;
 import frc.robot.commands.defaults.DefaultFeederCommand;
@@ -108,6 +112,31 @@ public class RobotContainer {
     // m_autoBuilder.registerCommand("flyWheelAndFeederOn", (pc) -> new SimpleControl().flywheel(m_launcher, 1.0).feeder(m_feeder, 1.0));
     // m_autoBuilder.registerCommand("tiltDown", (pc) -> new StartEndCommand(() -> m_launcher.setTiltSpeed(-0.08), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_autoBuilder.registerCommand("simpleControl", (pc) -> SimpleControl.createAutoCommand(pc, m_intake, m_feeder, m_launcher, m_lift));
+
+    // Sets up the back camera with a pose offset to correct the pose
+    // This generates the offset from the robot origin to the camera location
+    m_vision.getCamera(CameraDirection.back).setOffsetHandler(() -> {
+      var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
+
+      Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
+      Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
+      Translation3d StaticOffset = new Translation3d(-0.299, 0, 0.277);
+
+      LiftOffset = LiftOffset.div(LiftOffset.getNorm());
+      var liftheight = LiftOffset.times(m_lift.getCurrentHeightMeters());
+      SmartDashboard.putNumberArray("CameraCalc/LiftHeight", new double[]{liftheight.getX(),liftheight.getY(),liftheight.getZ()});
+
+      var rot = new Rotation3d(0, launcherRotation, 0);
+      SmartDashboard.putNumber("CameraCalc/rot", launcherRotation);
+      var rotatedLauncherVector = LauncherOffset.rotateBy(rot);
+      SmartDashboard.putNumberArray("CameraCalc/LauncherVector", new double[]{rotatedLauncherVector.getX(),rotatedLauncherVector.getY(),rotatedLauncherVector.getZ()});
+
+      var limelightlocation = rotatedLauncherVector.plus(liftheight).plus(StaticOffset);
+      SmartDashboard.putNumberArray("CameraCalc/FinalVector", new double[]{limelightlocation.getX(),limelightlocation.getY(),limelightlocation.getZ()});
+
+      var finalRotation = new Rotation3d(0, m_launcher.getAbsoluteTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
+      return new Pose3d(limelightlocation, finalRotation);
+    });
 
     NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
     NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
@@ -215,7 +244,8 @@ public class RobotContainer {
     // m_tester.leftBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
-    m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
+    //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
+    m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
   }
   
   public Command getAutonomousCommand() {
@@ -301,7 +331,9 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    // m_swerveDrive.addVisionMeasurement(data.getPose2d(), Timer.getFPGATimestamp() - data.getTimestamp());
+    // TODO: Change this to use deviation data
+    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp());
   }
-
 }
+
+
