@@ -31,13 +31,15 @@ public class FireIntoAmp extends Command {
 	private Vision m_vision;
 	private AmpDropSequence state;
 	private Pose2d m_finalPose;
-	private Optional<Double> m_timestamp = Optional.empty();
 
 	private final double VISION_TRANSLATION_TOLERANCE = 0.01;
 	private final double VISION_ROTATION_TOLERANCE = 0.01;
 	private final double VISION_MOVE_SPEED = 0.15;
 	private final double FEEDER_EJECT_SPEED = -0.3;
 	private final double FEEDER_EJECT_TIME = 1.5; // seconds
+	private final double MOVE_SPEED = 0.4;
+	private boolean m_hasLostNote = false;
+	private Timer m_spitTimer = new Timer();
 
 	/** Creates a new FireIntoAmp. */
 	public FireIntoAmp(Lift lift, Launcher launcher, Feeder feeder, BaseSwerveDrive swerveDrive, Vision vision) {
@@ -46,7 +48,7 @@ public class FireIntoAmp extends Command {
 		m_feeder = feeder;
 		m_swerveDrive = swerveDrive;
 		m_vision = vision;
-		addRequirements(lift, launcher, swerveDrive);
+		addRequirements(lift, launcher, swerveDrive, m_feeder);
 		resetCommand();
 	}
 
@@ -57,27 +59,35 @@ public class FireIntoAmp extends Command {
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
-		double x = Constants.RobotBounds.BackwardEdge * Math.cos(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
-		double y = Constants.RobotBounds.BackwardEdge * Math.sin(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
+		double x = -Constants.RobotBounds.BackwardEdge * Math.cos(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
+		double y = -Constants.RobotBounds.BackwardEdge * Math.sin(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
 		Translation2d pose = FieldPose2024.Amp.getCurrentAlliancePose().getTranslation().plus(new Translation2d(x, y));
-		m_swerveDrive.setTarget(new Pose2d(pose, FieldPose2024.Amp.getCurrentAlliancePose().getRotation()));
 		m_finalPose = new Pose2d(pose, FieldPose2024.Amp.getCurrentAlliancePose().getRotation());
+		m_swerveDrive.setTarget(m_finalPose);
+		m_hasLostNote = false;
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
+		System.out.println(m_finalPose);
 		if (state == AmpDropSequence.MoveToArea) {
+			System.out.println("Move to area");
 			if (m_swerveDrive.atTarget(/* 1.5 */) && m_lift.atTargetHeight(LiftConstants.AmpMeters)
 				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle))
 			{
 				m_swerveDrive.stop();
-				state = AmpDropSequence.VisionMoveAdjust;
+				m_feeder.setFeederPower(-1.0);
+				state = AmpDropSequence.FireIntoAmp;
 			} else {
-				m_swerveDrive.moveToTarget(0.40);
+				m_lift.moveToHeight(LiftConstants.AmpMeters);
+				m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
+
+				m_swerveDrive.moveToTarget(MOVE_SPEED);
 			}
 
 		} else if(state == AmpDropSequence.VisionMoveAdjust) { 
+			System.out.println("Vision move adjust");
 
 			// Calculate the error according to the Vision system
 			Pose2d visionPose = m_vision.getCamera(CameraDirection.back).getMostRecentPose();
@@ -93,8 +103,7 @@ public class FireIntoAmp extends Command {
 			{
 				state = AmpDropSequence.FireIntoAmp;
 				m_swerveDrive.stop();
-				m_timestamp = Optional.of(Timer.getFPGATimestamp());
-				m_feeder.setFeederPower(FEEDER_EJECT_SPEED);
+				m_feeder.setFeederPower(-1.0);
 			} else {
 				// We need to apply the Vision error correction to the robot's current pose target
 				var robotPose = m_swerveDrive.getPose();
@@ -103,6 +112,12 @@ public class FireIntoAmp extends Command {
 			}
 
 		} else if(state == AmpDropSequence.FireIntoAmp) {
+			System.out.println("Fire to amp");
+			
+			if (!m_hasLostNote && !m_feeder.hasNote()) {
+				m_hasLostNote = true;
+				m_spitTimer.start();
+			}
 			// Do nothing, lets not spam the can bus
 			// At this point we're timer based, and the feeder should already be ejecting as it can.
 		}
@@ -115,21 +130,19 @@ public class FireIntoAmp extends Command {
 	}
 
 	private void resetCommand() {
-		state = AmpDropSequence.VisionMoveAdjust;
+		m_spitTimer.stop();
+		m_spitTimer.reset();
+		state = AmpDropSequence.MoveToArea;
 	}
 
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		if (m_timestamp.isEmpty()) {
-			return false;
-		}
-
-		var time_diff = (Timer.getFPGATimestamp() - m_timestamp.get()) / 1000;
-		if (state == AmpDropSequence.FireIntoAmp && FEEDER_EJECT_TIME < time_diff) {
+		if (m_spitTimer.hasElapsed(0.25) && state == AmpDropSequence.FireIntoAmp) {
+			m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 }
+

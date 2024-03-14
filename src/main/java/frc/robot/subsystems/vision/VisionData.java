@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 public class VisionData {
 	private Pose3d m_pose;
 	private double m_time;
+	// TODO: Include Deviation data
 
 	VisionData(Pose3d pose, double timestamp) {
 		m_pose = pose;

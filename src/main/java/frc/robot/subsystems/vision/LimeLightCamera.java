@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -36,6 +37,12 @@ public class LimeLightCamera implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 
+	public enum LimelightVersion {
+		LL2,
+		LL3,
+		LL3G
+	}
+
 
 	/**
 	 * Represents which mode the robot is in.
@@ -60,9 +67,6 @@ public class LimeLightCamera implements CameraInterface {
 	}
 
 	private final double EPSILON = 1e-8;
-	// Scale is currently in the range of [0,1]
-	private final double CONFIDENCE_REQUIREMENT = 0.4;
-	private final double DISTANCE_CUTOFF_METERS = 3.5;
 
 	private final int idxX = 0;
 	private final int idxY = 1;
@@ -97,7 +101,7 @@ public class LimeLightCamera implements CameraInterface {
 
 	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
 		// TODO Actually calculate confidence
-		if (DISTANCE_CUTOFF_METERS < distance) {
+		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance) {
 			return 0;
 		}
 		return 1.0;
@@ -121,8 +125,21 @@ public class LimeLightCamera implements CameraInterface {
 
 		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
 
+		if (m_offset != null) {
+			var cameraOffset = m_offset.get();
+			cameraOffset = cameraOffset.rotateBy(new Rotation3d(0, 0, data[idxYaw] * Math.PI / 180));
+			visionPose = new Pose3d(
+				new Translation3d(visionPose.getX() - cameraOffset.getX(),
+								visionPose.getY() - cameraOffset.getY(),
+								visionPose.getZ() - cameraOffset.getZ()),
+				new Rotation3d(0,//poseRotation.getX() - cameraOffset.getRotation().getX(),
+								0,//poseRotation.getY() - cameraOffset.getRotation().getY(),
+								poseRotation.getZ())//- cameraOffset.getRotation().getZ())
+			);
+		}
+
 		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance]);
-		if (conf < CONFIDENCE_REQUIREMENT) {
+		if (conf < VisionConstants.ConfidenceRequirement) {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
