@@ -47,6 +47,7 @@ import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DashboardLaunch;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.FocusAndLaunch;
+import frc.robot.commands.step.FocusAndLaunchWithModel;
 import frc.robot.commands.step.PassNote;
 //import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
@@ -54,12 +55,12 @@ import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.SimpleControl;
 //import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.FlywheelTable;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.launcher.FlywheelTable;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
@@ -200,7 +201,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
+        new FocusAndLaunchWithModel(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake));
 
     m_driver.leftStick(); //
     m_driver.rightStick(); //

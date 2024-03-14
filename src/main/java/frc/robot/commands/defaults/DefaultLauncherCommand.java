@@ -8,7 +8,7 @@ import com.chaos131.gamepads.Gamepad;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.launcher.Launcher;
 
 public class DefaultLauncherCommand extends Command {
   private Launcher m_launcher;

@@ -13,8 +13,8 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.launcher.Launcher;
 
 // TODO: Implement actual control logic
 public class PassNote extends Command {

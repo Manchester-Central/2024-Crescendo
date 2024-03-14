@@ -12,8 +12,8 @@ import frc.robot.commands.auto.AutoUtil;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.launcher.Launcher;
 
 /**
  * A class for controlling the mechanisms (intake, feeder, and flywheels) in a simple way. Each respective subsystem can optionally be added via chaining:

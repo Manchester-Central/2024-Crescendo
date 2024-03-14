@@ -12,6 +12,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import frc.robot.subsystems.launcher.FlywheelTable;
+
 /** Add your docs here. */
 public class FlywheelTableTests {
     double DELTA = 0.001;

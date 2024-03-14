@@ -9,9 +9,9 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
-import frc.robot.subsystems.TableData;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherTarget;
 
 // TODO: Implement actual control logic
 public class DashboardLaunch extends BaseLaunch {
@@ -29,11 +29,11 @@ public class DashboardLaunch extends BaseLaunch {
   }
 
   @Override
-  protected Optional<TableData> getTargets() {
+  protected Optional<LauncherTarget> getTargets() {
     m_targetRPM = SmartDashboard.getNumber("DSLaunch Target RPM", m_targetRPM);
     m_speedOffsetRPM = SmartDashboard.getNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
-    return Optional.of(new TableData(0, 0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
+    return Optional.of(new LauncherTarget(0, 0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
   }
 
   @Override

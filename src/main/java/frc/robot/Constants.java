@@ -91,15 +91,16 @@ public class Constants {
 	public static class SwerveConstants2024 {
 
 		// Speeds
-		public static final double MaxRobotSpeed_mps =  5.8;
-		public static final double MaxRobotRotation_radps =  6.75; // untested
+		// public static final double MaxRobotSpeed_mps =  5.32; // 5.32 is maximum with a 6:1 (23:23 planet ratio)
+		public static final double MaxRobotSpeed_mps =  4.8; // 4.8 is maximum with a 6.55:1 (22:24 planet ratio)
+		public static final double MaxRobotRotation_radps =  12.0; // 12.21157 is maximum with a 6.55:1 (22:24 planet ratio)
 		public static final double SlowSpeedModifier = 0.65;
 		public static final double DefaultSpeedModifier = 1.0;
 		public static final double SuperSlowSpeedModifier = 0.25;
 
 		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(0.7, 0.0, 0.2);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
-		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.009, 0.0001, 0.0);
+		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.003, 0.0001, 0.0);
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
@@ -152,18 +153,19 @@ public class Constants {
 		public static final double LiftG = 0.6;
 		public static final double LiftToleranceMeters = 0.01;
 
-		public static final double MinHeightMeters = 0.05;
-		public static final double MinLaunchOverHeightMeters = 0.24;
-		public static final double MaxHeightMeters = 0.793; 
+		public static final double MinHeightMeters = 0.01;
+		public static final double MaxHeightMeters = 0.693; 
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
-		public static final double DefaultLaunchMeters = 0.6;
-		public static final double AmpMeters = 0.74;//0.632;
-		public static final double SourceMeters = 0.4;
+
+		public static final double DefaultLaunchMeters = 0.5;
+		public static final double AmpMeters = 0.64; // 0.532
+		public static final double SourceMeters = 0.3;
+
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
-		public static final double IntakeHeightMeters = 0.1;
-		public static final double LaunchSpitHeightMeters = 0.1;
-		public static final double PassNoteHeight = 0.15;
+		public static final double IntakeHeightMeters = MinHeightMeters;
+		public static final double LaunchSpitHeightMeters = MinHeightMeters;
+		public static final double PassNoteHeight = 0.05;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 

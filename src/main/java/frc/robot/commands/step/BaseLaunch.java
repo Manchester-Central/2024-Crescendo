@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
-import frc.robot.subsystems.TableData;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherTarget;
 
 // TODO: Implement actual control logic
 public abstract class BaseLaunch extends Command {
@@ -51,7 +51,7 @@ public abstract class BaseLaunch extends Command {
 
   }
 
-  protected abstract Optional<TableData> getTargets();
+  protected abstract Optional<LauncherTarget> getTargets();
 
   protected abstract boolean isClearToLaunch();
 
