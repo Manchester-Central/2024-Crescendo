@@ -235,6 +235,6 @@ public class LimeLightCamera implements CameraInterface {
 	 */
 	@Override
 	public void setPriorityID(int id) {
-		m_visionTable.getEntry("priorityId").setNumber(id);
+		m_visionTable.getEntry("priorityid").setNumber(id);
 	}
 }
