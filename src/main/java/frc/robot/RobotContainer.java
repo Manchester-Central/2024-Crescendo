@@ -34,6 +34,7 @@ import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.auto.AutoUtil;
 import frc.robot.commands.complex.FireIntoAmp;
+import frc.robot.commands.complex.MoveToAmpPathPlanner;
 import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
@@ -157,11 +158,11 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
     if (Robot.isSimulation()) {
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
 
-      SimKeyboard.x().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpPath")));
+      //SimKeyboard.x().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpPath")));
+      SimKeyboard.x().whileTrue(new MoveToAmpPathPlanner(m_swerveDrive));
     }
 
     configureDefaultCommands();
