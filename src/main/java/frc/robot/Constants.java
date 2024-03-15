@@ -19,7 +19,7 @@ public class Constants {
 	public static final double robotLengthMeters = 0.9779;
 
 	public static class DebugConstants {
-		public static final boolean DriveDebugEnable = true;
+		public static final boolean DriveDebugEnable = false;
 		public static final boolean IntakeDebugEnable = false;
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
@@ -100,7 +100,7 @@ public class Constants {
 
 		public static final PIDValue DefaultTranslationPIDValues = new PIDValue(0.7, 0.0, 0.2);
 		public static final double DefaultDriveToTargetTolerance_m = 0.03; 
-		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.003, 0.0001, 0.0);
+		public static final PIDValue DefaultRotationPIDValues = new PIDValue(0.009, 0.0001, 0.0);
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
