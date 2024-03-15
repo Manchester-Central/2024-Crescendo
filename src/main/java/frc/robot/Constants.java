@@ -19,7 +19,7 @@ public class Constants {
 	public static final double robotLengthMeters = 0.9779;
 
 	public static class DebugConstants {
-		public static final boolean DriveDebugEnable = false;
+		public static final boolean DriveDebugEnable = true;
 		public static final boolean IntakeDebugEnable = false;
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
@@ -91,8 +91,8 @@ public class Constants {
 	public static class SwerveConstants2024 {
 
 		// Speeds
-		// public static final double MaxRobotSpeed_mps =  5.32; // 5.32 is maximum with a 6:1 (23:23 planet ratio)
-		public static final double MaxRobotSpeed_mps =  4.8; // 4.8 is maximum with a 6.55:1 (22:24 planet ratio)
+		public static final double MaxRobotSpeed_mps =  5.32; // 5.32 is maximum with a 6:1 (23:23 planet ratio)
+		// public static final double MaxRobotSpeed_mps =  4.8; // 4.8 is maximum with a 6.55:1 (22:24 planet ratio)
 		public static final double MaxRobotRotation_radps =  12.0; // 12.21157 is maximum with a 6.55:1 (22:24 planet ratio)
 		public static final double SlowSpeedModifier = 0.65;
 		public static final double DefaultSpeedModifier = 1.0;
