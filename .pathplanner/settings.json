@@ -22,9 +22,9 @@
     "SrcSide-4Ns-ThruStage",
     "SrcSide-AroundStage"
   ],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
-  "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 720.0,
+  "defaultMaxVel": 5.8,
+  "defaultMaxAccel": 6.0,
+  "defaultMaxAngVel": 680.0,
+  "defaultMaxAngAccel": 544.0,
   "maxModuleSpeed": 5.8
 }

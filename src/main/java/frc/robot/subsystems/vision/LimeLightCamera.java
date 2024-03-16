@@ -119,6 +119,11 @@ public class LimeLightCamera implements CameraInterface {
 			return;
 		}
 
+		// is this needed? Why is above logic not working?
+		if(data[idxX] == 0.0 && data[idxY] == 0){
+			return ;
+		}
+
 		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
 											data[idxPitch] * Math.PI / 180,
 											data[idxYaw]  * Math.PI / 180);
