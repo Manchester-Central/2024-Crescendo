@@ -9,6 +9,8 @@ import java.util.Optional;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,68 +26,64 @@ import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
 import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.AngleUtil;
+import frc.robot.util.FieldPose2024;
 
-public class FocusAndLaunchWithModel extends BaseLaunch {
-  private Vision m_vision;
+public class LobOntoField extends BaseLaunch {
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
   private double m_initialLiftHeightMeters = 0;
+  private FieldPose2024 m_targetPose;
 
   /** Creates a new Lanch Partay. */
-  public FocusAndLaunchWithModel(
+  public LobOntoField(
       Lift lift,
       Launcher launcher,
       Feeder feeder,
-      Vision vision,
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
-      Intake intake
+      Intake intake,
+      FieldPose2024 targetPose
   ) {
     super(lift, launcher, feeder, intake);
-    m_vision = vision;
     m_swerveDrive = swerveDrive;
     m_driver = driver;
+    m_targetPose = targetPose;
 
-    addRequirements(lift, launcher, feeder, vision, swerveDrive);
+    addRequirements(lift, launcher, feeder, swerveDrive);
   }
 
   @Override
   public void initialize() {
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
   }
 
   @Override
   public void execute() {
-    if (m_vision.getCamera(CameraDirection.front).hasTarget()) {
-      var currentPose = m_swerveDrive.getPose();
-      var currentRotation = currentPose.getRotation();
-      var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
-      m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), rotation, 1.0);
-    } else {
-      m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
-    }
+    var targetAngle = getTargetAngle();
+    m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), targetAngle, 1.0);
     super.execute();
+  }
+
+  private Rotation2d getTargetAngle(){
+    var currentPose = m_swerveDrive.getPose();
+    var targetAngle = m_targetPose.getCurrentAlliancePose().getTranslation().minus(currentPose.getTranslation()).getAngle();
+    return targetAngle;
   }
 
   @Override
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(-1);
     super.end(interrupted);
   }
 
   @Override
   protected Optional<LauncherTarget> getTargets() {
-    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
-    if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
-      return Optional.empty();
-    }
-    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
-    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+    var currentPose = m_swerveDrive.getPose();
+    double distanceToTargetMeters = Math.abs(m_targetPose.getCurrentAlliancePose().getTranslation().getDistance(currentPose.getTranslation()));
+    var targets = LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, 0.15, distanceToTargetMeters, Rotation2d.fromDegrees(10));
     SmartDashboard.putString("launch targets", targets.toString());
     return targets;
   }
@@ -98,6 +96,6 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-    return Math.abs(m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
+    return Math.abs(getTargetAngle().minus(m_swerveDrive.getOdometryRotation()).getDegrees()) < 2.0;
   }
 }
