@@ -6,6 +6,8 @@ package frc.robot.commands.step;
 
 import java.util.Optional;
 
+import com.chaos131.util.DashboardNumber;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +26,9 @@ public abstract class BaseLaunch extends Command {
 
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
+
+  private DashboardNumber m_feederLaunchSpeed = new DashboardNumber("Feeder Launch Speed", 1.0, true, (Double newSpeed)->{});
+  private DashboardNumber m_trapLaunchSpeed = new DashboardNumber("Trap Launch Speed", 1.0, true, (Double newSpeed)->{});
 
   /** Creates a new Lanch Partay. */
   public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake) {
@@ -84,7 +89,9 @@ public abstract class BaseLaunch extends Command {
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     m_launcher.setTiltAngle(targetTilt);
     if (isClearToLaunch() && m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
-      m_feeder.setFeederPower(1.0);
+      m_feeder.setFeederPower(m_feederLaunchSpeed.get(),m_trapLaunchSpeed.get());
+    } else {
+      m_feeder.grabAndHoldPiece(0.3);
     }
   }
 
