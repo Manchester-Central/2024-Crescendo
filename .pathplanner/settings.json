@@ -6,13 +6,14 @@
     "6329Frwends",
     "AmpSide-5Ns-AroundStage",
     "EasySolo",
-    "MidLineRace",
     "MidDenial",
+    "MidLineRace",
+    "New Folder",
     "SCurveNote",
     "SimpleAuto",
     "SrcSide-4Ns-ThruStage",
     "SrcSide-5Ns-AroundStage",
-    "Test Paths"
+    "CenterNoteRush"
   ],
   "autoFolders": [
     "AmpSide-5Ns-AroundStage",
@@ -22,8 +23,8 @@
     "SrcSide-4Ns-ThruStage",
     "SrcSide-AroundStage"
   ],
-  "defaultMaxVel": 5.8,
-  "defaultMaxAccel": 6.0,
+  "defaultMaxVel": 5.0,
+  "defaultMaxAccel": 3.5,
   "defaultMaxAngVel": 680.0,
   "defaultMaxAngAccel": 544.0,
   "maxModuleSpeed": 5.8

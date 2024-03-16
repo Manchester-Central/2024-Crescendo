@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.xml.crypto.KeySelector.Purpose;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -27,6 +29,7 @@ public class LimeLightCamera implements CameraInterface {
 	private Consumer<VisionData> m_poseUpdator; // sends the data back to the swerve pose estimator
 	private Optional<VisionData> m_mostRecentData; // caches the most recent data, including no-datas
 	private Supplier<Pose3d> m_offset;
+	private Supplier<Double> m_robotSpeedSupplier;
 
 	private NetworkTable m_visionTable;
 	private NetworkTableEntry m_botpose;
@@ -80,7 +83,7 @@ public class LimeLightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimeLightCamera(String name, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer) {
+	public LimeLightCamera(String name, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
@@ -90,6 +93,7 @@ public class LimeLightCamera implements CameraInterface {
 		m_tv = m_visionTable.getEntry("tv");
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
+		m_robotSpeedSupplier = robotSpeedSupplier;
 
 		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
@@ -101,7 +105,7 @@ public class LimeLightCamera implements CameraInterface {
 
 	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
 		// TODO Actually calculate confidence
-		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance) {
+		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance || VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get()) {
 			return 0;
 		}
 		return 1.0;

@@ -80,7 +80,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data));
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeed());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -284,8 +284,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
-    handleDriverRumble();
-    handleOperatorRumble();
+    if(DriverStation.isEnabled()){
+      handleDriverRumble();
+      handleOperatorRumble();
+    }
   }
 
   // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)

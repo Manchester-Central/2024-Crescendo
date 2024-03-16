@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7408686539625677,
-        "y": 3.3947355374207744
+        "x": 2.3525686513256443,
+        "y": 3.193526745797886
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3293906084805063,
-        "y": 4.000648263735019
+        "x": 1.9410906058435828,
+        "y": 3.7994394721121303
       },
       "isLocked": false,
       "linkedName": "SrcSide-5Ns-AroundStage-CommonReturn"
@@ -50,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.8,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 680.0,
     "maxAngularAcceleration": 544.0
   },
