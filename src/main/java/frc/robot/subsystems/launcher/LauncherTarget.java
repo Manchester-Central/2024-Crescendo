@@ -26,6 +26,14 @@ public class LauncherTarget {
         return m_launcherSpeedRPM;
     }
 
+    public double getLeftLauncherSpeedRPM() {
+        return m_launcherSpeedRPM + m_speedOffsetRPM;
+    }
+
+    public double getRightLauncherSpeedRPM() {
+        return m_launcherSpeedRPM - m_speedOffsetRPM;
+    }
+
     public double getSpeedOffsetRPM(){
         return m_speedOffsetRPM;
     }

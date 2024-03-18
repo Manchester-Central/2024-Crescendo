@@ -4,12 +4,16 @@
 
 package frc.robot.commands.step;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.chaos131.util.DashboardNumber;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.subsystems.Feeder;
@@ -20,11 +24,13 @@ import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherTarget;
 
 public abstract class BaseLaunch extends Command {
+  protected final DecimalFormat m_formatter = new DecimalFormat("#.###");
   protected boolean kTuningEnabled = DebugConstants.LauncherModelDebugEnable;
   protected Lift m_lift;
   protected Launcher m_launcher;
   protected Feeder m_feeder;
   protected Intake m_intake;
+  protected Optional<LauncherTarget> m_currentTarget = Optional.empty();
 
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
@@ -61,6 +67,27 @@ public abstract class BaseLaunch extends Command {
 
   protected abstract boolean isClearToLaunch();
 
+  protected List<String> getLaunchErrors() {
+    if (m_currentTarget.isEmpty()) {
+      return new ArrayList<String>(List.of("No Launch Target"));
+    }
+    var target = m_currentTarget.get();
+    var liftError = m_lift.getCurrentHeightMeters() - target.getHeightMeters();
+    var leftLauncherError = m_launcher.getLeftLauncherRPM() - target.getLeftLauncherSpeedRPM();
+    var rightLauncherError = m_launcher.getRightLauncherRPM() - target.getRightLauncherSpeedRPM();
+    var tiltError = m_launcher.getAbsoluteTiltAngle().minus(target.getTiltAngle()).getDegrees();
+    return new ArrayList<String>(List.of(
+      formatError("Left Launcher", leftLauncherError),
+      formatError("Right Launcher", rightLauncherError),
+      formatError("Lift", liftError),
+      formatError("Tilt", tiltError)
+    ));
+  }
+
+  protected String formatError(String errorName, double value) {
+    return errorName + " Error: " + m_formatter.format(value);
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -73,18 +100,19 @@ public abstract class BaseLaunch extends Command {
       m_launchTimer.stop();
       m_launchTimer.reset();
     }
-    var targetOptional = getTargets();
-    LauncherModel.publishTargetToDashboard(targetOptional, "Base Launch Target");
-    if (targetOptional.isEmpty()) {
+    m_currentTarget = getTargets();
+    LauncherModel.publishTargetToDashboard(m_currentTarget, "Base Launch Target");
+    if(kTuningEnabled) {
+      SmartDashboard.putStringArray("BaseLaunch/ErrorValues", getLaunchErrors().stream().toArray(String[]::new));
+    }
+    if (m_currentTarget.isEmpty()) {
       noTargetBehavior();
       return;
     }
-    var targets = targetOptional.get();
+    var targets = m_currentTarget.get();
     var targetHeight = targets.getHeightMeters();
-    var targetSpeed = targets.getLauncherSpeedRPM();
-    var speedOffset = targets.getSpeedOffsetRPM();
-    var targetSpeedLeft = targetSpeed + speedOffset;
-    var targetSpeedRight = targetSpeed - speedOffset;
+    var targetSpeedLeft = targets.getLeftLauncherSpeedRPM();
+    var targetSpeedRight = targets.getRightLauncherSpeedRPM();
     var targetTilt = targets.getTiltAngle();
     m_lift.moveToHeight(targetHeight);
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);

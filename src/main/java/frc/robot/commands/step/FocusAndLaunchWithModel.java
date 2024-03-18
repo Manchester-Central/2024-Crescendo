@@ -4,6 +4,7 @@
 
 package frc.robot.commands.step;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.chaos131.gamepads.Gamepad;
@@ -91,6 +92,17 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-    return Math.abs(m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
+    return Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+  }
+
+  private double getDriveAngleErrorDegrees() {
+    return m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true);
+  }
+
+  @Override
+  protected List<String> getLaunchErrors() {
+    var errors = super.getLaunchErrors();
+    errors.add(formatError("TY", getDriveAngleErrorDegrees()));
+    return errors;
   }
 }

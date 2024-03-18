@@ -4,6 +4,7 @@
 
 package frc.robot.commands.step;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.chaos131.gamepads.Gamepad;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
@@ -20,6 +22,7 @@ import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.FieldPose2024;
 
 public class LobOntoField extends BaseLaunch {
+  private final double kSwerveAngleTolerance = 2.0;
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
   private FieldPose2024 m_targetPose;
@@ -86,6 +89,17 @@ public class LobOntoField extends BaseLaunch {
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-    return Math.abs(getTargetAngle().minus(m_swerveDrive.getOdometryRotation()).getDegrees()) < 2.0;
+    return Math.abs(getDriveAngleErrorDegrees()) < kSwerveAngleTolerance;
+  }
+
+  private double getDriveAngleErrorDegrees() {
+    return getTargetAngle().minus(m_swerveDrive.getOdometryRotation()).getDegrees();
+  }
+
+  @Override
+  protected List<String> getLaunchErrors() {
+    var errors = super.getLaunchErrors();
+    errors.add(formatError("Drive Angle", getDriveAngleErrorDegrees()));
+    return errors;
   }
 }
