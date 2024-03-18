@@ -150,7 +150,7 @@ public class LauncherModel {
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(targetAngle);
 
         // Calculate the desired velocity from the calculated values
-        // Using the formula Dan gave us here: https://en.wikipedia.org/wiki/Projectile_motion#Angle_of_reach
+        // Using the formula Dan gave us here: https://en.wikipedia.org/wiki/Projectile_motion#Displacement
         var numerator = Math.pow(adjustedDistanceMeters, 2) * -kGravity;
         var denominator = (adjustedDistanceMeters * Math.sin(2 * targetAngle.getRadians())) - (2 * launchHeightDifferenceMeters * Math.pow(Math.cos(targetAngle.getRadians()), 2));
         var initialVelocityMPS = Math.sqrt(numerator / denominator) * 2; // TODO: why did we need to multiply by two??
