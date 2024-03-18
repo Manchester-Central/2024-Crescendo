@@ -24,6 +24,7 @@ public class Constants {
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
 		public static final boolean LauncherDebugEnable = false;
+		public static final boolean LauncherModelDebugEnable = true;
 	}
 
 	public static class ControllerConstants {
@@ -49,6 +50,7 @@ public class Constants {
 		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
+		public static final double RobotSpeedThresholdMPS = 1.0;
 	}
 
 	public static class CANIdentifiers {
@@ -108,14 +110,14 @@ public class Constants {
 
 	public static class LauncherConstants {
 		// public static final double TiltPotConversionFactor = 10.90146751;
-		public static final double TiltAbsoluteEncoderConversionFactor = 99.91;
-		public static final double TiltAbsoluteEncoderOffset = 86.67; // TODO
+		public static final double TiltAbsoluteEncoderConversionFactor = 90.151; // Old Value: 99.91
+		public static final double TiltAbsoluteEncoderOffset = 73.75; // Old Value: 86.67
 		public static final double TiltEncoderConversionFactor = 2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(2.8); // actual 1.5 - 2.8 is a safe limit
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58);
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // actual 5.65 - 6.65 is a safe limit
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58.2); // actual 59.2 - 58.2 is a safe limit
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
 
@@ -124,6 +126,7 @@ public class Constants {
 		public static final double TiltD = 0;
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
+		public static final Rotation2d SourceIntakeAngle = Rotation2d.fromDegrees(34.2);
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
 		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(3);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
@@ -164,6 +167,7 @@ public class Constants {
 
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = MinHeightMeters;
+		public static final double SourceIntakeHeightMeters = 0.38;
 		public static final double LaunchSpitHeightMeters = MinHeightMeters;
 		public static final double PassNoteHeight = 0.05;
 

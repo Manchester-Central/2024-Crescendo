@@ -4,6 +4,7 @@
 
 package frc.robot.commands.step;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.chaos131.gamepads.Gamepad;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
+import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.AngleUtil;
 
@@ -73,7 +75,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(-1);
+    m_vision.getCamera(CameraDirection.front).resetPriorityID();
     super.end(interrupted);
   }
 
@@ -84,19 +86,23 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
       return Optional.empty();
     }
     double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
-    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle());
-    SmartDashboard.putString("launch targets", targets.toString());
-    return Optional.ofNullable(targets);
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
+    return LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
   }
 
   @Override
   protected boolean isClearToLaunch() {
     // TODO - handle logic better for when shooting on the fly
-    return Math.abs(m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
+    return Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+  }
+
+  private double getDriveAngleErrorDegrees() {
+    return m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true);
+  }
+
+  @Override
+  protected List<String> getLaunchErrors() {
+    var errors = super.getLaunchErrors();
+    errors.add(formatError("TY", getDriveAngleErrorDegrees()));
+    return errors;
   }
 }

@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 // import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
+import com.chaos131.util.DashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -52,7 +53,9 @@ import frc.robot.commands.step.PassNote;
 //import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.LaunchSpit;
+import frc.robot.commands.step.LobOntoField;
 import frc.robot.commands.step.SimpleControl;
+import frc.robot.commands.step.SourceIntake;
 //import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -80,7 +83,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data));
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -139,8 +142,8 @@ public class RobotContainer {
       return new Pose3d(limelightlocation, finalRotation);
     });
 
-    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake));
-    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_flywheelTableLowerHeight, m_flywheelTableUpperHeight, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new FocusAndLaunchWithModel(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake));
+    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunchWithModel(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
@@ -238,15 +241,18 @@ public class RobotContainer {
   }
 
   private void configureTesterCommands() {
-    m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
-    m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
-    m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
-    m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
+    // m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    // m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
+    // m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
+    // m_tester.y().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.6), () -> m_lift.setSpeed(0), m_lift));
     // m_tester.leftBumper().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(2000), () -> m_launcher.setLauncherPower(0), m_launcher));
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
     //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
     m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
+    m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, Rotation2d.fromDegrees(45)));
+    m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, Rotation2d.fromDegrees(10)));
+    m_tester.b().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher));
   }
   
   public Command getAutonomousCommand() {
@@ -255,6 +261,9 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    // Enables Dashboard Numbers to be updated each loop
+    DashboardNumber.checkAll();
+
     // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherPower, atFeederPrimary, atFeederSecondary]
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
@@ -284,8 +293,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("Distance to Speaker", distanceToSpeaker);
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
-    handleDriverRumble();
-    handleOperatorRumble();
+    if(DriverStation.isEnabled()){
+      handleDriverRumble();
+      handleOperatorRumble();
+    }
   }
 
   // Rumble the driver controller inversely proportional to the battery voltage (up to a certain point) (so rumber more the lower the reported voltage gets)
