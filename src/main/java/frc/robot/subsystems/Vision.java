@@ -26,9 +26,9 @@ public class Vision extends SubsystemBase {
 	 * 
 	 * @param tablename - String of the device name.
 	 */
-	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator) {
-		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator);
-		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator);
+	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Supplier<Double> robotSpeedSupplier) {
+		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
+		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 	}
 
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {

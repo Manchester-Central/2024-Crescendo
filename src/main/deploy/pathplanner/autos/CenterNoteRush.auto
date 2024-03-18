@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SrcSide-5Ns-AroundStage-Part1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SrcSide-5Ns-AroundStage-Part2"
+            "pathName": "CenterNoteBegin"
           }
         },
         {
@@ -32,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SrcSide-5Ns-AroundStage-Part3"
+            "pathName": "NC2-To-NF3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SrcSide-5Ns-AroundStage-Part4"
+            "pathName": "CenterNoteRush-Launch3"
           }
         },
         {
@@ -50,13 +44,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SrcSide-5Ns-AroundStage-Part7"
+            "pathName": "CenterNoteLuanch3-to-NF2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterNoteLaunch4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intakeWait"
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterNoteNC3+Launch5"
           }
         },
         {
@@ -68,6 +74,6 @@
       ]
     }
   },
-  "folder": "SrcSide-AroundStage",
+  "folder": null,
   "choreoAuto": false
 }

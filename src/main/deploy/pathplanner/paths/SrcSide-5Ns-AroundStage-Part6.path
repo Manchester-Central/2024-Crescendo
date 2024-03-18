@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.00799580822624,
-        "y": 4.01421347402873
+        "x": 8.169020822346578,
+        "y": 3.966599502705732
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.189818712475844,
-        "y": -1.1765699011939974
+        "x": 6.350843726596182,
+        "y": -1.2241838725169951
       },
       "isLocked": false,
       "linkedName": "SrcSide-5Ns-AroundStage-Part5-End"
     },
     {
       "anchor": {
-        "x": 1.7408686539625677,
-        "y": 3.3947355374207744
+        "x": 2.3525686513256443,
+        "y": 3.193526745797886
       },
       "prevControl": {
-        "x": 3.5947807270136143,
-        "y": 2.666735918490973
+        "x": 3.7238524701264657,
+        "y": 2.254795540981216
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,10 +50,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
   },
   "goalEndState": {
     "velocity": 0,

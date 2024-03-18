@@ -92,6 +92,9 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
 
   @Override
   public boolean isFinished() {
+    if(DriverStation.isAutonomous()){
+      return super.isFinished();
+    }
     return false;
   }
 

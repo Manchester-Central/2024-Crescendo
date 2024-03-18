@@ -63,6 +63,13 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
         return m_kinematics.toChassisSpeeds(getModuleStates());
     }
 
+    public double getRobotSpeed() {
+        var robotSpeeds = getRobotRelativeSpeeds();
+        var xMetersPerSecond = robotSpeeds.vxMetersPerSecond;
+        var yMetersPerSecond = robotSpeeds.vyMetersPerSecond;
+        return Math.sqrt(Math.pow(xMetersPerSecond, 2) + Math.pow(yMetersPerSecond, 2));
+    }
+
     public void pathPlannerRobotRelative(ChassisSpeeds chassisSpeeds) {
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(chassisSpeeds);
         // SwerveDriveKinematics.desaturateWheelSpeeds(states, m_swerveConfigs.maxRobotSpeed_mps());

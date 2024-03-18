@@ -3,52 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 4.114515152107228
+        "x": 8.288663034725174,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.119263007756786,
-        "y": 4.25265235145855
+        "x": 6.77012726222762,
+        "y": 4.040225479554098
       },
       "isLocked": false,
-      "linkedName": "Deny NF3"
+      "linkedName": "NF3"
     },
     {
       "anchor": {
-        "x": 4.757624899865186,
-        "y": 3.709970496864071
+        "x": 3.7790719527627403,
+        "y": 5.172224873597729
       },
       "prevControl": {
-        "x": 5.122198859286215,
-        "y": 3.9530198031447568
-      },
-      "nextControl": {
-        "x": 4.047205017486959,
-        "y": 3.236357241945254
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.389558625271098,
-        "y": 3.2462241847560627
-      },
-      "prevControl": {
-        "x": 3.8005314472167417,
-        "y": 2.3285985033508547
+        "x": 5.030713559184966,
+        "y": 4.279509904311289
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Deny NF3Launch"
+      "linkedName": "CenterLineRush-Launch3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -73,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.23675807190713,
+    "rotation": 173.18478058135582,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "MidDenial",
+  "folder": "CenterNoteRush",
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

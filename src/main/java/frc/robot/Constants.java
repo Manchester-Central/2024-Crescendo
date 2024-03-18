@@ -49,6 +49,7 @@ public class Constants {
 		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
+		public static final double RobotSpeedThresholdMPS = 1.0;
 	}
 
 	public static class CANIdentifiers {
