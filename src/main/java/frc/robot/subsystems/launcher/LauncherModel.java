@@ -59,21 +59,33 @@ public class LauncherModel {
         }
     }
 
+    /**
+     * Whether to get the higher or lower angle from the quadratic calculation
+     */
     public enum TargetAngleMode {
         Higher, Lower
     }
 
-    public static Optional<LauncherTarget> getLauncherTarget(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d currentTiltAngle, TargetAngleMode targetAngleMode) {
+    /**
+     * Gets the launcher target for aiming at a height target (floor or speaker) for a given distance.
+     * NOTE: This is working well for the speaker, but the velocity values are more sensitive for the floor, so it's recommended to use getLauncherTargetWithAngle for launching to the floor.
+     * @param heightTarget Floor or Speaker, whichever you want to target.
+     * @param currentLiftHeightMeters The current (or min) height for the lift
+     * @param distanceToTargetFromBotCenterMeters the distance in meters from the bot center to the target
+     * @param currentTiltAngle the current tilt of the launcher
+     * @param targetAngleMode whether to prefer the possible higher or lower angle for the launcher target
+     * @return An empty Optional if the resultant angles are not in the launcher range - otherwise, the resultant launcher target
+     */
+    public static Optional<LauncherTarget> getLauncherTarget(LauncherHeightTarget heightTarget, double currentLiftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d currentTiltAngle, TargetAngleMode targetAngleMode) {
         // Calculate the distance from the launch point to the target
-        double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(currentTiltAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
+        double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(currentTiltAngle) + getLiftDistanceOffsetMeters(currentLiftHeightMeters);
 
         // Adjust the height to at least be above the min height calculated for the current distance
-        double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        double adjustedLiftHeightMeters = Math.max(currentLiftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
 
         // Calculate the initial velocity target for the flywheels
-        double initialVelocityMPS = heightTarget == LauncherHeightTarget.Speaker
-            ? interpolateInitialVelocityMps(adjustedDistanceMeters)
-            : 2 + (0.5 * distanceToTargetFromBotCenterMeters);
+        // These velocities do not work well with launching to the floor - using the getLauncherTargetWithAngle works better
+        double initialVelocityMPS = interpolateInitialVelocityMps(adjustedDistanceMeters);
 
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
@@ -101,19 +113,32 @@ public class LauncherModel {
         var higherLauncherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, higherThetaDegrees, adjustedLiftHeightMeters);
         var lowerLauncherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, lowerThetaDegrees, adjustedLiftHeightMeters);
 
-        SmartDashboard.putString("launch target higher", higherLauncherTarget.toString());
-        SmartDashboard.putString("launch target lower", lowerLauncherTarget.toString());
+        SmartDashboard.putString("LauncherModel/Possible Target Higher", higherLauncherTarget.toString());
+        SmartDashboard.putString("LauncherModel/Possible Target Lower", lowerLauncherTarget.toString());
 
+        var result = Optional.ofNullable((LauncherTarget) null);
         if(!isHigherAngleValid && !isLowerAngleValid){
-            return Optional.empty();
+            result = Optional.empty();
         } else if(!isHigherAngleValid){
-            return Optional.of(lowerLauncherTarget);
+            result = Optional.of(lowerLauncherTarget);
         } else if(!isLowerAngleValid){
-            return Optional.of(higherLauncherTarget);
-        } 
-        return targetAngleMode == TargetAngleMode.Higher ? Optional.of(higherLauncherTarget) : Optional.of(lowerLauncherTarget);
+            result = Optional.of(higherLauncherTarget);
+        } else {
+            result = targetAngleMode == TargetAngleMode.Higher ? Optional.of(higherLauncherTarget) : Optional.of(lowerLauncherTarget);
+        }
+        SmartDashboard.putString("LauncherModel/Launch Target", result.toString());
+        return result;
     }
 
+    /**
+     * Gets the launcher target for a given distance and set tilt angle (given an angle, the flywheel velocity is the changing variable)
+     * Note this has currently only been tested for launching to the floor.
+     * @param heightTarget whether aiming for the floor or speaker
+     * @param liftHeightMeters the current height of the lift
+     * @param distanceToTargetFromBotCenterMeters the distance in meters from the bot center to the target
+     * @param targetAngle the target tilt angle for launching
+     * @return An empty Optional if the resultant velocity is greater than the max velocity - otherwise, the resultant launcher target
+     */
     public static Optional<LauncherTarget> getLauncherTargetWithAngle(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d targetAngle) {
         // Calculate the distance from the launch point to the target
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(targetAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
@@ -124,24 +149,26 @@ public class LauncherModel {
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(targetAngle);
 
-        // Calculate the desired launcher angle from the calculated values
+        // Calculate the desired velocity from the calculated values
         // Using the formula Dan gave us here: https://en.wikipedia.org/wiki/Projectile_motion#Angle_of_reach
         var numerator = Math.pow(adjustedDistanceMeters, 2) * -kGravity;
-        SmartDashboard.putNumber("numerator", numerator);
         var denominator = (adjustedDistanceMeters * Math.sin(2 * targetAngle.getRadians())) - (2 * launchHeightDifferenceMeters * Math.pow(Math.cos(targetAngle.getRadians()), 2));
-        SmartDashboard.putNumber("denominator", denominator);
-        var initialVelocityMPS = Math.sqrt(numerator / denominator) * 2;
-        SmartDashboard.putNumber("initialVelocityMPS", initialVelocityMPS);
-
+        var initialVelocityMPS = Math.sqrt(numerator / denominator) * 2; // TODO: why did we need to multiply by two??
 
         // Convert flywheel speed (mps) to the RPM we need for the launcher
         double launcherRPM = mpsToLauncherRPM(initialVelocityMPS);
 
         var launcherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, targetAngle.getDegrees(), adjustedLiftHeightMeters);
+        var result = Optional.of(launcherTarget);
 
-        SmartDashboard.putString("launch target with angle", launcherTarget.toString());
+        // If the velocity is too high, we can't actually launch
+        if (launcherRPM > LauncherConstants.MaxRPM) {
+            result = Optional.empty();
+        }
 
-        return Optional.of(launcherTarget);
+        SmartDashboard.putString("LauncherModel/Launch Target", result.toString());
+
+        return result;
     }
 
     /**

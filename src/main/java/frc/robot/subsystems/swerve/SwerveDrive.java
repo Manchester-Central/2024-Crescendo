@@ -63,7 +63,10 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
         return m_kinematics.toChassisSpeeds(getModuleStates());
     }
 
-    public double getRobotSpeed() {
+    /**
+     * Gets the robot translation speed (in any direction) in meters per second
+     */
+    public double getRobotSpeedMps() {
         var robotSpeeds = getRobotRelativeSpeeds();
         var xMetersPerSecond = robotSpeeds.vxMetersPerSecond;
         var yMetersPerSecond = robotSpeeds.vyMetersPerSecond;

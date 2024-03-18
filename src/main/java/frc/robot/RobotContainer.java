@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 // import com.chaos131.auto.AutoBuilder;
 import com.chaos131.gamepads.Gamepad;
+import com.chaos131.util.DashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -82,7 +83,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeed());
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -259,6 +260,9 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    // Enables Dashboard Numbers to be updated each loop
+    DashboardNumber.checkAll();
+
     // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherPower, atFeederPrimary, atFeederSecondary]
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),

@@ -5,8 +5,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.xml.crypto.KeySelector.Purpose;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -121,11 +119,6 @@ public class LimeLightCamera implements CameraInterface {
 		if (data == null || data[idxX] < EPSILON) {
 			m_mostRecentData = Optional.empty();
 			return;
-		}
-
-		// is this needed? Why is above logic not working?
-		if(data[idxX] == 0.0 && data[idxY] == 0){
-			return ;
 		}
 
 		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
