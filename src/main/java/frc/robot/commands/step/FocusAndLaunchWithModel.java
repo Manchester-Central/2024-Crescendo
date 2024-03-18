@@ -74,7 +74,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(-1);
+    m_vision.getCamera(CameraDirection.front).resetPriorityID();
     super.end(interrupted);
   }
 
@@ -85,17 +85,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
       return Optional.empty();
     }
     double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
-    var targets = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
-    SmartDashboard.putString("launch targets", targets.toString());
-    return targets;
-  }
-
-  @Override
-  public boolean isFinished() {
-    if(DriverStation.isAutonomous()){
-      return super.isFinished();
-    }
-    return false;
+    return LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
   }
 
   @Override

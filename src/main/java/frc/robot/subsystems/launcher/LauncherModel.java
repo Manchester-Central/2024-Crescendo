@@ -9,6 +9,7 @@ import java.util.Optional;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 
@@ -110,11 +111,11 @@ public class LauncherModel {
         boolean isHigherAngleValid = higherThetaDegrees < LauncherConstants.MaxAngle.getDegrees() && higherThetaDegrees > LauncherConstants.MinAngle.getDegrees();
         boolean isLowerAngleValid = lowerThetaDegrees < LauncherConstants.MaxAngle.getDegrees() && lowerThetaDegrees > LauncherConstants.MinAngle.getDegrees(); 
 
-        var higherLauncherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, higherThetaDegrees, adjustedLiftHeightMeters);
-        var lowerLauncherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, lowerThetaDegrees, adjustedLiftHeightMeters);
+        var higherLauncherTarget = new LauncherTarget(launcherRPM, 0, higherThetaDegrees, adjustedLiftHeightMeters);
+        var lowerLauncherTarget = new LauncherTarget(launcherRPM, 0, lowerThetaDegrees, adjustedLiftHeightMeters);
 
-        SmartDashboard.putString("LauncherModel/Possible Target Higher", higherLauncherTarget.toString());
-        SmartDashboard.putString("LauncherModel/Possible Target Lower", lowerLauncherTarget.toString());
+        publishTargetToDashboard(Optional.of(higherLauncherTarget), "Possible Target Higher");
+        publishTargetToDashboard(Optional.of(lowerLauncherTarget), "Possible Target Lower");
 
         var result = Optional.ofNullable((LauncherTarget) null);
         if(!isHigherAngleValid && !isLowerAngleValid){
@@ -126,7 +127,7 @@ public class LauncherModel {
         } else {
             result = targetAngleMode == TargetAngleMode.Higher ? Optional.of(higherLauncherTarget) : Optional.of(lowerLauncherTarget);
         }
-        SmartDashboard.putString("LauncherModel/Launch Target", result.toString());
+        publishTargetToDashboard(result, "Launch Target");
         return result;
     }
 
@@ -158,7 +159,7 @@ public class LauncherModel {
         // Convert flywheel speed (mps) to the RPM we need for the launcher
         double launcherRPM = mpsToLauncherRPM(initialVelocityMPS);
 
-        var launcherTarget = new LauncherTarget(adjustedDistanceMeters, 0, launcherRPM, 0, targetAngle.getDegrees(), adjustedLiftHeightMeters);
+        var launcherTarget = new LauncherTarget(launcherRPM, 0, targetAngle.getDegrees(), adjustedLiftHeightMeters);
         var result = Optional.of(launcherTarget);
 
         // If the velocity is too high, we can't actually launch
@@ -166,9 +167,28 @@ public class LauncherModel {
             result = Optional.empty();
         }
 
-        SmartDashboard.putString("LauncherModel/Launch Target", result.toString());
+        publishTargetToDashboard(result, "Launch Target");
 
         return result;
+    }
+
+    /**
+     * Publishes the targets to the dashboard, if LauncherModelDebugEnable is enabled
+     * @param targets the targets to report
+     * @param dashboardName the name to be appended to "LauncherModel/"
+     */
+    public static void publishTargetToDashboard(Optional<LauncherTarget> targets, String dashboardName) {
+        var fullDashboardName = "LauncherModel/" + dashboardName;
+        if (!DebugConstants.LauncherModelDebugEnable) {
+            return;
+        }
+
+        if (targets.isEmpty()) {
+            SmartDashboard.putStringArray(fullDashboardName, new String[] {"No target"});
+            return;
+        }
+
+        SmartDashboard.putStringArray(fullDashboardName, targets.get().toDashboardValues());
     }
 
     /**

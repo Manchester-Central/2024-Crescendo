@@ -8,17 +8,19 @@ import java.util.Optional;
 
 import com.chaos131.util.DashboardNumber;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherTarget;
 
-// TODO: Implement actual control logic
 public abstract class BaseLaunch extends Command {
+  protected boolean kTuningEnabled = DebugConstants.LauncherModelDebugEnable;
   protected Lift m_lift;
   protected Launcher m_launcher;
   protected Feeder m_feeder;
@@ -27,8 +29,8 @@ public abstract class BaseLaunch extends Command {
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
 
-  private DashboardNumber m_feederLaunchSpeed = new DashboardNumber("Feeder Launch Speed", 1.0, true, (Double newSpeed)->{});
-  private DashboardNumber m_trapLaunchSpeed = new DashboardNumber("Trap Launch Speed", 1.0, true, (Double newSpeed)->{});
+  private DashboardNumber m_feederLaunchSpeed = new DashboardNumber("Feeder Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
+  private DashboardNumber m_trapLaunchSpeed = new DashboardNumber("Trap Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
 
   /** Creates a new Lanch Partay. */
   public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake) {
@@ -50,7 +52,6 @@ public abstract class BaseLaunch extends Command {
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
     m_launcher.setTiltSpeed(0);
-   // m_launcher.setLauncherPower(0);
     m_launcher.setLauncherRPM(3000, 3000);
     m_feeder.setFeederPower(0);
 
@@ -73,12 +74,12 @@ public abstract class BaseLaunch extends Command {
       m_launchTimer.reset();
     }
     var targetOptional = getTargets();
+    LauncherModel.publishTargetToDashboard(targetOptional, "Base Launch Target");
     if (targetOptional.isEmpty()) {
       noTargetBehavior();
       return;
     }
     var targets = targetOptional.get();
-    SmartDashboard.putString("Flywheel data", targets.toString());
     var targetHeight = targets.getHeightMeters();
     var targetSpeed = targets.getLauncherSpeedRPM();
     var speedOffset = targets.getSpeedOffsetRPM();
@@ -105,6 +106,10 @@ public abstract class BaseLaunch extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // If teleop, run the launch command until the user releases the button
+    if (DriverStation.isTeleop()) {
+      return false;
+    }
     return m_launchTimer.hasElapsed(0.05);
   }
 }

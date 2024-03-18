@@ -6,12 +6,11 @@ package frc.robot.commands.step;
 
 import java.util.Optional;
 
-import com.chaos131.auto.ParsedCommand;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -21,9 +20,7 @@ import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherTarget;
-import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.AngleUtil;
-import frc.robot.util.FieldPose2024;
 
 public class FocusAndLaunch extends BaseLaunch {
   private FlywheelTable m_flywheelTableLowerHeight;
@@ -59,7 +56,7 @@ public class FocusAndLaunch extends BaseLaunch {
   public void initialize() {
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
-    //m_vision.getCamera(CameraDirection.front).setMode(m_vision.getSpeakerTrackingMode());
+    m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
   }
 
@@ -76,37 +73,16 @@ public class FocusAndLaunch extends BaseLaunch {
     super.execute();
   }
 
-  // public static Command createAutoCommand(
-  //     ParsedCommand parsedCommand,
-  //     Lift lift,
-  //     Launcher launcher,
-  //     Feeder feeder,
-  //     FlywheelTable flywheelTableLowerHeight,
-  //     FlywheelTable flywheelTableUpperHeight,
-  //     Vision vision,
-  //     SwerveDrive swerveDrive,
-  //     Gamepad driver
-  //   ) {
-  //     return new FocusAndLaunch(lift, launcher, feeder, flywheelTableLowerHeight, flywheelTableUpperHeight, vision,
-  //     swerveDrive, driver, );
-  // }
-
   @Override
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
+    m_vision.getCamera(CameraDirection.front).resetPriorityID();
     super.end(interrupted);
   }
 
   @Override
   protected Optional<LauncherTarget> getTargets() {
-    // var distanceMeters = FieldPose2024.Speaker.distanceTo(m_swerveDrive.getPose());
-    // if (distanceMeters >= m_flywheelTableLowerHeight.getMaxDistanceMeters()) {
-    //   m_beenAboveThreshold = true;
-    // }
-    // var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByDistance(distanceMeters);
-    // SmartDashboard.putString("launch targets", targets.toString());
-    // return targets;
     var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
@@ -115,8 +91,6 @@ public class FocusAndLaunch extends BaseLaunch {
       m_beenAboveThreshold = true;
     }
     var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByTY(ty);
-    // var targets = m_flywheelTableLowerHeight.getIdealTarget(ty);
-    SmartDashboard.putString("launch targets", targets.toString());
     return targets;
   }
 
