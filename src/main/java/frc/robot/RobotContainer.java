@@ -162,7 +162,6 @@ public class RobotContainer {
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
 
       //SimKeyboard.x().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpPath")));
-      SimKeyboard.x().whileTrue(new MoveToAmpPathPlanner(m_swerveDrive));
     }
 
     configureDefaultCommands();
@@ -252,7 +251,8 @@ public class RobotContainer {
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
     //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
-    m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
+    //m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
+    m_tester.rightTrigger().whileTrue(new MoveToAmpPathPlanner(m_swerveDrive));
   }
   
   public Command getAutonomousCommand() {
