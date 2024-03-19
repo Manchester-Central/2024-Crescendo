@@ -14,6 +14,7 @@ import com.chaos131.util.DashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -35,6 +36,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.complex.FireIntoAmp;
+import frc.robot.commands.complex.MoveToAmpPathPlanner;
 import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
@@ -162,9 +164,11 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
     if (Robot.isSimulation()) {
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
+
+      //SimKeyboard.x().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpPath")));
+      SimKeyboard.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     }
 
     configureDefaultCommands();
@@ -254,6 +258,7 @@ public class RobotContainer {
     // m_tester.leftTrigger().whileTrue(new StartEndCommand(() -> m_launcher.setLauncherRPM(5000), () -> m_launcher.setLauncherPower(0), m_launcher));
     
     //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
+    //m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds));
     m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, Rotation2d.fromDegrees(10), m_getDefaultLauncherSpeeds));
