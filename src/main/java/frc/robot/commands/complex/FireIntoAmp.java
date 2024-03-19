@@ -4,9 +4,14 @@
 
 package frc.robot.commands.complex;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.chaos131.swerve.BaseSwerveDrive;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,11 +21,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.FieldPose2024;
 
 public class FireIntoAmp extends Command {
@@ -32,10 +39,13 @@ public class FireIntoAmp extends Command {
 	private AmpDropSequence state;
 	private Pose2d m_finalPose;
 
+	private PathPlannerPath m_path;
+	private Command m_pathCommand;
+
 	private final double VISION_TRANSLATION_TOLERANCE = 0.01;
 	private final double VISION_ROTATION_TOLERANCE = 0.01;
 	private final double VISION_MOVE_SPEED = 0.15;
-	private final double FEEDER_EJECT_SPEED = -0.3;
+	private final double FEEDER_EJECT_SPEED = -1.0;
 	private final double FEEDER_EJECT_TIME = 1.5; // seconds
 	private final double MOVE_SPEED = 0.4;
 	private boolean m_hasLostNote = false;
@@ -59,56 +69,47 @@ public class FireIntoAmp extends Command {
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
-		double x = -Constants.RobotBounds.BackwardEdge * Math.cos(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
-		double y = -Constants.RobotBounds.BackwardEdge * Math.sin(FieldPose2024.Amp.getCurrentAlliancePose().getRotation().getRadians());
-		Translation2d pose = FieldPose2024.Amp.getCurrentAlliancePose().getTranslation().plus(new Translation2d(x, y));
-		m_finalPose = new Pose2d(pose, FieldPose2024.Amp.getCurrentAlliancePose().getRotation());
-		m_swerveDrive.setTarget(m_finalPose);
+		var amp = FieldPose2024.Amp.getCurrentAlliancePose();
+
+		ArrayList<Translation2d> bezierPoints = new ArrayList<>();
+		ArrayList<Rotation2d> rotationPoints = new ArrayList<>();
+		Translation2d destination = amp.getTranslation().minus(new Translation2d(Constants.RobotBounds.BackwardEdge*1.2, amp.getRotation()));
+		Translation2d destination_control_point = destination.plus(new Translation2d(2, amp.getRotation()));
+
+		Translation2d current_pose = m_swerveDrive.getPose().getTranslation();
+		Translation2d current_pose_control_point = current_pose;
+
+		bezierPoints.add(current_pose);
+		bezierPoints.add(current_pose_control_point);
+		bezierPoints.add(destination_control_point);
+		bezierPoints.add(destination);
+
+		PathConstraints pc = new PathConstraints(SwerveConstants2024.MaxRobotSpeed_mps,
+												3.0,
+												SwerveConstants2024.MaxRobotRotation_radps,
+												3*Math.PI);
+		GoalEndState gs = new GoalEndState(0, amp.getRotation(), true);
+		
+		m_path = new PathPlannerPath(bezierPoints, pc, gs);
+		m_path.preventFlipping = true;
+		m_pathCommand = AutoBuilder.followPath(m_path);
+
+		m_pathCommand.initialize();
 		m_hasLostNote = false;
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		System.out.println(m_finalPose);
 		if (state == AmpDropSequence.MoveToArea) {
-			System.out.println("Move to area");
-			if (m_swerveDrive.atTarget(/* 1.5 */) && m_lift.atTargetHeight(LiftConstants.AmpMeters)
-				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle))
-			{
-				m_swerveDrive.stop();
-				m_feeder.setFeederPower(-1.0);
+			if (m_pathCommand.isFinished() && m_lift.atTargetHeight(LiftConstants.AmpMeters)
+				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
+				m_feeder.setFeederPower(FEEDER_EJECT_SPEED);
 				state = AmpDropSequence.FireIntoAmp;
 			} else {
+				m_pathCommand.execute();
 				m_lift.moveToHeight(LiftConstants.AmpMeters);
 				m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
-
-				m_swerveDrive.moveToTarget(MOVE_SPEED);
-			}
-
-		} else if(state == AmpDropSequence.VisionMoveAdjust) { 
-			System.out.println("Vision move adjust");
-
-			// Calculate the error according to the Vision system
-			Pose2d visionPose = m_vision.getCamera(CameraDirection.back).getMostRecentPose();
-			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_finalPose.getTranslation());
-			Rotation2d rotationError = visionPose.getRotation().minus(m_finalPose.getRotation());
-			m_lift.moveToHeight(LiftConstants.AmpMeters);
-			m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
-
-			if (translationErrorMeters.getNorm() < VISION_TRANSLATION_TOLERANCE
-				&& rotationError.getDegrees() < VISION_ROTATION_TOLERANCE 
-				&& m_lift.atTargetHeight(LiftConstants.AmpMeters)
-				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle))
-			{
-				state = AmpDropSequence.FireIntoAmp;
-				m_swerveDrive.stop();
-				m_feeder.setFeederPower(-1.0);
-			} else {
-				// We need to apply the Vision error correction to the robot's current pose target
-				var robotPose = m_swerveDrive.getPose();
-				m_swerveDrive.setTarget(new Pose2d(translationErrorMeters.plus(robotPose.getTranslation()), rotationError.plus(robotPose.getRotation())));
-				m_swerveDrive.moveToTarget(VISION_MOVE_SPEED);
 			}
 
 		} else if(state == AmpDropSequence.FireIntoAmp) {

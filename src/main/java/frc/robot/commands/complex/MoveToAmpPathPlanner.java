@@ -20,6 +20,7 @@ import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.FieldPose2024;
 
+@Deprecated
 public class MoveToAmpPathPlanner extends Command {
 	private SwerveDrive m_swerve;
 	private PathPlannerPath m_path;
@@ -36,8 +37,8 @@ public class MoveToAmpPathPlanner extends Command {
 
 		ArrayList<Translation2d> bezierPoints = new ArrayList<>();
 		ArrayList<Rotation2d> rotationPoints = new ArrayList<>();
-		Translation2d destination = amp.getTranslation().minus(new Translation2d(Constants.RobotBounds.BackwardEdge, amp.getRotation()));
-		Translation2d destination_control_point = destination.plus(new Translation2d(3, amp.getRotation()));
+		Translation2d destination = amp.getTranslation().minus(new Translation2d(Constants.RobotBounds.BackwardEdge*1.1, amp.getRotation()));
+		Translation2d destination_control_point = destination.plus(new Translation2d(2, amp.getRotation()));
 
 		Translation2d current_pose = m_swerve.getPose().getTranslation();
 		Translation2d current_pose_control_point = current_pose;
@@ -48,10 +49,10 @@ public class MoveToAmpPathPlanner extends Command {
 		bezierPoints.add(destination);
 
 		PathConstraints pc = new PathConstraints(SwerveConstants2024.MaxRobotSpeed_mps,
-												SwerveConstants2024.MaxRobotAcceleration_mps2,
+												3.0,
 												SwerveConstants2024.MaxRobotRotation_radps,
-												SwerveConstants2024.MaxRobotRotationAccel_radps2);
-		GoalEndState gs = new GoalEndState(0, amp.getRotation());
+												3*Math.PI);
+		GoalEndState gs = new GoalEndState(0, amp.getRotation(), true);
 		
 		m_path = new PathPlannerPath(bezierPoints, pc, gs);
 		m_path.preventFlipping = true;
@@ -68,10 +69,12 @@ public class MoveToAmpPathPlanner extends Command {
 	@Override
 	public void end(boolean isInterrupted) {
 		m_pathCommand.end(isInterrupted);
+		m_swerve.stop();
+		m_swerve.setXMode();
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return m_pathCommand.isFinished();
 	}
 }
