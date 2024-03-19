@@ -6,6 +6,7 @@ package frc.robot.commands.step;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
+import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.FieldPose2024;
 
@@ -37,9 +39,10 @@ public class LobOntoField extends BaseLaunch {
       Gamepad driver,
       Intake intake,
       FieldPose2024 targetPose,
-      Rotation2d launchAngle
+      Rotation2d launchAngle,
+      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
   ) {
-    super(lift, launcher, feeder, intake);
+    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     m_swerveDrive = swerveDrive;
     m_driver = driver;
     m_targetPose = targetPose;

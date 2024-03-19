@@ -6,6 +6,7 @@ package frc.robot.commands.step;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.AngleUtil;
 
@@ -41,9 +43,10 @@ public class FocusAndLaunch extends BaseLaunch {
       Vision vision,
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
-      Intake intake
+      Intake intake,
+      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
   ) {
-    super(lift, launcher, feeder, intake);
+    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;

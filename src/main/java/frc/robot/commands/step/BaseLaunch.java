@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.chaos131.util.DashboardNumber;
 
@@ -21,6 +22,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
+import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 
 public abstract class BaseLaunch extends Command {
@@ -38,12 +40,15 @@ public abstract class BaseLaunch extends Command {
   private DashboardNumber m_feederLaunchSpeed = new DashboardNumber("Feeder Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
   private DashboardNumber m_trapLaunchSpeed = new DashboardNumber("Trap Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
 
+  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
+
   /** Creates a new Lanch Partay. */
-  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake) {
+  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
     m_intake = intake;
+    m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
     addRequirements(lift, launcher, feeder, intake);
   }
 
@@ -58,7 +63,8 @@ public abstract class BaseLaunch extends Command {
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
     m_launcher.setTiltSpeed(0);
-    m_launcher.setLauncherRPM(3000, 3000);
+    var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
+    m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
     m_feeder.setFeederPower(0);
 
   }

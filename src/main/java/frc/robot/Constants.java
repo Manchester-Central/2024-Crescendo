@@ -128,8 +128,8 @@ public class Constants {
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
 		public static final Rotation2d SourceIntakeAngle = Rotation2d.fromDegrees(34.2);
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
-		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(3);
-		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(6.6);
+		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(7);
+		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(7);
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 		public static final Rotation2d TrapAngle = Rotation2d.fromDegrees(19.5);
 
@@ -144,6 +144,7 @@ public class Constants {
 		public static final double FlywheelF = 0.00017;
 
 		public static final double MaxRPM = 5500;
+		public static final double NoTargetRPM = 2000;
 
 	}
 
