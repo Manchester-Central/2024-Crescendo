@@ -4,6 +4,9 @@
 
 package frc.robot.commands.step;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.chaos131.auto.ParsedCommand;
 import com.chaos131.swerve.BaseSwerveDrive;
 
@@ -15,6 +18,8 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherSpeeds;
+import frc.robot.subsystems.launcher.LauncherTarget;
 
 // TODO: Implement actual control logic
 public class RunIntake extends Command {
@@ -23,13 +28,16 @@ public class RunIntake extends Command {
   private Launcher m_launcher;
   private Feeder m_feeder;
 
+  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
+
   /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher) {
+  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
     addRequirements(intake, lift, feeder, launcher);
+    m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
   }
 
   // Called when the command is initially scheduled.
@@ -40,7 +48,8 @@ public class RunIntake extends Command {
   @Override
   public void execute() {
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
-    m_launcher.setLauncherPower(-0.1);
+    var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
+    m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
 
     if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
       m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
@@ -54,11 +63,7 @@ public class RunIntake extends Command {
       m_intake.setIntakePower(0.0);
     }
 
-    m_feeder.grabAndHoldPiece(0.5);
-  }
-
-  public static Command createAutoCommand(ParsedCommand parsedCommand, Intake intake, Lift lift, Feeder feeder, Launcher launcher){
-    return new RunIntake(intake, lift, feeder, launcher);
+    m_feeder.grabAndHoldPiece(0.35);
   }
 
   // Called once the command ends or is interrupted.

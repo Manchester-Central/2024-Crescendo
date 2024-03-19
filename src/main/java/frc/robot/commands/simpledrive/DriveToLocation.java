@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.SwerveConstants2024;
-import frc.robot.commands.auto.AutoUtil;
 
 public class DriveToLocation extends Command {
 	private Pose2d m_targetLocation;
@@ -35,16 +34,6 @@ public class DriveToLocation extends Command {
 		m_swerveDrive.resetPids();
 		m_swerveDrive.setDriveTranslationTolerance(m_translationToleranceMeters);
 		m_swerveDrive.setTarget(m_targetLocation.getX(), m_targetLocation.getY(), m_targetLocation.getRotation());
-	}
-
-	public static Command createAutoCommand(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive) {
-		double translationTolerance = AutoUtil.getTranslationTolerance(parsedCommand);
-		double maxPercentSpeed = AutoUtil.getMaxPercentSpeed(parsedCommand);
-		Pose2d pose = AutoUtil.getDrivePose(parsedCommand);
-		if(pose == null) {
-			return new InstantCommand();
-		}
-		return new DriveToLocation(pose, swerveDrive, translationTolerance, maxPercentSpeed);
 	}
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */

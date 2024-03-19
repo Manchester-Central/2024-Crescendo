@@ -10,7 +10,6 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.auto.AutoUtil;
 
 
 public class ResetPosition extends Command {
@@ -28,16 +27,6 @@ public class ResetPosition extends Command {
   public void initialize() {
     m_swerveDrive.resetPose(m_pose);
   }
-
-  public static Command createAutoCommand(ParsedCommand parsedCommand, BaseSwerveDrive swerveDrive) {
-		// double translationTolerance = AutoUtil.getTranslationTolerance(parsedCommand);
-		// double maxPercentSpeed = AutoUtil.getMaxPercentSpeed(parsedCommand);
-		Pose2d pose = AutoUtil.getDrivePose(parsedCommand);
-		if(pose == null) {
-			return new InstantCommand();
-		}
-		return new ResetPosition(pose, swerveDrive);
-	}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

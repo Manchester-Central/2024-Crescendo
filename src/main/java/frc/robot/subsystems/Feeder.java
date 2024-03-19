@@ -4,6 +4,7 @@ import com.chaos131.logging.LogManager;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -37,6 +38,9 @@ public class Feeder extends SubsystemBase {
 		m_feederSensorSecondary.enableLimitSwitch(false);
 		m_feederTrapMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);	
 		m_feederTrapMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);
+
+		m_feederMainMotor.setIdleMode(IdleMode.kBrake);
+		m_feederTrapMotor.setIdleMode(IdleMode.kBrake);
 
 		m_feederMainMotor.setInverted(true);
 		m_feederTrapMotor.setInverted(true);
@@ -74,7 +78,7 @@ public class Feeder extends SubsystemBase {
 	
 	public void grabAndHoldPiece(double grabSpeed) {
 		if (hasNoteAtSecondary()) {
-			setFeederPower(-0.2);
+			setFeederPower(-0.15);
 		} else if(hasNoteAtPrimary()) {
 			setFeederPower(0);
 		} else {

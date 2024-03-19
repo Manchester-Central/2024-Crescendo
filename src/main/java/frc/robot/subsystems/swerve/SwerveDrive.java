@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.Pose2dUtil;
+import frc.robot.util.FieldPose2024;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
 
@@ -95,6 +96,10 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     public void periodic() {
         super.periodic();
         
+    }
+
+    public double getDistanceToSpeakerMeters() {
+        return FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation().getDistance(getPose().getTranslation());
     }
 
     /**
