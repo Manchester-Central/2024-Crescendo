@@ -8,7 +8,6 @@ import com.chaos131.auto.ParsedCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.auto.AutoUtil;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -167,36 +166,5 @@ public class SimpleControl extends Command {
     if (Double.isFinite(m_liftPower)) {
       m_lift.setSpeed(0.0);
     }
-  }
-
-  public static SimpleControl createAutoCommand(ParsedCommand parsedCommand, Intake intake, Feeder feeder, Launcher launcher, Lift lift) {
-    var simpleControl = new SimpleControl();
-
-    var intakePowerArg = parsedCommand.getArgument("intakePower");
-    if (intakePowerArg != null) {
-      simpleControl.intake(intake, AutoUtil.ParseDouble(intakePowerArg, 0));
-    }
-
-    var feederPowerArg = parsedCommand.getArgument("feederPower");
-    if (feederPowerArg != null) {
-      simpleControl.feeder(feeder, AutoUtil.ParseDouble(feederPowerArg, 0));
-    }
-
-    var flywheelPowerArg = parsedCommand.getArgument("flywheelPower");
-    if (flywheelPowerArg != null) {
-      simpleControl.flywheel(launcher, AutoUtil.ParseDouble(flywheelPowerArg, 0));
-    }
-
-    var tiltPowerArg = parsedCommand.getArgument("tiltPower");
-    if (tiltPowerArg != null) {
-      simpleControl.tilt(launcher, AutoUtil.ParseDouble(tiltPowerArg, 0));
-    }
-  
-    var liftPowerArg = parsedCommand.getArgument("liftPower");
-    if (liftPowerArg != null) {
-      simpleControl.lift(lift, AutoUtil.ParseDouble(liftPowerArg, 0));
-    }
-
-    return simpleControl;
   }
 }

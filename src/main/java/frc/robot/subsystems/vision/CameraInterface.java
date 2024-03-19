@@ -20,5 +20,6 @@ public interface CameraInterface {
 	public double getTargetElevation(boolean cameraRelative);
 
 	public void setPriorityID(int id);
+	public void resetPriorityID();
 
 }

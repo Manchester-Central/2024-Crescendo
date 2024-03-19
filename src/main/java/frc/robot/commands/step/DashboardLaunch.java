@@ -5,12 +5,14 @@
 package frc.robot.commands.step;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 
 // TODO: Implement actual control logic
@@ -21,8 +23,8 @@ public class DashboardLaunch extends BaseLaunch {
   double m_targetHeight = 0.096;
   
   /** Creates a new Lanch Partay. */
-  public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake) {
-    super (lift, launcher, feeder, intake);
+  public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
+    super (lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     SmartDashboard.putNumber("DSLaunch Target RPM", m_targetRPM);
     SmartDashboard.putNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     SmartDashboard.putNumber("DSLaunch Target Height Meters", m_targetHeight);
@@ -33,7 +35,7 @@ public class DashboardLaunch extends BaseLaunch {
     m_targetRPM = SmartDashboard.getNumber("DSLaunch Target RPM", m_targetRPM);
     m_speedOffsetRPM = SmartDashboard.getNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     m_targetHeight = SmartDashboard.getNumber("DSLaunch Target Height Meters", m_targetHeight);
-    return Optional.of(new LauncherTarget(0, 0, m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
+    return Optional.of(new LauncherTarget(m_targetRPM, m_speedOffsetRPM,m_launcher.getAbsoluteTiltAngle().getDegrees(), m_targetHeight));
   }
 
   @Override

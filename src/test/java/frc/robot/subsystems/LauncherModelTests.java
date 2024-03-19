@@ -7,6 +7,7 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
+import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 
 public class LauncherModelTests {
     double DELTA = 0.001;
@@ -24,7 +25,7 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(27.891493053835667, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle).getTiltAngle().getDegrees(), DELTA);
+        assertEquals(27.63790064092182, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle, TargetAngleMode.Lower).get().getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test

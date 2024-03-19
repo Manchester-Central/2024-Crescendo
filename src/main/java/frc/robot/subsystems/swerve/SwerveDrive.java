@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.Pose2dUtil;
+import frc.robot.util.FieldPose2024;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
 
@@ -63,6 +64,16 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
         return m_kinematics.toChassisSpeeds(getModuleStates());
     }
 
+    /**
+     * Gets the robot translation speed (in any direction) in meters per second
+     */
+    public double getRobotSpeedMps() {
+        var robotSpeeds = getRobotRelativeSpeeds();
+        var xMetersPerSecond = robotSpeeds.vxMetersPerSecond;
+        var yMetersPerSecond = robotSpeeds.vyMetersPerSecond;
+        return Math.sqrt(Math.pow(xMetersPerSecond, 2) + Math.pow(yMetersPerSecond, 2));
+    }
+
     public void pathPlannerRobotRelative(ChassisSpeeds chassisSpeeds) {
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(chassisSpeeds);
         // SwerveDriveKinematics.desaturateWheelSpeeds(states, m_swerveConfigs.maxRobotSpeed_mps());
@@ -85,6 +96,10 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     public void periodic() {
         super.periodic();
         
+    }
+
+    public double getDistanceToSpeakerMeters() {
+        return FieldPose2024.Speaker.getCurrentAlliancePose().getTranslation().getDistance(getPose().getTranslation());
     }
 
     /**

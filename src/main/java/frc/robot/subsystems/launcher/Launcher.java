@@ -223,11 +223,11 @@ public class Launcher extends SubsystemBase {
 		m_flywheelLeft.getPIDController().setP(pidValue.P);
 		m_flywheelLeft.getPIDController().setI(pidValue.I);
 		m_flywheelLeft.getPIDController().setD(pidValue.D);
-		m_flywheelLeft.getPIDController().setFF(pidValue.F);
+		m_flywheelLeft.getPIDController().setFF(pidValue.F * 1.1); // old value 0.00017
 		m_flywheelRight.getPIDController().setP(pidValue.P);
 		m_flywheelRight.getPIDController().setI(pidValue.I);
 		m_flywheelRight.getPIDController().setD(pidValue.D);
-		m_flywheelRight.getPIDController().setFF(pidValue.F);
+		m_flywheelRight.getPIDController().setFF(pidValue.F * 1.04);
 	}
 
 	@Override
