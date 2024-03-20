@@ -210,7 +210,7 @@ public class RobotContainer {
     // m_driver.leftBumper().whileTrue(m_slowCommand); // Slow command (and max height shot?)
     m_driver.leftBumper().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher));
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds)); // Intake
-    m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
+    m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
         new FocusAndLaunchWithModel(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
