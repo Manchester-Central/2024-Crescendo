@@ -82,7 +82,8 @@ public class LauncherModel {
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(currentTiltAngle) + getLiftDistanceOffsetMeters(currentLiftHeightMeters);
 
         // Adjust the height to at least be above the min height calculated for the current distance
-        double adjustedLiftHeightMeters = Math.max(currentLiftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        //double adjustedLiftHeightMeters = Math.max(currentLiftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        double adjustedLiftHeightMeters = Math.max(currentLiftHeightMeters, getMinLiftHeightMetersForTiltAngle(currentTiltAngle));
 
         // Calculate the initial velocity target for the flywheels
         // These velocities do not work well with launching to the floor - using the getLauncherTargetWithAngle works better
@@ -271,6 +272,16 @@ public class LauncherModel {
     public static double getMinLiftHeightMetersForDistanceMeters(double distanceMeters) {
         //-0.191 + 0.117x + -0.0141x^2 + 6.06E-04x^3
         double calculatedHeight = -0.191 + (0.117 * distanceMeters) + (-0.0141 * Math.pow(distanceMeters, 2)) + (0.000606 * Math.pow(distanceMeters, 3));
+        return MathUtil.clamp(calculatedHeight, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
+    }
+
+    /**
+     * Gets the min lift height for a given tilt angle to the goal
+     */
+    public static double getMinLiftHeightMetersForTiltAngle(Rotation2d tiltAngle) {
+        double tiltAngleDegrees = tiltAngle.getDegrees();
+        //=0.214-0.00602*A2-0.0000222*POW(A2,2)
+        double calculatedHeight = 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
         return MathUtil.clamp(calculatedHeight, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
     }
 }

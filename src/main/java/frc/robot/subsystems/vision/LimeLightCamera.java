@@ -210,6 +210,9 @@ public class LimeLightCamera implements CameraInterface {
 
 	@Override
 	public boolean hasTarget() {
+		if(Robot.isSimulation()) {
+			return true;
+		}
 		return m_tv.getInteger(-1) == 1;
 	}
 
@@ -220,6 +223,9 @@ public class LimeLightCamera implements CameraInterface {
 
 	@Override
 	public double getTargetAzimuth(boolean cameraRelative) {
+		if (Robot.isSimulation()) {
+			return 0.0;
+		}
 		Double temptx = m_tx.getDouble(-100);
 		if(temptx < -90) return -90;
 		return temptx;
@@ -227,6 +233,9 @@ public class LimeLightCamera implements CameraInterface {
 
 	@Override
 	public double getTargetElevation(boolean cameraRelative) {
+		if (Robot.isSimulation()) {
+			return 0.0;
+		}
 		Double tempty = m_ty.getDouble(-100);
 		if(tempty < -90) return -90;
 		return tempty;
