@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
   private double m_initialLiftHeightMeters = 0;
+  private Rotation2d m_lastLauncherTilt = null;
 
   /** Creates a new Lanch Partay. */
   public FocusAndLaunchWithModel(
@@ -55,6 +57,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
 
   @Override
   public void initialize() {
+    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
     m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
@@ -89,7 +92,9 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
       return Optional.empty();
     }
     double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
-    return LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+    var target = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_lastLauncherTilt, TargetAngleMode.Lower);
+    m_lastLauncherTilt = target.isPresent() ? target.get().getTiltAngle() : m_lastLauncherTilt;
+    return target;
   }
 
   @Override

@@ -12,6 +12,7 @@ import com.chaos131.swerve.BaseSwerveDrive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.DriveDirection;
+import frc.robot.util.FieldPose2024;
 
 public class DriverRelativeSetAngleDrive extends Command {
   private Gamepad m_driver;
@@ -34,6 +35,10 @@ public class DriverRelativeSetAngleDrive extends Command {
 
   public DriverRelativeSetAngleDrive(Gamepad driver, BaseSwerveDrive swerveDrive, DriveDirection direction, double magnitude) {
     this(driver, swerveDrive, () -> direction.getAllianceAngle(), magnitude);
+  }
+
+  public DriverRelativeSetAngleDrive(Gamepad driver, BaseSwerveDrive swerveDrive, FieldPose2024 fieldpose, double magnitude) {
+    this(driver, swerveDrive, () -> fieldpose.angleFrom(swerveDrive.getPose()), magnitude);
   }
 
   // Called when the command is initially scheduled.
