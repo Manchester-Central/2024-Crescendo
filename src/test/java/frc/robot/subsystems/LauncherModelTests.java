@@ -35,7 +35,7 @@ public class LauncherModelTests {
 
     @Test
     public void testSpeakerTyToDistanceMeters() {
-        assertEquals(3.912, LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(-10.63), 0.01);
+        assertEquals(3.953, LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(-10.63), 0.01);
     }
 
     @Test
