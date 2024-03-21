@@ -11,36 +11,35 @@ import java.util.function.Supplier;
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.Launcher;
-import frc.robot.subsystems.launcher.LauncherModel;
-import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
-import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.util.AngleUtil;
 
-public class FocusAndLaunchWithModel extends BaseLaunch {
+public class OldFocusAndLaunch extends BaseLaunch {
+  private FlywheelTable m_flywheelTableLowerHeight;
+  private FlywheelTable m_flywheelTableUpperHeight;
   private Vision m_vision;
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
-  private double m_initialLiftHeightMeters = 0;
-  private Rotation2d m_lastLauncherTilt = null;
+  private boolean m_beenAboveThreshold = false;
 
   /** Creates a new Lanch Partay. */
-  public FocusAndLaunchWithModel(
+  public OldFocusAndLaunch(
       Lift lift,
       Launcher launcher,
       Feeder feeder,
+      FlywheelTable flywheelTableLowerHeight,
+      FlywheelTable flywheelTableUpperHeight,
       Vision vision,
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
@@ -48,6 +47,8 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
       Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
   ) {
     super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    m_flywheelTableLowerHeight = flywheelTableLowerHeight;
+    m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
     m_swerveDrive = swerveDrive;
     m_driver = driver;
@@ -57,8 +58,7 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
-    m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
+    m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
     m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
@@ -91,10 +91,11 @@ public class FocusAndLaunchWithModel extends BaseLaunch {
     if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
       return Optional.empty();
     }
-    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
-    var target = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_lastLauncherTilt, TargetAngleMode.Lower);
-    m_lastLauncherTilt = target.isPresent() ? target.get().getTiltAngle() : m_lastLauncherTilt;
-    return target;
+    if (ty <= m_flywheelTableLowerHeight.getMinTY()) {
+      m_beenAboveThreshold = true;
+    }
+    var targets = (m_beenAboveThreshold ? m_flywheelTableUpperHeight : m_flywheelTableLowerHeight).getIdealTargetByTY(ty);
+    return targets;
   }
 
   @Override

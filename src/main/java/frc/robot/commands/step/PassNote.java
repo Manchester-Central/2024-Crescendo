@@ -47,6 +47,7 @@ public class PassNote extends Command {
     } else {
       m_feeder.setFeederPower(0.0);
     }
+    m_intake.setIntakePower(-1.0);
   }
 
   // Called once the command ends or is interrupted.

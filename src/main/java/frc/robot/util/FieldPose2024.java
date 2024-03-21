@@ -54,7 +54,9 @@ public class FieldPose2024 extends MirroredDrivePose {
 
     public static final FieldPose2024 MidLinePass   = new FieldPose2024("MidLinePass", new Pose2d(7.75, 6.7, Rotation2d.fromDegrees(180)));
     public static final FieldPose2024 AmpPass       = new FieldPose2024("AmpPass", new Pose2d(3.11, 6.25, Rotation2d.fromDegrees(180)));
-
+    
+    public static final FieldPose2024 FenderLaunch  = new FieldPose2024("FenderLaunch", new Pose2d(1.32, 5.5, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 PodiumLaunch  = new FieldPose2024("PodiumLaunch", new Pose2d(2.45, 4.24, Rotation2d.fromDegrees(152)));
 
     public FieldPose2024(String name, Pose2d bluePose) {
         super(FieldWidthMeters, DefaultAlliance, name, bluePose);
