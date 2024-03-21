@@ -30,6 +30,7 @@ public class LobOntoField extends BaseLaunch {
   private FieldPose2024 m_targetPose;
   private double m_liftHeight;
   private Rotation2d m_launchAngle;
+  private boolean m_isSourceIntake;
 
   /** Creates a new Lanch Partay. */
   public LobOntoField(
@@ -42,7 +43,8 @@ public class LobOntoField extends BaseLaunch {
       FieldPose2024 targetPose,
       double liftHeight,
       Rotation2d launchAngle,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds,
+      boolean isSourceIntake
   ) {
     super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     m_swerveDrive = swerveDrive;
@@ -50,8 +52,19 @@ public class LobOntoField extends BaseLaunch {
     m_targetPose = targetPose;
     m_liftHeight = liftHeight;
     m_launchAngle = launchAngle;
+    m_isSourceIntake = isSourceIntake;
 
     addRequirements(lift, launcher, feeder, swerveDrive);
+  }
+
+  @Override
+  protected double getFeederLaunchSpeed() {
+    return 1.0;
+  }
+
+  @Override
+  protected double getTrapLaunchSpeed() {
+    return m_isSourceIntake ? -1.0 : 1.0;
   }
 
   @Override

@@ -207,11 +207,10 @@ public class RobotContainer {
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
     m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
     m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
-    m_driver.y().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.MidLinePass, 1.0));  // Align angle to HP (but allow translation)
+    m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.SourceIntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, true));  // Align angle to HP (but allow translation)
 
     //find a way for the leftBumpper commands not override one another ~ jojo ;)
-    m_driver.leftBumper().and(m_operator.x().negate()).whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds));
-    m_driver.leftBumper().and(m_operator.x()).whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.SourceIntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds));
+    m_driver.leftBumper().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, false));
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds)); // Intake
     m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
@@ -264,8 +263,8 @@ public class RobotContainer {
     //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
     //m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
-    m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds));
-    m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(10), m_getDefaultLauncherSpeeds));
+    m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, false));
+    m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(10), m_getDefaultLauncherSpeeds, false));
     m_tester.b().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher));
   }
   
@@ -348,6 +347,7 @@ public class RobotContainer {
   }
 
   public void autoAndTeleopInit(boolean isAuto) {
+    DefaultLauncherCommand.LauncherPreSpinEnabled = true;
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
 
