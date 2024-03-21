@@ -227,9 +227,8 @@ public class RobotContainer {
     m_operator.start(); // Disable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
-    m_operator.povDown().whileTrue(m_getSlowCommand.get()); // Intake (dumb)
-    m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)
-        .alongWith(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false))); // Position note for trap 
+    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false)); // Intake (dumb)
+    m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
     m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // 
 
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
@@ -242,7 +241,7 @@ public class RobotContainer {
         .alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle))
         .alongWith(m_getSlowCommand.get())); // Max height
 
-    m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, m_getDefaultLauncherSpeeds));
+    m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, LiftConstants.MaxHeightMeters, m_getDefaultLauncherSpeeds));
     m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherSpeeds));
     m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds)); // Intake (smart)

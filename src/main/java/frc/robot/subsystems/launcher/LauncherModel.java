@@ -24,7 +24,7 @@ public class LauncherModel {
     private static final double kDistanceFromLimelightToBotCenterMeters = 0.177306;
     private static final double kDistanceFromBotCenterToPivotMeters = 0.299;
     private static final double kFrontLimelightHeightMeters = 0.452;
-    private static final double kFrontLimelightOffsetAngleDegrees = 24.89;
+    private static final double kFrontLimelightOffsetAngleDegrees = 24.75;
     private static final double kLaunchAxisOffsetMeters = 0.065;
     private static final double kLaunchExitOffsetMeters = 0.239;
     private static final double kLauncherPivotHeightMeters = 0.277;
