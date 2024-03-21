@@ -305,9 +305,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("Distance to Speaker", m_swerveDrive.getDistanceToSpeakerMeters());
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
-    if(DriverStation.isEnabled()){
+    if (DriverStation.isTeleopEnabled()){
       handleDriverRumble();
       handleOperatorRumble();
+    } else {
+      m_driver.getHID().setRumble(RumbleType.kBothRumble, 0);
+      m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
   }
 
