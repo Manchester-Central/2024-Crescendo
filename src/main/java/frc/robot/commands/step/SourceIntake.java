@@ -49,7 +49,7 @@ public class SourceIntake extends Command {
     if (atIntakeHeight && !hasPiece) {
       m_feeder.setFeederPower(1.0, -1.0);
     }else{
-      m_feeder.grabAndHoldPiece(0.5);
+      m_feeder.grabAndHoldPiece(0.35);
     }
   }
 

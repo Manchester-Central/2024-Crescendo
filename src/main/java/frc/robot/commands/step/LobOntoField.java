@@ -28,6 +28,7 @@ public class LobOntoField extends BaseLaunch {
   private BaseSwerveDrive m_swerveDrive;
   private Gamepad m_driver;
   private FieldPose2024 m_targetPose;
+  private double m_liftHeight;
   private Rotation2d m_launchAngle;
 
   /** Creates a new Lanch Partay. */
@@ -39,6 +40,7 @@ public class LobOntoField extends BaseLaunch {
       Gamepad driver,
       Intake intake,
       FieldPose2024 targetPose,
+      double liftHeight,
       Rotation2d launchAngle,
       Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
   ) {
@@ -46,6 +48,7 @@ public class LobOntoField extends BaseLaunch {
     m_swerveDrive = swerveDrive;
     m_driver = driver;
     m_targetPose = targetPose;
+    m_liftHeight = liftHeight;
     m_launchAngle = launchAngle;
 
     addRequirements(lift, launcher, feeder, swerveDrive);
@@ -79,7 +82,7 @@ public class LobOntoField extends BaseLaunch {
   protected Optional<LauncherTarget> getTargets() {
     var currentPose = m_swerveDrive.getPose();
     double distanceToTargetMeters = Math.abs(m_targetPose.getCurrentAlliancePose().getTranslation().getDistance(currentPose.getTranslation()));
-    return LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, 0.15, distanceToTargetMeters, m_launchAngle);
+    return LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, m_liftHeight, distanceToTargetMeters, m_launchAngle);
   }
 
   @Override
