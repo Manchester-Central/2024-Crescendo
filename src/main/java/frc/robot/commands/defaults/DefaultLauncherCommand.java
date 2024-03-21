@@ -17,6 +17,7 @@ public class DefaultLauncherCommand extends Command {
   private Launcher m_launcher;
   private Gamepad m_operator;
   public static double MaxTiltSpeed = 0.08;
+  public static boolean LauncherPreSpinEnabled = true;
 
   private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
 
@@ -37,8 +38,12 @@ public class DefaultLauncherCommand extends Command {
   @Override
   public void execute() {
     m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
+    if(LauncherPreSpinEnabled){
     var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
     m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
+    }else{
+      m_launcher.setLauncherPower(0.0);
+    }
     // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }
 

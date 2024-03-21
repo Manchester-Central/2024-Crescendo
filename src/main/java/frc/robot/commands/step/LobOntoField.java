@@ -65,9 +65,7 @@ public class LobOntoField extends BaseLaunch {
   }
 
   private Rotation2d getTargetAngle(){
-    var currentPose = m_swerveDrive.getPose();
-    var targetAngle = m_targetPose.getCurrentAlliancePose().getTranslation().minus(currentPose.getTranslation()).getAngle();
-    return targetAngle;
+    return m_targetPose.angleFrom(m_swerveDrive.getPose());
   }
 
   @Override

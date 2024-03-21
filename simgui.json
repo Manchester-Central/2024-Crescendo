@@ -31,6 +31,9 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "Retained Values": {
       "open": false
     },
@@ -43,6 +46,15 @@
     },
     "transitory": {
       "SmartDashboard": {
+        "Robot2024": {
+          "open": true
+        },
+        "SwerveDrive": {
+          "double[]##v_/SmartDashboard/SwerveDrive/Robot": {
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       }
     }
