@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
@@ -227,15 +228,19 @@ public class RobotContainer {
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(m_getSlowCommand.get()); // Intake (dumb)
-    m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
-    m_operator.povRight().whileTrue(new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher)); // 
+    m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)
+        .alongWith(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false))); // Position note for trap 
+    m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // 
 
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
     Function<Rotation2d, StartEndCommand> createGetTiltCommand = (Rotation2d angle) -> new StartEndCommand(() -> m_launcher.setTiltAngle(angle), () -> m_launcher.setTiltSpeed(0), m_launcher);
     m_operator.a().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // Min height
     m_operator.b().whileTrue(createGetHeightCommand.apply(LiftConstants.AmpMeters)); // Amp Height
     m_operator.x().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher)); // HP Intake
-    m_operator.y().whileTrue(createGetHeightCommand.apply(LiftConstants.MaxHeightMeters).alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle)).alongWith(m_getSlowCommand.get())); // Max height
+    m_operator.y().whileTrue(
+      createGetHeightCommand.apply(LiftConstants.MaxHeightMeters)
+        .alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle))
+        .alongWith(m_getSlowCommand.get())); // Max height
 
     m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, m_getDefaultLauncherSpeeds));
     m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherSpeeds));
