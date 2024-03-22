@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
+import com.chaos131.util.DashboardNumber;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.Feeder;
@@ -31,6 +32,7 @@ public class LobOntoField extends BaseLaunch {
   private double m_liftHeight;
   private Rotation2d m_launchAngle;
   private boolean m_isSourceIntake;
+  private DashboardNumber m_launchDegreesAdjuster;
 
   /** Creates a new Lanch Partay. */
   public LobOntoField(
@@ -44,7 +46,8 @@ public class LobOntoField extends BaseLaunch {
       double liftHeight,
       Rotation2d launchAngle,
       Supplier<LauncherSpeeds> getDefaultLauncherSpeeds,
-      boolean isSourceIntake
+      boolean isSourceIntake,
+      String name
   ) {
     super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     m_swerveDrive = swerveDrive;
@@ -53,6 +56,7 @@ public class LobOntoField extends BaseLaunch {
     m_liftHeight = liftHeight;
     m_launchAngle = launchAngle;
     m_isSourceIntake = isSourceIntake;
+    m_launchDegreesAdjuster = new DashboardNumber("LobOntoField/"+name+" Tilt Angle Degrees", launchAngle.getDegrees(), true, (newValue) -> m_launchAngle = Rotation2d.fromDegrees(newValue));
 
     addRequirements(lift, launcher, feeder, swerveDrive);
   }
