@@ -78,9 +78,9 @@ public class Feeder extends SubsystemBase {
 	
 	public void grabAndHoldPiece(double grabSpeed) {
 		if (hasNoteAtSecondary()) {
-			setFeederPower(-0.15);
+			setFeederPower(-0.05);
 		} else if(hasNoteAtPrimary()) {
-			setFeederPower(0);
+			setFeederPower(0.05);
 		} else {
 			setFeederPower(grabSpeed);
 		}
