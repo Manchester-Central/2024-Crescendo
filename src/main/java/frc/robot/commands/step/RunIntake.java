@@ -20,6 +20,7 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
+import frc.robot.util.RumbleManager;
 
 // TODO: Implement actual control logic
 public class RunIntake extends Command {
@@ -27,17 +28,19 @@ public class RunIntake extends Command {
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
+  private RumbleManager m_rumbleManager;
 
   private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
 
   /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
+  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds, RumbleManager rumbleManager) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
     addRequirements(intake, lift, feeder, launcher);
     m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
+    m_rumbleManager = rumbleManager;
   }
 
   // Called when the command is initially scheduled.
@@ -47,6 +50,7 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_rumbleManager.enableRumble();
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
     var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
     m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
@@ -71,6 +75,7 @@ public class RunIntake extends Command {
   public void end(boolean interrupted) {
     m_intake.setIntakePower(0);
     m_launcher.setLauncherPower(0.0);
+    m_rumbleManager.disableRumble();
   }
 
   // Returns true when the command should end.
