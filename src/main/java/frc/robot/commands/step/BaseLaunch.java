@@ -124,10 +124,18 @@ public abstract class BaseLaunch extends Command {
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     m_launcher.setTiltAngle(targetTilt);
     if (isClearToLaunch() && m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
-      m_feeder.setFeederPower(m_feederLaunchSpeed.get(),m_trapLaunchSpeed.get());
+      m_feeder.setFeederPower(getFeederLaunchSpeed(), getTrapLaunchSpeed());
     } else {
       m_feeder.grabAndHoldPiece(0.3);
     }
+  }
+
+  protected double getTrapLaunchSpeed(){
+    return m_trapLaunchSpeed.get();
+  }
+
+  protected double getFeederLaunchSpeed(){
+    return m_feederLaunchSpeed.get();
   }
 
   // Called once the command ends or is interrupted.

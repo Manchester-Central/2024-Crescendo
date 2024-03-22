@@ -7,6 +7,8 @@ package frc.robot.commands.step;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -23,6 +25,7 @@ public class LaunchSetDistance extends BaseLaunch {
   private double m_initialLiftHeightMeters = 0;
   private Rotation2d m_lastLauncherTilt = null;
   private FieldPose2024 m_launchPose;
+  private Optional<Double> m_liftHeightMeters;
   /** Creates a new Lanch Partay. */
   public LaunchSetDistance(
       Lift lift,
@@ -35,13 +38,30 @@ public class LaunchSetDistance extends BaseLaunch {
   ) {
     super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
     m_launchPose = launchPose;
+    m_liftHeightMeters = Optional.empty();
+    addRequirements(lift, launcher, feeder,intake);
+  }
+
+  public LaunchSetDistance(
+      Lift lift,
+      Launcher launcher,
+      Feeder feeder,
+      Intake intake,
+      FieldPose2024 launchPose,
+      double liftHeightMeters,
+      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+
+  ) {
+    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    m_launchPose = launchPose;
+    m_liftHeightMeters = Optional.of(liftHeightMeters);
     addRequirements(lift, launcher, feeder,intake);
   }
 
   @Override
   public void initialize() {
     m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
-    m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
+    m_initialLiftHeightMeters = m_liftHeightMeters.isEmpty() ? m_lift.getCurrentHeightMeters() : m_liftHeightMeters.get();
     super.initialize();
   }
   

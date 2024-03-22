@@ -24,7 +24,7 @@ public class LauncherModel {
     private static final double kDistanceFromLimelightToBotCenterMeters = 0.177306;
     private static final double kDistanceFromBotCenterToPivotMeters = 0.299;
     private static final double kFrontLimelightHeightMeters = 0.452;
-    private static final double kFrontLimelightOffsetAngleDegrees = 24.89;
+    private static final double kFrontLimelightOffsetAngleDegrees = 26; // 24.75
     private static final double kLaunchAxisOffsetMeters = 0.065;
     private static final double kLaunchExitOffsetMeters = 0.239;
     private static final double kLauncherPivotHeightMeters = 0.277;
@@ -37,7 +37,7 @@ public class LauncherModel {
 
     // Launcher speed linear calculation numbers
     private static final double kMinLauncherSpeedMps = 18.8;
-    private static final double kMaxLauncherSpeedMps = 32.0;
+    private static final double kMaxLauncherSpeedMps = 30.0; // original 32.0
     private static final double kMaxDistanceForMinSpeedMeters = 3.0;
     private static final double kMinDistanceForMaxSpeedMeters = 6.0;
     private static final double kLauncherSpeedSlope = (kMaxLauncherSpeedMps - kMinLauncherSpeedMps) / (kMinDistanceForMaxSpeedMeters - kMaxDistanceForMinSpeedMeters);
@@ -94,7 +94,7 @@ public class LauncherModel {
 
         // Calculate the desired launcher angle from the calculated values
         // Using the formula Dan gave us here: https://docs.google.com/spreadsheets/d/1uqDhTsbwMxrkkyMMzWEmLbcNDx1oy95dRZYe3OpYG2s/edit?usp=sharing
-        double vSquared = Math.pow(initialVelocityMPS, 2);
+        double vSquared = Math.pow((initialVelocityMPS), 2);
         double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(adjustedDistanceMeters, 2) + 2 * -launchHeightDifferenceMeters * Math.pow(initialVelocityMPS, 2)));
         double gx =  (kGravity * adjustedDistanceMeters);
         double expressionA = Math.abs((vSquared - sqrtExpression) / gx);

@@ -18,7 +18,7 @@ public class SwerveModule2024 extends TalonFxAndCancoderSwerveModule {
 		m_speedConfig.CurrentLimits = new CurrentLimitsConfigs();
 		m_speedConfig.CurrentLimits.SupplyCurrentLimit = 70;
 		m_speedConfig.CurrentLimits.SupplyCurrentLimitEnable = true; 
-		m_speedConfig.CurrentLimits.StatorCurrentLimit = 35;
+		m_speedConfig.CurrentLimits.StatorCurrentLimit = 55;
 		m_speedConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 		m_speedController.getConfigurator().apply(m_speedConfig.CurrentLimits);
 		m_speedController.setPosition(0);
