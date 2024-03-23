@@ -57,11 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -165.60471511706365,
+    "rotation": -165.6,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide-NC1-NF1-NF2",
+  "folder": "AmpSide-NC1-NF1-NF2-NF3",
   "previewStartingState": {
     "rotation": 155.97,
     "velocity": 0

@@ -64,6 +64,12 @@
           "data": {
             "name": "launch"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ampside-NF3-Pickup"
+          }
         }
       ]
     }

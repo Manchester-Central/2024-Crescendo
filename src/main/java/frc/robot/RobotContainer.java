@@ -226,7 +226,7 @@ public class RobotContainer {
     m_operator.start(); // Disable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
-    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, 0.1))); // Intake (dumb)
+    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Intake (dumb)
     m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
     m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // 
 
