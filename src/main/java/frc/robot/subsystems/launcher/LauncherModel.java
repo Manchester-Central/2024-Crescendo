@@ -47,6 +47,7 @@ public class LauncherModel {
     // Flywheel to motor speeds constants
     private static final double kFlywheelDiameter = 0.1016;
     private static final double kFlywheelGearRatio = 26.0 / 22.0;
+    private static final double kMaxLaunchDistanceMeters = 9.0;
 
     // Efficiency Lost Multiplier
     private static final double kEfficiencyLossMultiplier = 0.6;
@@ -153,6 +154,7 @@ public class LauncherModel {
     public static Optional<LauncherTarget> getLauncherTargetWithAngle(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d targetAngle) {
         // Calculate the distance from the launch point to the target
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(targetAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
+        adjustedDistanceMeters = Math.min(adjustedDistanceMeters, kMaxLaunchDistanceMeters);
 
         // Adjust the height to at least be above the min height calculated for the current distance
         double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForTiltAngle(targetAngle));
