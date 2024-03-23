@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8927727086223416,
+        "y": 6.985795510052559
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.8927727086223416,
+        "y": 6.985795510052559
+      },
+      "isLocked": false,
+      "linkedName": "NC1-PickupEnd"
+    },
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 7.439674879349759
+      },
+      "prevControl": {
+        "x": 5.369375354135325,
+        "y": 6.887126081944472
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NF1-Pickup-End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -170.04937331204832,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "AmpSide-NC1-NF1-NF2",
+  "previewStartingState": {
+    "rotation": -172.72499504211075,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
