@@ -49,7 +49,7 @@ public class LauncherModel {
     private static final double kFlywheelGearRatio = 26.0 / 22.0;
 
     // Efficiency Lost Multiplier
-    private static final double kEfficiencyLossMultiplier = 0.8;
+    private static final double kEfficiencyLossMultiplier = 0.6;
     private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
 
     /**
@@ -290,7 +290,7 @@ public class LauncherModel {
     public static double getMinLiftHeightMetersForTiltAngle(Rotation2d tiltAngle) {
         double tiltAngleDegrees = tiltAngle.getDegrees();
         //=0.214-0.00602*A2-0.0000222*POW(A2,2)
-        double calculatedHeight = 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
+        double calculatedHeight = 0.02 + 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
         return MathUtil.clamp(calculatedHeight, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
     }
 }
