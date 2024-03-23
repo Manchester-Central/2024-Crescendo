@@ -155,7 +155,7 @@ public class LauncherModel {
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(targetAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
 
         // Adjust the height to at least be above the min height calculated for the current distance
-        double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForTiltAngle(targetAngle));
 
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(targetAngle);

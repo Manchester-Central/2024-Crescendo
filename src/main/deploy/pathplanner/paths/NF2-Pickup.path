@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.780797561595124,
-        "y": 6.571383911998593
+        "x": 5.566714210351499,
+        "y": 6.561516969187785
       },
       "isLocked": false,
       "linkedName": "NF1-Launch-End"
@@ -20,8 +20,8 @@
         "y": 5.7721615443230885
       },
       "prevControl": {
-        "x": 5.7739200093784815,
-        "y": 7.035130224106603
+        "x": 6.32646880678377,
+        "y": 6.719388054160724
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8,
-      "rotationDegrees": 153.35,
+      "rotationDegrees": 155.97,
       "rotateFast": false
     }
   ],
