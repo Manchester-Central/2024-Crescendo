@@ -26,7 +26,7 @@ public class LauncherModel {
     private static final double kDistanceFromLimelightToBotCenterMeters = 0.177306;
     private static final double kDistanceFromBotCenterToPivotMeters = 0.299;
     private static final double kFrontLimelightHeightMeters = 0.452;
-    private static final double kFrontLimelightOffsetAngleDegrees = 25.25; // 24.75
+    private static final double kFrontLimelightOffsetAngleDegrees = 24.84; // 24.75
     private static final double kLaunchAxisOffsetMeters = 0.065;
     private static final double kLaunchExitOffsetMeters = 0.239;
     private static final double kLauncherPivotHeightMeters = 0.277;
@@ -49,7 +49,7 @@ public class LauncherModel {
     private static final double kFlywheelGearRatio = 26.0 / 22.0;
 
     // Efficiency Lost Multiplier
-    private static final double kEfficiencyLossMultiplier = 0.9;
+    private static final double kEfficiencyLossMultiplier = 0.8;
     private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
 
     /**
