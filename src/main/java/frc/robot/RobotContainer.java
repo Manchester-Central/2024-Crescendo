@@ -301,7 +301,8 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
-    SmartDashboard.putNumber("Distance to Speaker", m_swerveDrive.getDistanceToSpeakerMeters());
+    SmartDashboard.putNumber("Distance to Speaker (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
+    SmartDashboard.putNumber("Distance to Speaker (ty)", LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(m_vision.getCamera(CameraDirection.front).getTargetElevation(true)));
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     if (!DriverStation.isTeleopEnabled()){
