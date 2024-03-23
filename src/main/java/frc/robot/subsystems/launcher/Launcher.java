@@ -77,11 +77,13 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltController.setIdleMode(IdleMode.kCoast);
 		// m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
-		m_tiltController.getPIDController().setFeedbackDevice(m_absAngleEncoder);
+		// m_tiltController.getPIDController().setFeedbackDevice(m_absAngleEncoder);
+		m_tiltController.getPIDController().setFeedbackDevice(m_tiltController.getEncoder());
 		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
-		// m_tiltController.getEncoder().setPosition(LauncherConstants.MaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
+		m_tiltController.getEncoder().setPosition(59.2); // TODO: Remove when abs angle is working again
+		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", DebugConstants.LauncherDebugEnable, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
 		
 		
@@ -206,12 +208,13 @@ public class Launcher extends SubsystemBase {
 			return m_simAngle;
 		}
 		// return Rotation2d.fromDegrees(m_tiltPot.getPosition());
-		return Rotation2d.fromDegrees(m_absAngleEncoder.getPosition());
+		// return Rotation2d.fromDegrees(m_absAngleEncoder.getPosition());
+		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
 	}
 
-	public void recalibrateTilt() {
-        m_tiltController.getEncoder().setPosition(0); // TODO Don't Do This
-    }
+	// public void recalibrateTilt() {
+    //     m_tiltController.getEncoder().setPosition(0); // TODO Don't Do This
+    // }
 
 	public void tuneTiltPID(PIDFValue pidValue){
         m_tiltController.getPIDController().setP(pidValue.P);
