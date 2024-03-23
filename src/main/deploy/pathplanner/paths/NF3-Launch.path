@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.577030538676463,
-        "y": 4.262519294269358
+        "x": 8.289990426134699,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1428850550008804,
-        "y": 4.3809226079990635
+        "x": 3.0999785076493245,
+        "y": 4.084914323674802
       },
       "isLocked": false,
-      "linkedName": "NC3-Pickup-End"
+      "linkedName": "NF3-Pickup-End"
     },
     {
       "anchor": {
         "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "y": 5.545221859674489
       },
       "prevControl": {
-        "x": 0.7911138899200888,
-        "y": 6.078036771458159
+        "x": 5.191770383540769,
+        "y": 5.624157402160958
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NF3-Launch-End"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": -140.0,
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 150.0,
       "rotateFast": false
     }
   ],
@@ -63,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -152.56928176650467,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "EasySoloFast-NC2-NF3-NC3-NC1",
   "previewStartingState": {
-    "rotation": 153.2547740095538,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
