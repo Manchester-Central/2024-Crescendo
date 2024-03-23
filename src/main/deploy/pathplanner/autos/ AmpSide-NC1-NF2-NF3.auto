@@ -32,25 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NF1-Pickup"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF1-Launch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF2-Pickup"
+            "pathName": "NF2-Pickup-Skip1"
           }
         },
         {
@@ -68,7 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Ampside-NF3-Approach"
+            "pathName": "Ampside-NF3-Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpSide-NF3-Launch"
           }
         }
       ]
