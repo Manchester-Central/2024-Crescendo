@@ -50,7 +50,7 @@ public class LauncherModel {
     private static final double kMaxLaunchDistanceMeters = 9.0;
 
     // Efficiency Lost Multiplier
-    private static final double kEfficiencyLossMultiplier = 0.6;
+    private static final double kEfficiencyLossMultiplier = 0.8;
     private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
 
     /**
