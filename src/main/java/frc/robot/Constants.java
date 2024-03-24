@@ -127,6 +127,7 @@ public class Constants {
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
 		public static final Rotation2d SourceIntakeAngle = Rotation2d.fromDegrees(34.2);
+		public static final Rotation2d SourceIntakeAngleHigh = Rotation2d.fromDegrees(39.3);
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
 		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(7);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(7);
@@ -169,6 +170,7 @@ public class Constants {
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = MinHeightMeters;
 		public static final double SourceIntakeHeightMeters = 0.38;
+		public static final double SourceIntakeHeightHighMeters = 0.59;
 		public static final double LaunchSpitHeightMeters = MinHeightMeters;
 		public static final double PassNoteHeight = 0.05;
 
