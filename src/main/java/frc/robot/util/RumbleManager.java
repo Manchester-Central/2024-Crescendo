@@ -49,7 +49,7 @@ public class RumbleManager {
     private void handleOperatorRumble() {
 
         // If this is the first time seeing this note in the intake
-        if ((m_feeder.hasNote() || m_intake.hasNote()) && m_noteRumbleDebounce == false) {
+        if ((m_feeder.hasNote()) && m_noteRumbleDebounce == false) {
             m_operator.getHID().setRumble(RumbleType.kBothRumble, 1.0);
             m_noteSeenTime = Timer.getFPGATimestamp();
             m_noteRumbleDebounce = true;
@@ -61,7 +61,7 @@ public class RumbleManager {
             m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
         }
 
-        if (!m_feeder.hasNote() && !m_intake.hasNote()) {
+        if (!m_feeder.hasNote()) {
             m_operator.getHID().setRumble(RumbleType.kBothRumble, 0);
             m_noteRumbleDebounce = false;
         }
