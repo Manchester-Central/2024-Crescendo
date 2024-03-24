@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1428850550008804,
-        "y": 4.3809226079990635
+        "x": 1.9258123131630895,
+        "y": 5.190011918485376
       },
       "isLocked": false,
       "linkedName": "NC3-Pickup-End"
@@ -20,8 +20,8 @@
         "y": 6.9956624528633675
       },
       "prevControl": {
-        "x": 0.7911138899200888,
-        "y": 6.078036771458159
+        "x": 0.8700494324065587,
+        "y": 6.196440085187864
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8,
-      "rotationDegrees": -140.0,
+      "rotationDegrees": -152.57,
       "rotateFast": false
     }
   ],
