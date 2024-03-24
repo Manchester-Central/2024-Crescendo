@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.439674879349759
+        "x": 2.8927727086223416,
+        "y": 6.985795510052559
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.0832340126218725,
-        "y": 6.877259139133662
+        "x": 4.678689357378716,
+        "y": 6.975928567241751
       },
       "isLocked": false,
-      "linkedName": "NF1-Pickup-End"
+      "linkedName": "NC1-PickupEnd"
     },
     {
       "anchor": {
-        "x": 3.7807975615951244,
-        "y": 6.571383911998593
+        "x": 8.289990426134699,
+        "y": 5.7721615443230885
       },
       "prevControl": {
-        "x": 5.0931068063713125,
-        "y": 6.867366255967142
+        "x": 6.32646880678377,
+        "y": 6.719388054160724
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF1-Launch-End"
+      "linkedName": "NF2-Pickup-End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 155.97,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -57,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -166.71,
+    "rotation": 155.96571184055733,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "AmpSide-NC1-NF1-NF2-NF3",
   "previewStartingState": {
-    "rotation": -167.68959954114868,
+    "rotation": -163.175351779577,
     "velocity": 0
   },
   "useDefaultConstraints": true
