@@ -111,13 +111,15 @@ public class Constants {
 	public static class LauncherConstants {
 		// public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltAbsoluteEncoderConversionFactor = 90.151; // Old Value: 99.91
-		public static final double TiltAbsoluteEncoderOffset = 73.75 + 1.7; // Old Value: 86.67
+		public static final double TiltAbsoluteEncoderOffset = 75.45; // Old Value: 86.67
 		public static final double TiltEncoderConversionFactor = 2.0147; //2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.6);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // actual 5.65 - 6.65 is a safe limit
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58.2); // actual 59.2 - 58.2 is a safe limit
+		public static final Rotation2d ActualMinAngle = Rotation2d.fromDegrees(5.65); // The physical min angle the tilt can go
+		public static final Rotation2d ActualMaxAngle = Rotation2d.fromDegrees(59.2); // The physical max angle the tilt can go
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // The safe min angle we allow the tilt to move to
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58.2); // The safe max angle we allow the tilt to move to
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
 

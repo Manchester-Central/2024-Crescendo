@@ -228,9 +228,9 @@ public class RobotContainer {
     m_operator.start(); // Disable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
-    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Intake (dumb)
+    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
     m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
-    m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // 
+    m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // Re-enable launcher prespin
 
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
     Function<Rotation2d, StartEndCommand> createGetTiltCommand = (Rotation2d angle) -> new StartEndCommand(() -> m_launcher.setTiltAngle(angle), () -> m_launcher.setTiltSpeed(0), m_launcher);
