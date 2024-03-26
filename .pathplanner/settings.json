@@ -5,20 +5,21 @@
   "pathFolders": [
     "6329Frwends",
     "AmpSide-5Ns-AroundStage",
+    "AmpSide-NC1-NF1-NF2-NF3",
+    "CenterNoteRush",
     "EasySolo",
+    "EasySoloFast-NC2-NF3-NC3-NC1",
     "MidDenial",
     "MidLineRace",
-    "New Folder",
     "SCurveNote",
     "SimpleAuto",
     "SrcSide-4Ns-ThruStage",
-    "SrcSide-5Ns-AroundStage",
-    "CenterNoteRush"
+    "SrcSide-5Ns-AroundStage"
   ],
   "autoFolders": [
     "AmpSide-5Ns-AroundStage",
-    "MidLineRace",
     "Deny",
+    "MidLineRace",
     "Simple Autos",
     "SrcSide-4Ns-ThruStage",
     "SrcSide-AroundStage"

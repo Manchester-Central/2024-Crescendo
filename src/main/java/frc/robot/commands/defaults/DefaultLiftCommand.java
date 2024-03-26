@@ -13,7 +13,7 @@ import frc.robot.subsystems.Lift;
 public class DefaultLiftCommand extends Command {
   private Lift m_lift;
   private Gamepad m_operator;
-  public static double MaxLiftSpeed = 1;
+  public static double MaxLiftSpeed = 0.3;
 
   /** Creates a new DefaultLiftCommand. */
   public DefaultLiftCommand(Lift lift, Gamepad operator) {

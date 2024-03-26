@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 
 import com.chaos131.util.DashboardNumber;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +35,7 @@ public abstract class BaseLaunch extends Command {
   protected Feeder m_feeder;
   protected Intake m_intake;
   protected Optional<LauncherTarget> m_currentTarget = Optional.empty();
+  protected Debouncer m_goodToLaunch = new Debouncer(0.05, DebounceType.kBoth); // Only launch if it's been safe to launch for 0.05 seconds
 
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
@@ -113,6 +116,7 @@ public abstract class BaseLaunch extends Command {
     }
     if (m_currentTarget.isEmpty()) {
       noTargetBehavior();
+      m_goodToLaunch.calculate(false);
       return;
     }
     var targets = m_currentTarget.get();
@@ -123,7 +127,8 @@ public abstract class BaseLaunch extends Command {
     m_lift.moveToHeight(targetHeight);
     m_launcher.setLauncherRPM(targetSpeedLeft, targetSpeedRight);
     m_launcher.setTiltAngle(targetTilt);
-    if (isClearToLaunch() && m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight)) {
+    var isGoodToLaunch = m_goodToLaunch.calculate(isClearToLaunch() && m_lift.atTargetHeight(targetHeight) && m_launcher.atTargetAngle(targetTilt) && m_launcher.atTargetRPM(targetSpeedLeft, targetSpeedRight));
+    if (isGoodToLaunch) {
       m_feeder.setFeederPower(getFeederLaunchSpeed(), getTrapLaunchSpeed());
     } else {
       m_feeder.grabAndHoldPiece(0.3);

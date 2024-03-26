@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.577030538676463,
+        "y": 4.262519294269358
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9258123131630895,
+        "y": 5.190011918485376
+      },
+      "isLocked": false,
+      "linkedName": "NC3-Pickup-End"
+    },
+    {
+      "anchor": {
+        "x": 2.9026396514331507,
+        "y": 6.9956624528633675
+      },
+      "prevControl": {
+        "x": 0.8700494324065587,
+        "y": 6.196440085187864
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": -152.57,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -152.56928176650467,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "EasySoloFast-NC2-NF3-NC3-NC1",
+  "previewStartingState": {
+    "rotation": 153.2547740095538,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

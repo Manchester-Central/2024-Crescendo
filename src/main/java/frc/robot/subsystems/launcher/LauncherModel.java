@@ -6,6 +6,8 @@ package frc.robot.subsystems.launcher;
 
 import java.util.Optional;
 
+import com.chaos131.util.DashboardNumber;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +26,7 @@ public class LauncherModel {
     private static final double kDistanceFromLimelightToBotCenterMeters = 0.177306;
     private static final double kDistanceFromBotCenterToPivotMeters = 0.299;
     private static final double kFrontLimelightHeightMeters = 0.452;
-    private static final double kFrontLimelightOffsetAngleDegrees = 26; // 24.75
+    private static final double kFrontLimelightOffsetAngleDegrees = 24.84; // 24.75
     private static final double kLaunchAxisOffsetMeters = 0.065;
     private static final double kLaunchExitOffsetMeters = 0.239;
     private static final double kLauncherPivotHeightMeters = 0.277;
@@ -45,6 +47,11 @@ public class LauncherModel {
     // Flywheel to motor speeds constants
     private static final double kFlywheelDiameter = 0.1016;
     private static final double kFlywheelGearRatio = 26.0 / 22.0;
+    private static final double kMaxLaunchDistanceMeters = 9.0;
+
+    // Efficiency Lost Multiplier
+    private static final double kEfficiencyLossMultiplier = 0.8;
+    private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
 
     /**
      * An enum for specifying if we're aiming for a speaker or the floor
@@ -92,10 +99,13 @@ public class LauncherModel {
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
 
+        // Run the calculation with a slightly lower velicty to account for energy transfer loss
+        double adjustedVelocityMps = initialVelocityMPS * m_efficiencyLossMultiplier.get();
+
         // Calculate the desired launcher angle from the calculated values
         // Using the formula Dan gave us here: https://docs.google.com/spreadsheets/d/1uqDhTsbwMxrkkyMMzWEmLbcNDx1oy95dRZYe3OpYG2s/edit?usp=sharing
-        double vSquared = Math.pow((initialVelocityMPS), 2);
-        double sqrtExpression = Math.sqrt(Math.pow(initialVelocityMPS, 4) - kGravity * (kGravity*Math.pow(adjustedDistanceMeters, 2) + 2 * -launchHeightDifferenceMeters * Math.pow(initialVelocityMPS, 2)));
+        double vSquared = Math.pow((adjustedVelocityMps), 2);
+        double sqrtExpression = Math.sqrt(Math.pow(adjustedVelocityMps, 4) - kGravity * (kGravity*Math.pow(adjustedDistanceMeters, 2) + 2 * -launchHeightDifferenceMeters * Math.pow(adjustedVelocityMps, 2)));
         double gx =  (kGravity * adjustedDistanceMeters);
         double expressionA = Math.abs((vSquared - sqrtExpression) / gx);
         double expressionB = Math.abs((vSquared + sqrtExpression) / gx);
@@ -144,9 +154,10 @@ public class LauncherModel {
     public static Optional<LauncherTarget> getLauncherTargetWithAngle(LauncherHeightTarget heightTarget, double liftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d targetAngle) {
         // Calculate the distance from the launch point to the target
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(targetAngle) + getLiftDistanceOffsetMeters(liftHeightMeters);
+        adjustedDistanceMeters = Math.min(adjustedDistanceMeters, kMaxLaunchDistanceMeters);
 
         // Adjust the height to at least be above the min height calculated for the current distance
-        double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForDistanceMeters(adjustedDistanceMeters));
+        double adjustedLiftHeightMeters = Math.max(liftHeightMeters, getMinLiftHeightMetersForTiltAngle(targetAngle));
 
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(targetAngle);
@@ -281,7 +292,7 @@ public class LauncherModel {
     public static double getMinLiftHeightMetersForTiltAngle(Rotation2d tiltAngle) {
         double tiltAngleDegrees = tiltAngle.getDegrees();
         //=0.214-0.00602*A2-0.0000222*POW(A2,2)
-        double calculatedHeight = 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
+        double calculatedHeight = 0.02 + 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
         return MathUtil.clamp(calculatedHeight, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
     }
 }
