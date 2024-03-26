@@ -112,7 +112,7 @@ public class RobotContainer {
   );
 
   private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds = () -> {
-    var launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+    var launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getEncoderTiltAngle(), TargetAngleMode.Lower);
     if (launcherTargetsOptional.isEmpty()) {
       return new LauncherSpeeds(LauncherConstants.NoTargetRPM, LauncherConstants.NoTargetRPM);
     }
@@ -128,7 +128,7 @@ public class RobotContainer {
     // Sets up the back camera with a pose offset to correct the pose
     // This generates the offset from the robot origin to the camera location
     m_vision.getCamera(CameraDirection.back).setOffsetHandler(() -> {
-      var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
+      var launcherRotation = -(m_launcher.getEncoderTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
       Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
@@ -146,7 +146,7 @@ public class RobotContainer {
       var limelightlocation = rotatedLauncherVector.plus(liftheight).plus(StaticOffset);
       SmartDashboard.putNumberArray("CameraCalc/FinalVector", new double[]{limelightlocation.getX(),limelightlocation.getY(),limelightlocation.getZ()});
 
-      var finalRotation = new Rotation3d(0, m_launcher.getAbsoluteTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
+      var finalRotation = new Rotation3d(0, m_launcher.getEncoderTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
       return new Pose3d(limelightlocation, finalRotation);
     });
 
@@ -206,12 +206,13 @@ public class RobotContainer {
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
     m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
     m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
-    m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.SourceIntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, true, "MidLinePass"));  // Align angle to HP (but allow translation)
+    m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, true, "MidLinePass"));  // Align angle to HP (but allow translation)
 
     //find a way for the leftBumpper commands not override one another ~ jojo ;)
     m_driver.leftBumper().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, false, "AmpPass"));
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager)); // Intake
-    m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
+    // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
+    m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
         new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
@@ -225,7 +226,7 @@ public class RobotContainer {
     m_operator.start(); // Disable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
-    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false)); // Intake (dumb)
+    m_operator.povDown().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Intake (dumb)
     m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
     m_operator.povRight().whileTrue(new InstantCommand(() -> DefaultLauncherCommand.LauncherPreSpinEnabled = true)); // 
 
@@ -280,7 +281,7 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getAbsoluteTiltAngle().getDegrees(),
+      m_launcher.getEncoderTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
@@ -301,7 +302,8 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
-    SmartDashboard.putNumber("Distance to Speaker", m_swerveDrive.getDistanceToSpeakerMeters());
+    SmartDashboard.putNumber("Distance to Speaker (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
+    SmartDashboard.putNumber("Distance to Speaker (ty)", LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(m_vision.getCamera(CameraDirection.front).getTargetElevation(true)));
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     if (!DriverStation.isTeleopEnabled()){

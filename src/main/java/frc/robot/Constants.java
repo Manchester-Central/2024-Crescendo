@@ -83,6 +83,8 @@ public class Constants {
 		public static final int LiftRight = 49; 
 		
 		public static final int FeederTrap = 50;
+
+		public static final int TiltCANCoder = 51;
 	}
 
 	public static class IOPorts {
@@ -111,9 +113,10 @@ public class Constants {
 	public static class LauncherConstants {
 		// public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltAbsoluteEncoderConversionFactor = 90.151; // Old Value: 99.91
-		public static final double TiltAbsoluteEncoderOffset = 73.75; // Old Value: 86.67
-		public static final double TiltEncoderConversionFactor = 2.144329897;
-		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.5);
+		public static final Rotation2d TiltCANCoderOffset = Rotation2d.fromDegrees(0);
+		public static final double TiltAbsoluteEncoderOffset = 73.75 + 1.7; // Old Value: 86.67
+		public static final double TiltEncoderConversionFactor = 2.0147; //2.144329897;
+		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.6);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
 		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // actual 5.65 - 6.65 is a safe limit

@@ -55,7 +55,7 @@ public class RunIntake extends Command {
     var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
     m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
 
-    if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
+    if(m_launcher.getEncoderTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
       m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
     }
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {

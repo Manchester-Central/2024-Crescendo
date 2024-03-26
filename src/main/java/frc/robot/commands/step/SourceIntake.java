@@ -40,7 +40,7 @@ public class SourceIntake extends Command {
     m_lift.moveToHeight(LiftConstants.SourceIntakeHeightMeters);
     m_launcher.setLauncherPower(-0.1);
 
-    if(m_launcher.getAbsoluteTiltAngle().getDegrees() < LauncherConstants.SourceIntakeAngle.getDegrees()){
+    if(m_launcher.getEncoderTiltAngle().getDegrees() < LauncherConstants.SourceIntakeAngle.getDegrees()){
       m_launcher.setTiltAngle(LauncherConstants.SourceIntakeAngle);
     }
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
