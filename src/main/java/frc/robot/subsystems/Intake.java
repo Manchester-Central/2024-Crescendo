@@ -5,7 +5,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.SparkLimitSwitch;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
@@ -20,6 +23,8 @@ public class Intake extends SubsystemBase {
 	private TalonFXConfiguration m_intakeUpperConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_intakeLowerConfig = new TalonFXConfiguration();
 	DigitalInput m_intakeSensor = new DigitalInput(IOPorts.IntakeNoteSensor);
+	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private boolean m_hasNote = false;
 
 	private double simPower = 0;
 
@@ -64,12 +69,12 @@ public class Intake extends SubsystemBase {
 	}
 
 	public boolean hasNote() {
-		return !m_intakeSensor.get();
+		return m_hasNote;
 	}
 
 	@Override
 	public void periodic() {
 		super.periodic();
-		
+		m_hasNote = m_hasNoteDebouncer.calculate(!m_intakeSensor.get());
 	}
 }
