@@ -48,6 +48,7 @@ public class FireIntoAmp extends Command {
 	private final double FEEDER_EJECT_SPEED = -1.0;
 	private final double FEEDER_EJECT_TIME = 1.5; // seconds
 	private final double MOVE_SPEED = 0.4;
+	private final double fiaAmpHeight = 0.64;
 	private boolean m_hasLostNote = false;
 	private Timer m_spitTimer = new Timer();
 
@@ -102,13 +103,13 @@ public class FireIntoAmp extends Command {
 	@Override
 	public void execute() {
 		if (state == AmpDropSequence.MoveToArea) {
-			if (m_pathCommand.isFinished() && m_lift.atTargetHeight(LiftConstants.AmpMeters)
+			if (m_pathCommand.isFinished() && m_lift.atTargetHeight(fiaAmpHeight)
 				&& m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
 				m_feeder.setFeederPower(FEEDER_EJECT_SPEED);
 				state = AmpDropSequence.FireIntoAmp;
 			} else {
 				m_pathCommand.execute();
-				m_lift.moveToHeight(LiftConstants.AmpMeters);
+				m_lift.moveToHeight(fiaAmpHeight);
 				m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
 			}
 
