@@ -41,6 +41,9 @@ public class Feeder extends SubsystemBase {
 
 		m_feederMainMotor.setIdleMode(IdleMode.kBrake);
 		m_feederTrapMotor.setIdleMode(IdleMode.kBrake);
+		
+		m_feederMainMotor.setSmartCurrentLimit(80);
+		m_feederTrapMotor.setSmartCurrentLimit(80);
 
 		m_feederMainMotor.setInverted(true);
 		m_feederTrapMotor.setInverted(true);

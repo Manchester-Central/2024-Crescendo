@@ -31,11 +31,15 @@ public class Intake extends SubsystemBase {
 
 		m_intakeUpperConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeUpperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 60;
 		m_intakeUpperConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeUpper.getConfigurator().apply(m_intakeUpperConfig);
 
 		m_intakeLowerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeLowerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 60;
 		m_intakeLowerConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeLower.getConfigurator().apply(m_intakeLowerConfig);
 
