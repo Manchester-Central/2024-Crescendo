@@ -51,6 +51,16 @@ public class Constants {
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
 		public static final double RobotSpeedThresholdMPS = 1.0;
+
+		public static class L3G {
+			public static final double error = 0.0;
+			public static final double exponent = 3.0;
+			public static final double distanceScaler = 1/3.15;
+			public static final double vertical = 56.0;
+			public static final double horizontal = 80.0;
+			public static final double deviationMultipier = 1;
+			public static final int tagsSeen = 8;
+		}
 	}
 
 	public static class CANIdentifiers {
