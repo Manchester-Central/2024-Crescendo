@@ -29,7 +29,6 @@ public class LightStrip extends SubsystemBase{
         }
 
         m_leds.setData(m_buffer);
-        m_leds.start();
     }
 
     @Override
