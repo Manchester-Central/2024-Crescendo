@@ -12,7 +12,7 @@ public class LightStrip extends SubsystemBase{
     private AddressableLED m_leds;  
     private AddressableLEDBuffer m_buffer;
     private final int NumLeds = 0;
-    private Object m_mutex = new Object();
+    // private Object m_mutex = new Object();
     private Supplier<Boolean> m_intakeSupplier;
     private Supplier<Boolean> m_feederSupplier;
 
@@ -34,6 +34,7 @@ public class LightStrip extends SubsystemBase{
 
     @Override
     public void periodic() {
+        // Set color to orange if the robot is not connected to the driver station
         if(DriverStation.isDSAttached() == false) {
             setSingleColor(255, 30, 0);
             return;
