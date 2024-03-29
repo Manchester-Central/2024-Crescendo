@@ -13,7 +13,8 @@ public class LightStrip extends SubsystemBase{
     private AddressableLEDBuffer m_buffer;
     private final int NumLeds = 0;
     private Object m_mutex = new Object();
-    private Supplier<Boolean> m_intakeSupplier, m_feederSupplier;
+    private Supplier<Boolean> m_intakeSupplier;
+    private Supplier<Boolean> m_feederSupplier;
 
     public LightStrip(Supplier<Boolean> intakeHasNote, Supplier<Boolean> feederHasNote) {
         m_intakeSupplier = intakeHasNote;
