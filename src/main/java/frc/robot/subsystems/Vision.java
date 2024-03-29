@@ -11,13 +11,7 @@ import frc.robot.subsystems.vision.LimelightCamera;
 import frc.robot.subsystems.vision.VisionData;
 import frc.robot.subsystems.vision.LimelightCamera.LimelightVersion;
 
-
 public class Vision extends SubsystemBase {
-
-	public enum CameraMode {
-		LOCALIZATION,
-		PIECE_TRACKING
-	};
 
 	public enum CameraDirection {
 		Front, Back, Notes
@@ -37,6 +31,7 @@ public class Vision extends SubsystemBase {
 		m_frontLimeLightCamera = new LimelightCamera("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 		m_backLimeLightCamera = new LimelightCamera("limelight-back", LimelightVersion.LL3G , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 		// m_noteTrackingCamera = new LimeLightCamera("limelight-notes", LimelightVersion.LL3, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
+		// m_noteTrackingCamera.setMode(CameraMode.PIECE_TRACKING);
 	}
 
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {

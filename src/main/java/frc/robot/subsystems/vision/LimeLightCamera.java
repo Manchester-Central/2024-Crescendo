@@ -18,7 +18,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.subsystems.Vision.CameraMode;
 import frc.robot.Constants.VisionConstants;
 
 public class LimelightCamera implements CameraInterface {
