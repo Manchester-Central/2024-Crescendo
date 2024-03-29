@@ -45,21 +45,23 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = true;
 		public static final int[] AprilTagPipelines = {0, 1, 2, 3, 4};
 		public static final double TxLaunchTolerance = 2;
-		public static final double AprilTagAverageDistanceThresholdMeters = 3.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
+		public static final double AprilTagAverageDistanceThresholdMeters = 3.5;
 		public static final double XMetersMidPoint = 8.25; //TODO Confirm
 		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
 		public static final double RobotSpeedThresholdMPS = 1.0;
+		public static final double PoseDeviationThreshold = 1.5;
 
-		public static class L3G {
-			public static final double error = 0.0;
-			public static final double exponent = 3.0;
-			public static final double distanceScaler = 1/3.15;
-			public static final double vertical = 56.0;
-			public static final double horizontal = 80.0;
-			public static final double deviationMultipier = 1;
-			public static final int tagsSeen = 8;
+		public static class LL3G {
+			public static final double MinimumError = 0.02;
+			public static final double ErrorExponent = 3.0;
+			public static final double DistanceScalar = 1/3.15;
+			public static final double TotalDeviationMultiplier = 1;
+			public static final double TagCountErrorScalar = 1.0;
+			public static final double RobotSpeedErrorScalar = 1.0;
+			public static final double VFOV = 56.0;
+			public static final double HFOV = 80.0;
 		}
 	}
 

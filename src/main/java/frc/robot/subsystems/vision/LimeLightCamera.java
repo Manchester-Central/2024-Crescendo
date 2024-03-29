@@ -5,10 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.opencv.core.Mat;
-
 import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -19,12 +16,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.subsystems.Vision.CameraMode;
 import frc.robot.Constants.VisionConstants;
 
-public class LimeLightCamera implements CameraInterface {
+public class LimelightCamera implements CameraInterface {
 	private String m_name;
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
 	private LimelightVersion m_limeLightVersion;
@@ -87,7 +84,7 @@ public class LimeLightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimeLightCamera(String name, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, LimelightVersion limelightVersion) {
+	public LimelightCamera(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
@@ -108,24 +105,32 @@ public class LimeLightCamera implements CameraInterface {
 		m_mostRecentData = Optional.empty();
 	}
 
-	private double calculateConfidence(Pose3d pose, int tagCount, double distance) {
+	private double calculateConfidence(Pose3d pose, int tagCount, double distance, double deviation) {
 		// TODO Actually calculate confidence
+		// if (VisionConstants.PoseDeviationThreshold < deviation) {
+		// 	return 0;
+		// }
 		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance || VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get()) {
 			return 0;
 		}
 		return 1.0;
 	}
 
-	private double calculateDevations (double distance){
-		var sadMath = Math.pow(distance*Constants.VisionConstants.L3G.distanceScaler, Constants.VisionConstants.L3G.exponent);
-		return VisionConstants.L3G.deviationMultipier * sadMath + VisionConstants.L3G.error;
+	private double calculateTranslationalDeviations(double distance, double tagCount) {
+		var stddev = Math.pow(distance*Constants.VisionConstants.LL3G.DistanceScalar, Constants.VisionConstants.LL3G.ErrorExponent);
+		// commented out for now until we know what's what
+		// stddev /= tagCount * VisionConstants.L3G.TagCountErrorScalar;
+		// stddev *= (1 + m_robotSpeedSupplier.get() * VisionConstants.LL3G.RobotSpeedErrorScalar);
+
+		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
 	}
+
 	/**
 	 * 
 	 */
 	@Override
 	public void recordMeasuredData() {
-		var data = m_visionTable.getValue("botpose_wpiblue").getDoubleArray();
+		var data = m_botpose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
 		if (data == null || data[idxX] < EPSILON) {
 			m_mostRecentData = Optional.empty();
@@ -151,14 +156,14 @@ public class LimeLightCamera implements CameraInterface {
 			);
 		}
 
-		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance]);
+		var deviation = calculateTranslationalDeviations(data[idxTagDistance], data[idxTagCount]);
+		var trackXYZ = MatBuilder.fill(Nat.N3(), Nat.N1(), new double[]{ deviation, deviation, 1 });
+
+		var conf = calculateConfidence(visionPose, (int)data[idxTagCount], data[idxTagDistance], deviation);
 		if (conf < VisionConstants.ConfidenceRequirement) {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
-
-		var devation = calculateDevations(data[idxTagDistance]);
-		var trackXYZ = MatBuilder.fill(Nat.N3(), Nat.N1(), new double[]{devation,devation,1});
 
 		m_mostRecentData = Optional.of(new VisionData(visionPose, timestampSeconds, trackXYZ));
 		if (m_poseUpdator != null && Constants.VisionConstants.UseVisionForOdometry) {
@@ -181,15 +186,26 @@ public class LimeLightCamera implements CameraInterface {
 	 * @param mode - The Mode to switch to (BLUE_APRIL_TAGS, RED_APRIL_TAGS, RETROREFLECTIVE)
 	 * @return - Returns itself for chaining
 	 */
-	public LimeLightCamera setMode(Mode mode) {
-		m_mode = mode;
-		m_visionTable.getEntry("pipeline").setNumber(mode.pipelineId);
+	public CameraInterface setMode(CameraMode mode) {
+		switch (mode) {
+			case LOCALIZATION:
+				m_mode = Mode.BLUE_APRIL_TAGS;
+				break;
+
+			case PIECE_TRACKING:
+				m_mode = Mode.RETROREFLECTIVE;
+				break;
+		
+			default:
+				return this;
+		}
+		m_visionTable.getEntry("pipeline").setNumber(m_mode.pipelineId);
 
 		return this;
 	}
 
 	private boolean isCorrectPipeline() {
-		return m_visionTable.getEntry("getpipe").getInteger(-1) == m_mode.pipelineId;
+		return getPipeline() == m_mode.pipelineId;
 	}
 
 	/**
@@ -202,13 +218,8 @@ public class LimeLightCamera implements CameraInterface {
 	 * 
 	 * @return - The azimuth angle in degrees where +theta is to the right (typically opposite from robot drive)
 	 */
-
 	public void setToDefaultMode(Pose2d robotPose){
-		if(robotPose.getX() < VisionConstants.XMetersMidPoint){
-			setMode(Mode.BLUE_APRIL_TAGS);
-		}else{
-			setMode(Mode.RED_APRIL_TAGS);
-		}
+		setMode(CameraMode.LOCALIZATION);
 	}
 
 	@Override

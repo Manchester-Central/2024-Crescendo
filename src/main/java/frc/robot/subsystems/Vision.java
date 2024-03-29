@@ -7,19 +7,25 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.CameraInterface;
-import frc.robot.subsystems.vision.LimeLightCamera;
+import frc.robot.subsystems.vision.LimelightCamera;
 import frc.robot.subsystems.vision.VisionData;
-import frc.robot.subsystems.vision.LimeLightCamera.LimelightVersion;
+import frc.robot.subsystems.vision.LimelightCamera.LimelightVersion;
 
 
 public class Vision extends SubsystemBase {
 
+	public enum CameraMode {
+		LOCALIZATION,
+		PIECE_TRACKING
+	};
+
 	public enum CameraDirection {
-		front, back
+		Front, Back, Notes
 	}
 	
-	private CameraInterface m_FrontLimeLightCamera;
-	private CameraInterface m_BackLimeLightCamera;
+	private CameraInterface m_frontLimeLightCamera;
+	private CameraInterface m_backLimeLightCamera;
+	private CameraInterface m_noteTrackingCamera;
 
 	/**
 	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
@@ -28,18 +34,19 @@ public class Vision extends SubsystemBase {
 	 * @param tablename - String of the device name.
 	 */
 	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Supplier<Double> robotSpeedSupplier) {
-		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, LimelightVersion.LL3G);
-		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, LimelightVersion.LL3G);
+		m_frontLimeLightCamera = new LimelightCamera("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
+		m_backLimeLightCamera = new LimelightCamera("limelight-back", LimelightVersion.LL3G , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
+		// m_noteTrackingCamera = new LimeLightCamera("limelight-notes", LimelightVersion.LL3, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 	}
 
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {
 		switch (direction) {
-			case front:
-				m_FrontLimeLightCamera.setOffsetHandler(offsetHandler);
+			case Front:
+				m_frontLimeLightCamera.setOffsetHandler(offsetHandler);
 				break;
 
-			case back:
-				m_BackLimeLightCamera.setOffsetHandler(offsetHandler);
+			case Back:
+				m_backLimeLightCamera.setOffsetHandler(offsetHandler);
 				break;
 
 			default:
@@ -49,11 +56,14 @@ public class Vision extends SubsystemBase {
 
 	public CameraInterface getCamera(CameraDirection direction) {
 		switch (direction) {
-			case front:
-				return m_FrontLimeLightCamera;
+			case Front:
+				return m_frontLimeLightCamera;
 
-			case back:
-				return m_BackLimeLightCamera;
+			case Back:
+				return m_backLimeLightCamera;
+
+			case Notes:
+				return m_noteTrackingCamera;
 
 			default:
 				return null;

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import frc.robot.subsystems.Vision.CameraMode;
 
 public interface CameraInterface {
 
@@ -22,4 +23,5 @@ public interface CameraInterface {
 	public void setPriorityID(int id);
 	public void resetPriorityID();
 
+	public CameraInterface setMode(CameraMode mode);
 }
