@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.CameraInterface;
 import frc.robot.subsystems.vision.LimeLightCamera;
 import frc.robot.subsystems.vision.VisionData;
+import frc.robot.subsystems.vision.LimeLightCamera.LimelightVersion;
 
 
 public class Vision extends SubsystemBase {
@@ -27,8 +28,8 @@ public class Vision extends SubsystemBase {
 	 * @param tablename - String of the device name.
 	 */
 	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Supplier<Double> robotSpeedSupplier) {
-		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
-		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
+		m_FrontLimeLightCamera = new LimeLightCamera("limelight-front" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, LimelightVersion.LL3G);
+		m_BackLimeLightCamera = new LimeLightCamera("limelight-back" , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, LimelightVersion.LL3G);
 	}
 
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {

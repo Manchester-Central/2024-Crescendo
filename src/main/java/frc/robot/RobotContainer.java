@@ -58,6 +58,7 @@ import frc.robot.commands.step.PassNote;
 //import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.LaunchSpit;
+import frc.robot.commands.step.LaunchWithOdometry;
 import frc.robot.commands.step.LobOntoField;
 import frc.robot.commands.step.LobOntoFieldSetDistance;
 import frc.robot.commands.step.SimpleControl;
@@ -151,8 +152,8 @@ public class RobotContainer {
       return new Pose3d(limelightlocation, finalRotation);
     });
 
-    NamedCommands.registerCommand("launch", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
-    NamedCommands.registerCommand("launchWithTimeout", new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
+    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
@@ -217,7 +218,7 @@ public class RobotContainer {
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new FocusAndLaunch(m_lift, m_launcher, m_feeder, m_vision, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
+        new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
 
     m_driver.leftStick().whileTrue(m_getSlowCommand.get()); //
     m_driver.rightStick(); //
@@ -323,8 +324,8 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    // TODO: Change this to use deviation data
-    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp());
+    
+    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp(), data.getDevation());
   }
 }
 
