@@ -34,7 +34,6 @@ public class LightStrip extends SubsystemBase{
 
     @Override
     public void periodic() {
-
         if(DriverStation.isDSAttached() == false) {
             setSingleColor(255, 30, 0);
             return;
