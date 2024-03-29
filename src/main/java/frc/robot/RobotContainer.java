@@ -279,15 +279,21 @@ public class RobotContainer {
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
     var drivePose = m_swerveDrive.getPose();
-    var cameraPose = m_vision.getCamera(CameraDirection.Front).getMostRecentPose();
-    cameraPose = cameraPose != null ? cameraPose : new Pose2d();
+    var frontCameraPose = m_vision.getCamera(CameraDirection.Front).getMostRecentPose();
+    frontCameraPose = frontCameraPose != null ? frontCameraPose : new Pose2d();
+    var backCameraPose = m_vision.getCamera(CameraDirection.Back).getMostRecentPose();
+    backCameraPose = backCameraPose != null ? backCameraPose : new Pose2d();
+
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      cameraPose.getX(),
-      cameraPose.getY(),
-      cameraPose.getRotation().getDegrees()
+      frontCameraPose.getX(),
+      frontCameraPose.getY(),
+      frontCameraPose.getRotation().getDegrees(),
+      backCameraPose.getX(),
+      backCameraPose.getY(),
+      backCameraPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
