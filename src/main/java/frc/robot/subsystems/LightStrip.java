@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LightStrip extends SubsystemBase{
     private AddressableLED m_leds;  
     private AddressableLEDBuffer m_buffer;
-    private final int NumLeds = 0;
+    private final int NumLeds = 15;
     // private Object m_mutex = new Object();
     private Supplier<Boolean> m_intakeSupplier;
     private Supplier<Boolean> m_feederSupplier;
