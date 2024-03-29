@@ -6,6 +6,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdentifiers;
@@ -20,6 +22,8 @@ public class Intake extends SubsystemBase {
 	private TalonFXConfiguration m_intakeUpperConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_intakeLowerConfig = new TalonFXConfiguration();
 	DigitalInput m_intakeSensor = new DigitalInput(IOPorts.IntakeNoteSensor);
+	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private boolean m_hasNote = false;
 
 	private double simPower = 0;
 
@@ -27,11 +31,15 @@ public class Intake extends SubsystemBase {
 
 		m_intakeUpperConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeUpperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 60;
 		m_intakeUpperConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeUpper.getConfigurator().apply(m_intakeUpperConfig);
 
 		m_intakeLowerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeLowerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 60;
 		m_intakeLowerConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeLower.getConfigurator().apply(m_intakeLowerConfig);
 
@@ -64,12 +72,12 @@ public class Intake extends SubsystemBase {
 	}
 
 	public boolean hasNote() {
-		return !m_intakeSensor.get();
+		return m_hasNote;
 	}
 
 	@Override
 	public void periodic() {
 		super.periodic();
-		
+		m_hasNote = m_hasNoteDebouncer.calculate(!m_intakeSensor.get());
 	}
 }

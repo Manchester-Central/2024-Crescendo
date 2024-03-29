@@ -176,7 +176,7 @@ public class Constants {
 		public static final double MaxSpeed = 0.3;
 
 		public static final double DefaultLaunchMeters = 0.5;
-		public static final double AmpMeters = 0.64; // 0.532
+		public static final double AmpMeters = 0.532; // 0.64
 		public static final double SourceMeters = 0.3;
 
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
