@@ -1,1 +1,0 @@
-resetPosition?X=1.333&Y=5.631&Angle=180

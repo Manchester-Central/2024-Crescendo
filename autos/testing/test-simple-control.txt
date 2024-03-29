@@ -1,5 +1,0 @@
-
-simpleControl?TiltPower=-0.08&LiftPower=-0.3&TimeMs=2000
-resetPosition?drivePose=Speaker
-drive?drivePose=Amp
-simpleControl?IntakePower=0.5&FeederPower=0.5&FlywheelPower=0.5&TiltPower=0.5&LiftPower=0.5&TimeMs=2000

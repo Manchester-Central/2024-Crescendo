@@ -1,0 +1,70 @@
+{
+    "version": 1.0,
+    "waypoints": [
+        {
+            "anchor": {
+                "x": 1.215,
+                "y": 6.719
+            },
+            "prevControl": null,
+            "nextControl": {
+                "x": 2.572,
+                "y": 6.541
+            },
+            "isLocked": false,
+            "linkedName": null
+        },
+        {
+            "anchor": {
+                "x": 2.892,
+                "y": 6.975
+            },
+            "prevControl": {
+                "x": 1.807,
+                "y": 6.335
+            },
+            "nextControl": null,
+            "isLocked": false,
+            "linkedName": "NF5"
+        }
+    ],
+    "rotationTargets": [],
+    "constraintZones": [],
+    "eventMarkers": [
+        {
+            "name": "Start Intake",
+            "waypointRelativePos": 0,
+            "command": {
+                "type": "parallel",
+                "data": {
+                    "commands": [
+                        {
+                            "type": "named",
+                            "data": {
+                                "name": "intake"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "globalConstraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 680.0,
+        "maxAngularAcceleration": 544.0
+    },
+    "goalEndState": {
+        "velocity": 0,
+        "rotation": -152.88,
+        "rotateFast": true
+    },
+    "reversed": false,
+    "folder": "Templates",
+    "previewStartingState": {
+        "rotation": -138.98,
+        "velocity": 0
+    },
+    "useDefaultConstraints": true
+}
