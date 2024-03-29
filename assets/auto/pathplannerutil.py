@@ -4,21 +4,24 @@ from itertools import combinations
 from string import Template
 import csv
 
-settings = json.loads(Path('../../.pathplanner/settings.json').read_text())
-max_velocity = settings["defaultMaxVel"]
-max_acceleration = settings["defaultMaxAccel"]
-max_angular_velocity = settings["defaultMaxAngVel"]
-max_angular_acceleration = settings["defaultMaxAngAccel"]
-print(settings)
+SETTINGS_FILE = Path('../../.pathplanner/settings.json')
+def getSettings():
+    settings = json.loads(SETTINGS_FILE.read_text())
+    print(settings)
+    return settings
 
-with open('./points.csv', 'r') as file:
-    csv_reader = csv.DictReader(file)
-    points = [row for row in csv_reader]
-print(points)
+initialSettings = getSettings()
+max_velocity = initialSettings["defaultMaxVel"]
+max_acceleration = initialSettings["defaultMaxAccel"]
+max_angular_velocity = initialSettings["defaultMaxAngVel"]
+max_angular_acceleration = initialSettings["defaultMaxAngAccel"]
 
-all_pairs = list(combinations(points, 2))
-
-print(all_pairs)
+def getAllPoints():
+    with open('./points.csv', 'r') as file:
+        csv_reader = csv.DictReader(file)
+        points = [row for row in csv_reader]
+    print(points)
+    return points
 
 json_path = Template("""
 {
@@ -84,7 +87,7 @@ json_path = Template("""
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Templates",
+  "folder": "${folder}",
   "previewStartingState": {
     "rotation": ${start_pose_rotation},
     "velocity": 0
@@ -94,7 +97,29 @@ json_path = Template("""
 """)
 print(json_path)
 
-def createAutoPath(start_point, end_point):
+json_auto = Template("""
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": ${start_pose_x},
+      "y": ${start_pose_y}
+    },
+    "rotation": ${start_pose_rotation}
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": ${commands}
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
+""")
+print(json_auto)
+
+def createAutoPath(auto_name, folder, start_point, end_point):
     print("-----------")
     generated_path_string = json_path.substitute(
         max_velocity = max_velocity,
@@ -110,14 +135,47 @@ def createAutoPath(start_point, end_point):
         end_pose_y = end_point["yMeters"],
         end_pose_rotation = end_point["rotationDegrees"],
         end_heading_x = end_point["defaultHeadingXMeters"],
-        end_heading_y = end_point["defaultHeadingYMeters"]
+        end_heading_y = end_point["defaultHeadingYMeters"],
+        folder = folder
     )
     print(generated_path_string)
     generated_path = json.loads(generated_path_string)
     print(generated_path)
-    with open('../../src/main/deploy/pathplanner/paths/Template ' + start_point["name"] + " - " + end_point["name"] + ".path", 'w') as f:
+    full_path_name = auto_name + " " + start_point["name"] + " - " + end_point["name"]
+    with open("../../src/main/deploy/pathplanner/paths/" + full_path_name + ".path", 'w') as f:
         json.dump(generated_path, f, ensure_ascii=False, indent=4)
+    return full_path_name
 
-for [a, b] in all_pairs:
-    createAutoPath(a, b)
-    createAutoPath(b, a)
+def createAuto(name, start_point, commands):
+    generated_auto_string = json_auto.substitute(
+        start_pose_x = start_point["xMeters"],
+        start_pose_y = start_point["yMeters"],
+        start_pose_rotation = start_point["rotationDegrees"],
+        commands = json.dumps(commands)
+    )
+    generated_auto = json.loads(generated_auto_string)
+    with open("../../src/main/deploy/pathplanner/autos/" + name + ".auto", 'w') as f:
+        json.dump(generated_auto, f, ensure_ascii=False, indent=4)
+
+def createPathFolder(folderName):
+    settings = getSettings()
+    pathFolders = settings["pathFolders"]
+    pathFolders.append(folderName)
+    with open(SETTINGS_FILE, 'w') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=4)
+
+def createNamedCommand(commandName):
+    return {
+        "type": "named",
+        "data": {
+            "name": commandName
+        }
+    }
+
+def createPathCommand(pathName):
+    return {
+        "type": "path",
+        "data": {
+            "pathName": pathName
+        }
+    }
