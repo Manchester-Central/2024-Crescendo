@@ -38,6 +38,7 @@ def save():
         return
     first_point = None
     last_point = None
+    last_link = None
     commands = []
     for box in boxes:
         line = box.get()
@@ -53,8 +54,9 @@ def save():
         if not new_point:
             raise "Not a valid point: " + new_point
         if last_point:
-            path_name = createAutoPath(name, name, last_point, new_point)
-            commands.append(createPathCommand(path_name))
+            created_auto = createAutoPath(name, name, last_point, new_point, last_link)
+            last_link = created_auto["endLink"]
+            commands.append(createPathCommand(created_auto["pathName"]))
         last_point = new_point
     createAuto(name, first_point, commands)
     main_window.destroy()

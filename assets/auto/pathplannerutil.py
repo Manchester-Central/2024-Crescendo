@@ -38,7 +38,7 @@ json_path = Template("""
         "y": ${start_heading_y}
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "${start_pose_link}"
     },
     {
       "anchor": {
@@ -51,7 +51,7 @@ json_path = Template("""
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF5"
+      "linkedName": "${end_pose_link}"
     }
   ],
   "rotationTargets": [],
@@ -84,7 +84,7 @@ json_path = Template("""
   "goalEndState": {
     "velocity": 0,
     "rotation": ${end_pose_rotation},
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "${folder}",
@@ -119,18 +119,23 @@ json_auto = Template("""
 """)
 print(json_auto)
 
-def createAutoPath(auto_name, folder, start_point, end_point):
+def createAutoPath(auto_name, folder, start_point, end_point, previous_link = None):
     print("-----------")
+    full_path_name = auto_name + " " + start_point["name"] + " - " + end_point["name"]
+    start_link = previous_link if previous_link is not None else full_path_name + " - START"
+    end_link = full_path_name + " - END"
     generated_path_string = json_path.substitute(
         max_velocity = max_velocity,
         max_acceleration = max_acceleration,
         max_angular_velocity = max_angular_velocity,
         max_angular_acceleration = max_angular_acceleration,
+        start_pose_link = start_link,
         start_pose_x = start_point["xMeters"],
         start_pose_y = start_point["yMeters"],
         start_pose_rotation = start_point["rotationDegrees"],
         start_heading_x = start_point["defaultHeadingXMeters"],
         start_heading_y = start_point["defaultHeadingYMeters"],
+        end_pose_link = end_link,
         end_pose_x = end_point["xMeters"],
         end_pose_y = end_point["yMeters"],
         end_pose_rotation = end_point["rotationDegrees"],
@@ -141,10 +146,13 @@ def createAutoPath(auto_name, folder, start_point, end_point):
     print(generated_path_string)
     generated_path = json.loads(generated_path_string)
     print(generated_path)
-    full_path_name = auto_name + " " + start_point["name"] + " - " + end_point["name"]
     with open("../../src/main/deploy/pathplanner/paths/" + full_path_name + ".path", 'w') as f:
         json.dump(generated_path, f, ensure_ascii=False, indent=4)
-    return full_path_name
+    return {
+        "pathName": full_path_name,
+        "startLink": start_link,
+        "endLink": end_link
+    }
 
 def createAuto(name, start_point, commands):
     generated_auto_string = json_auto.substitute(
