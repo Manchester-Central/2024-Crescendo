@@ -29,10 +29,17 @@ public class LightStrip extends SubsystemBase{
         }
 
         m_leds.setData(m_buffer);
+        m_leds.start();
     }
 
     @Override
     public void periodic() {
+
+        if(DriverStation.isDSAttached() == false) {
+            setSingleColor(255, 30, 0);
+            return;
+        }
+
         // If the robot is disabled, display the current alliance if there is one
         if(DriverStation.isDisabled()) {
             if(DriverStation.getAlliance().isPresent()) {
