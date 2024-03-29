@@ -324,8 +324,8 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    // TODO: Change this to use deviation data
-    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp());
+    
+    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp(), data.getDevation());
   }
 }
 

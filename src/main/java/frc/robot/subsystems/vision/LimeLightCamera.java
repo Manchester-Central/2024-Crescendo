@@ -5,6 +5,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.opencv.core.Mat;
+
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -22,6 +27,7 @@ import frc.robot.Constants.VisionConstants;
 public class LimeLightCamera implements CameraInterface {
 	private String m_name;
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
+	private LimelightVersion m_limeLightVersion;
 
 	private Supplier<Pose2d> m_simPoseSupplier; // supplies data when in simulation
 	private Consumer<VisionData> m_poseUpdator; // sends the data back to the swerve pose estimator
@@ -81,7 +87,7 @@ public class LimeLightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimeLightCamera(String name, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier) {
+	public LimeLightCamera(String name, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, LimelightVersion limelightVersion) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
@@ -92,6 +98,7 @@ public class LimeLightCamera implements CameraInterface {
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
 		m_robotSpeedSupplier = robotSpeedSupplier;
+		m_limeLightVersion = limelightVersion;
 
 		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
@@ -109,6 +116,10 @@ public class LimeLightCamera implements CameraInterface {
 		return 1.0;
 	}
 
+	private double calculateDevations (double distance){
+		var sadMath = Math.pow(distance*Constants.VisionConstants.L3G.distanceScaler, Constants.VisionConstants.L3G.exponent);
+		return VisionConstants.L3G.deviationMultipier * sadMath + VisionConstants.L3G.error;
+	}
 	/**
 	 * 
 	 */
@@ -146,7 +157,10 @@ public class LimeLightCamera implements CameraInterface {
 			return;
 		}
 
-		m_mostRecentData = Optional.of(new VisionData(visionPose, timestampSeconds));
+		var devation = calculateDevations(data[idxTagDistance]);
+		var trackXYZ = MatBuilder.fill(Nat.N3(), Nat.N1(), new double[]{devation,devation,1});
+
+		m_mostRecentData = Optional.of(new VisionData(visionPose, timestampSeconds, trackXYZ));
 		if (m_poseUpdator != null && Constants.VisionConstants.UseVisionForOdometry) {
 			m_poseUpdator.accept(m_mostRecentData.get());
 		}
