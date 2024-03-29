@@ -21,6 +21,7 @@ public class LightStrip extends SubsystemBase{
         m_feederSupplier = feederHasNote;
         m_leds.setLength(NumLeds);
         m_buffer = new AddressableLEDBuffer(NumLeds);
+        m_leds.start();
     }
 
     public void setSingleColor(int red, int green, int blue) {
