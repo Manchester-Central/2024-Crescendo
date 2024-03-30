@@ -44,9 +44,9 @@ public class OldFocusAndLaunch extends BaseLaunch {
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
       Intake intake,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;

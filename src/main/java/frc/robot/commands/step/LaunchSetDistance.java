@@ -33,10 +33,10 @@ public class LaunchSetDistance extends BaseLaunch {
       Feeder feeder,
       Intake intake,
       FieldPose2024 launchPose,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
 
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_launchPose = launchPose;
     m_liftHeightMeters = Optional.empty();
     addRequirements(lift, launcher, feeder,intake);
@@ -49,10 +49,10 @@ public class LaunchSetDistance extends BaseLaunch {
       Intake intake,
       FieldPose2024 launchPose,
       double liftHeightMeters,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
 
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_launchPose = launchPose;
     m_liftHeightMeters = Optional.of(liftHeightMeters);
     addRequirements(lift, launcher, feeder,intake);
@@ -60,7 +60,7 @@ public class LaunchSetDistance extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_liftHeightMeters.isEmpty() ? m_lift.getCurrentHeightMeters() : m_liftHeightMeters.get();
     super.initialize();
   }

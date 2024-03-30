@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
+import frc.robot.subsystems.launcher.LauncherTarget;
 
 public class DefaultLauncherCommand extends Command {
   private Launcher m_launcher;
@@ -19,15 +20,16 @@ public class DefaultLauncherCommand extends Command {
   public static double MaxTiltSpeed = 0.08;
   public static boolean LauncherPreSpinEnabled = true;
 
-  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
-
+  private Supplier<LauncherTarget> m_getDefaultLauncherTarget;
+  private Supplier<Boolean> m_hasNoteInFeeder;
 
   /** Creates a new DefaultLauncherCommand. */
-  public DefaultLauncherCommand(Launcher launcher, Gamepad operator,  Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
+  public DefaultLauncherCommand(Launcher launcher, Gamepad operator,  Supplier<LauncherTarget> getDefaultLauncherTarget, Supplier<Boolean> hasNoteInFeeder) {
     m_launcher = launcher;
     m_operator = operator;
+    m_hasNoteInFeeder = hasNoteInFeeder;
     addRequirements(launcher);
-    m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
+    m_getDefaultLauncherTarget = getDefaultLauncherTarget;
   }
 
   // Called when the command is initially scheduled.
@@ -37,12 +39,16 @@ public class DefaultLauncherCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
+    // m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
     if(LauncherPreSpinEnabled){
-    var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
-    m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
+      var launcherTarget = m_getDefaultLauncherTarget.get();
+      if(m_hasNoteInFeeder.get()) {
+        m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
+      }
+      m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
     }else{
       m_launcher.setLauncherPower(0.0);
+      m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
     }
     // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }

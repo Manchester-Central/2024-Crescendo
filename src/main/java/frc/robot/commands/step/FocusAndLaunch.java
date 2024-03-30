@@ -45,9 +45,9 @@ public class FocusAndLaunch extends BaseLaunch {
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
       Intake intake,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_vision = vision;
     m_swerveDrive = swerveDrive;
     m_driver = driver;
@@ -57,7 +57,7 @@ public class FocusAndLaunch extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
     m_vision.getCamera(CameraDirection.Front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
