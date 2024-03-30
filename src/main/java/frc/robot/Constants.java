@@ -125,7 +125,7 @@ public class Constants {
 	public static class LauncherConstants {
 		// public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltAbsoluteEncoderConversionFactor = 90.151; // Old Value: 99.91
-		public static final Rotation2d TiltCANCoderOffset = Rotation2d.fromDegrees(0);
+		public static final Rotation2d TiltCANCoderOffset = Rotation2d.fromDegrees(107.39);
 		public static final double TiltAbsoluteEncoderOffset = 75.45; // Old Value: 86.67
 		public static final double TiltEncoderConversionFactor = 2.0147; //2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.6);
