@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1561465275396925,
+        "y": 4.445168352220112
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9016095431294007,
+        "y": 3.46962415897926
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.288663034725174,
+        "y": 0.763869509801799
+      },
+      "prevControl": {
+        "x": 5.1871687599877445,
+        "y": 0.39573962555996767
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -178.0250659891181,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "MidLineMemeAutos",
+  "previewStartingState": {
+    "rotation": 146.0825694630297,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
