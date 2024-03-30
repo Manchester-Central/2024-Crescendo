@@ -36,7 +36,117 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Note 1 throwing",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "launchSpit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Note 2 throwing",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "launchSpit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Note 3 throwing",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "launchSpit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Note 4 throwing",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "launchSpit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Note 5 grab",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 3.5,
@@ -51,7 +161,7 @@
   "reversed": false,
   "folder": "MidLineMemeAutos",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -135.88140399658238,
     "velocity": 0
   },
   "useDefaultConstraints": true
