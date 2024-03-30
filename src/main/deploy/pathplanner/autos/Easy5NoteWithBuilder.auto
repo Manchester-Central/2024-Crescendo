@@ -1,0 +1,79 @@
+{
+    "version": 1.0,
+    "startingPose": {
+        "position": {
+            "x": 1.412,
+            "y": 5.55
+        },
+        "rotation": 180.0
+    },
+    "command": {
+        "type": "sequential",
+        "data": {
+            "commands": [
+                {
+                    "type": "named",
+                    "data": {
+                        "name": "launch"
+                    }
+                },
+                {
+                    "type": "path",
+                    "data": {
+                        "pathName": "Easy5NoteWithBuilder CenterSideStart - NC2"
+                    }
+                },
+                {
+                    "type": "named",
+                    "data": {
+                        "name": "launch"
+                    }
+                },
+                {
+                    "type": "path",
+                    "data": {
+                        "pathName": "Easy5NoteWithBuilder NC2 - NF3"
+                    }
+                },
+                {
+                    "type": "path",
+                    "data": {
+                        "pathName": "Easy5NoteWithBuilder NF3 - NC2"
+                    }
+                },
+                {
+                    "type": "named",
+                    "data": {
+                        "name": "launch"
+                    }
+                },
+                {
+                    "type": "path",
+                    "data": {
+                        "pathName": "Easy5NoteWithBuilder NC2 - NC1"
+                    }
+                },
+                {
+                    "type": "named",
+                    "data": {
+                        "name": "launch"
+                    }
+                },
+                {
+                    "type": "path",
+                    "data": {
+                        "pathName": "Easy5NoteWithBuilder NC1 - NC3"
+                    }
+                },
+                {
+                    "type": "named",
+                    "data": {
+                        "name": "launch"
+                    }
+                }
+            ]
+        }
+    },
+    "folder": null,
+    "choreoAuto": false
+}

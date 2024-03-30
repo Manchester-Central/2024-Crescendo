@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.892,
+        "y": 5.545
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.8995760715386023,
+        "y": 5.371083671570345
+      },
+      "isLocked": false,
+      "linkedName": "Easy5NoteWithBuilder NF3 - NC2 - END"
+    },
+    {
+      "anchor": {
+        "x": 2.892,
+        "y": 6.975
+      },
+      "prevControl": {
+        "x": 1.807,
+        "y": 6.335
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Easy5NoteWithBuilder NC2 - NC1 - END"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": -140.88,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -152.88,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Easy5NoteWithBuilder",
+  "previewStartingState": {
+    "rotation": 180,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -15,7 +15,8 @@
         "SCurveNote",
         "SimpleAuto",
         "SrcSide-4Ns-ThruStage",
-        "SrcSide-5Ns-AroundStage"
+        "SrcSide-5Ns-AroundStage",
+        "Easy5NoteWithBuilder"
     ],
     "autoFolders": [
         "AmpSide-5Ns-AroundStage",

@@ -33,7 +33,7 @@ def save():
     name = auto_name.get(1.0, "end-1c")
     print(name)
     createPathFolder(name)
-    if name.isspace():
+    if name.isspace() or len(name) is 0:
         messagebox.showerror('Unable to save', 'A name for the auto is required')
         return
     first_point = None
