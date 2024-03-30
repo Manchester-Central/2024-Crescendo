@@ -28,4 +28,6 @@ public interface CameraInterface {
 	public void resetPriorityID();
 
 	public CameraInterface setMode(CameraMode mode);
+
+	public boolean isCorrectPipeline();
 }

@@ -203,7 +203,8 @@ public class LimelightCamera implements CameraInterface {
 		return this;
 	}
 
-	private boolean isCorrectPipeline() {
+	@Override
+	public boolean isCorrectPipeline() {
 		return getPipeline() == m_mode.pipelineId;
 	}
 
