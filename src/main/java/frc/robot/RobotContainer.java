@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -14,7 +13,6 @@ import com.chaos131.util.DashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -24,8 +22,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,43 +33,32 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.complex.FireIntoAmp;
-import frc.robot.commands.complex.MoveToAmpPathPlanner;
 import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
 import frc.robot.commands.defaults.DefaultLiftCommand;
 import frc.robot.commands.defaults.DefaultVisionCommand;
-import frc.robot.commands.simpledrive.DriveToLocation;
 import frc.robot.commands.simpledrive.DriverRelativeDrive;
 import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
-import frc.robot.commands.simpledrive.ResetPosition;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
-import frc.robot.commands.step.DashboardLaunch;
 import frc.robot.commands.step.DropInAmp;
-import frc.robot.commands.step.OldFocusAndLaunch;
-import frc.robot.commands.step.FocusAndLaunch;
 import frc.robot.commands.step.LaunchSetDistance;
 import frc.robot.commands.step.PassNote;
-//import frc.robot.commands.step.Launch;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.LaunchWithOdometry;
 import frc.robot.commands.step.LobOntoField;
-import frc.robot.commands.step.LobOntoFieldSetDistance;
 import frc.robot.commands.step.SimpleControl;
 import frc.robot.commands.step.SourceIntake;
-//import frc.robot.commands.step.SpeakerFocus;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
-import frc.robot.subsystems.launcher.FlywheelTable;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
-import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
 import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.swerve.SwerveDrive;
@@ -101,8 +86,6 @@ public class RobotContainer {
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
   private Launcher m_launcher = new Launcher();
-  private FlywheelTable m_flywheelTableLowerHeight = new FlywheelTable(FlywheelTable.FlywheelTableLowerHeight);
-  private FlywheelTable m_flywheelTableUpperHeight = new FlywheelTable(FlywheelTable.FlywheelTableUpperHeight);
   private PowerDistribution m_PDH = new PowerDistribution(1, ModuleType.kRev);
   private RumbleManager m_rumbleManager = new RumbleManager(m_driver, m_operator, m_feeder, m_intake);
 
@@ -129,7 +112,7 @@ public class RobotContainer {
 
     // Sets up the back camera with a pose offset to correct the pose
     // This generates the offset from the robot origin to the camera location
-    m_vision.getCamera(CameraDirection.back).setOffsetHandler(() -> {
+    m_vision.getCamera(CameraDirection.Back).setOffsetHandler(() -> {
       var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
@@ -293,20 +276,26 @@ public class RobotContainer {
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
     var drivePose = m_swerveDrive.getPose();
-    var cameraPose = m_vision.getCamera(CameraDirection.front).getMostRecentPose();
-    cameraPose = cameraPose != null ? cameraPose : new Pose2d();
+    var frontCameraPose = m_vision.getCamera(CameraDirection.Front).getMostRecentPose();
+    frontCameraPose = frontCameraPose != null ? frontCameraPose : new Pose2d();
+    var backCameraPose = m_vision.getCamera(CameraDirection.Back).getMostRecentPose();
+    backCameraPose = backCameraPose != null ? backCameraPose : new Pose2d();
+
     double[] robotAndVision = {
       drivePose.getX(),
       drivePose.getY(),
       drivePose.getRotation().getDegrees(),
-      cameraPose.getX(),
-      cameraPose.getY(),
-      cameraPose.getRotation().getDegrees()
+      frontCameraPose.getX(),
+      frontCameraPose.getY(),
+      frontCameraPose.getRotation().getDegrees(),
+      backCameraPose.getX(),
+      backCameraPose.getY(),
+      backCameraPose.getRotation().getDegrees()
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
     SmartDashboard.putNumber("Distance to Speaker (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
-    SmartDashboard.putNumber("Distance to Speaker (ty)", LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(m_vision.getCamera(CameraDirection.front).getTargetElevation(true)));
+    SmartDashboard.putNumber("Distance to Speaker (ty)", LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
 
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     if (!DriverStation.isTeleopEnabled()){

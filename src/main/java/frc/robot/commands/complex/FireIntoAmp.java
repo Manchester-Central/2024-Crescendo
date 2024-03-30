@@ -5,7 +5,6 @@
 package frc.robot.commands.complex;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,9 +24,7 @@ import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
-import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.FieldPose2024;
 
 public class FireIntoAmp extends Command {

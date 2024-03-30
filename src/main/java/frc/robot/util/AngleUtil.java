@@ -12,7 +12,7 @@ import frc.robot.subsystems.Vision.CameraDirection;
 public class AngleUtil {
 
     public static Rotation2d GetEstimatedAngleToGoal(Vision camera, Pose2d currentPose, Rotation2d currentAngle) {
-		var frontcam = camera.getCamera(CameraDirection.front);
+        var frontcam = camera.getCamera(CameraDirection.Front);
         if (frontcam.hasTarget()) {
             var aimXAngle = -frontcam.getTargetAzimuth(true);
             var aimCurrentAngle = currentAngle;

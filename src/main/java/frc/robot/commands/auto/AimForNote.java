@@ -25,8 +25,8 @@ public class AimForNote extends Command {
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
-		Double tx = m_vision.getCamera(CameraDirection.back).getTargetAzimuth(true);
-		if(!m_vision.getCamera(CameraDirection.back).hasTarget()) return;
+		Double tx = m_vision.getCamera(CameraDirection.Back).getTargetAzimuth(true);
+		if(!m_vision.getCamera(CameraDirection.Back).hasTarget()) return;
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
 		// TODO: Drive into the note until it is intaken (intook?)
