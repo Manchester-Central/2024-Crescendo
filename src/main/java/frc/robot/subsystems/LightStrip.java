@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightStrip extends SubsystemBase{
@@ -39,7 +40,7 @@ public class LightStrip extends SubsystemBase{
     public LightStrip(Supplier<Boolean> intakeHasNote, Supplier<Boolean> feederHasNote) {
         m_intakeSupplier = intakeHasNote;
         m_feederSupplier = feederHasNote;
-        m_leds = new AddressableLED(NumLeds);
+        m_leds = new AddressableLED(0);
         m_leds.setLength(NumLeds);
         m_buffer = new AddressableLEDBuffer(NumLeds);
         m_leds.start();
