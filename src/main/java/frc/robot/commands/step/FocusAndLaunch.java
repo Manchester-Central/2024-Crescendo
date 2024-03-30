@@ -91,7 +91,7 @@ public class FocusAndLaunch extends BaseLaunch {
     if (!m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       return Optional.empty();
     }
-    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
+    double distanceToSpeakerMeters = LauncherModel.speakerOpeningToBotCenterDistanceMetersByTY(ty);
     var target = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_lastLauncherTilt, TargetAngleMode.Lower);
     m_lastLauncherTilt = target.isPresent() ? target.get().getTiltAngle() : m_lastLauncherTilt;
     return target;

@@ -30,6 +30,7 @@ public class LimelightCamera implements CameraInterface {
 	private Optional<VisionData> m_mostRecentData; // caches the most recent data, including no-datas
 	private Supplier<Pose3d> m_offset;
 	private Supplier<Double> m_robotSpeedSupplier;
+	private Supplier<Double> m_robotRotationSpeedSupplier;
 
 	private NetworkTable m_visionTable;
 	private NetworkTableEntry m_botpose;
@@ -83,7 +84,7 @@ public class LimelightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimelightCamera(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier) {
+	public LimelightCamera(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
@@ -94,6 +95,7 @@ public class LimelightCamera implements CameraInterface {
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
 		m_robotSpeedSupplier = robotSpeedSupplier;
+		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
 
 		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
@@ -109,8 +111,11 @@ public class LimelightCamera implements CameraInterface {
 		// if (VisionConstants.PoseDeviationThreshold < deviation) {
 		// 	return 0;
 		// }
+		var rotationSpeed = m_robotRotationSpeedSupplier.get();
 		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
-		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance || isMovingTooFast) {
+		var isRotatingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? rotationSpeed > 0.8 : rotationSpeed > 0.2; // TODO: change values and make constants
+		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
+		if (isTooFar || isMovingTooFast || isRotatingTooFast) {
 			return 0;
 		}
 		return 1.0;

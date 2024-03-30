@@ -85,7 +85,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps());
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps(), () -> m_swerveDrive.getRobotRotationSpeedRadsPerSec());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -290,7 +290,8 @@ public class RobotContainer {
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
-      m_feeder.hasNoteAtSecondary() ? 1 : 0
+      m_feeder.hasNoteAtSecondary() ? 1 : 0,
+      m_feeder.hasNoteAtTertiary() ? 1 : 0
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
@@ -313,9 +314,13 @@ public class RobotContainer {
     };
     SmartDashboard.putNumberArray("Robot and Vision", robotAndVision);
 
-    SmartDashboard.putNumber("Distance to Speaker (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
-    SmartDashboard.putNumber("Distance to Speaker (ty)", LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
+    SmartDashboard.putNumber("Robot Angular Velocity", m_swerveDrive.getRobotRotationSpeedRadsPerSec());
 
+    SmartDashboard.putNumber("Distance BotCenter to SpeakerAprilTag (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
+    SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (odometry)", m_swerveDrive.getDistanceToSpeakerMeters() - 0.177306);
+    SmartDashboard.putNumber("Distance BotCenter to SpeakerOpening (ty)", LauncherModel.speakerOpeningToBotCenterDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
+    SmartDashboard.putNumber("Distance BotCenter to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToBotCenterDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
+    SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToLimelightDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     if (!DriverStation.isTeleopEnabled()){
       m_rumbleManager.disableRumble();
@@ -332,8 +337,12 @@ public class RobotContainer {
   }
 
   public synchronized void updatePoseEstimator(VisionData data) {
-    
-    m_swerveDrive.addVisionMeasurement(data.getPose2d(), data.getTimestamp(), data.getDevation());
+    var pose = data.getPose2d();
+    if(pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
+      return;
+    }
+
+    m_swerveDrive.addVisionMeasurement(pose, data.getTimestamp(), data.getDevation());
   }
 }
 
