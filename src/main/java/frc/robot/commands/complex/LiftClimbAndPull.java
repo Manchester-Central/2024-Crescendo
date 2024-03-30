@@ -73,7 +73,7 @@ public class LiftClimbAndPull extends Command {
 		} else if ( state == LiftSequence.VisionMoveAdjust) {
 			// Vision based movement
 
-			Pose2d visionPose = m_vision.getCamera(CameraDirection.back).getMostRecentPose();
+			Pose2d visionPose = m_vision.getCamera(CameraDirection.Back).getMostRecentPose();
 			Translation2d translationErrorMeters = visionPose.getTranslation().minus(m_startClimbPose.getTranslation());
 			Rotation2d rotationError = visionPose.getRotation().minus(m_startClimbPose.getRotation());
 			m_lift.moveToHeight(LiftConstants.StartClimbHeight);

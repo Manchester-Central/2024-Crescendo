@@ -6,7 +6,6 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
-import com.chaos131.logging.LogManager;
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
@@ -20,11 +19,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
-import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.Pose2dUtil;
 import frc.robot.util.FieldPose2024;
 
