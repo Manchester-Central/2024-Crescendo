@@ -30,16 +30,16 @@ public class RunIntake extends Command {
   private Feeder m_feeder;
   private RumbleManager m_rumbleManager;
 
-  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
+  private Supplier<LauncherTarget> m_getDefaultLauncherTarget;
 
   /** Creates a new RunIntake. */
-  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds, RumbleManager rumbleManager) {
+  public RunIntake(Intake intake, Lift lift, Feeder feeder, Launcher launcher, Supplier<LauncherTarget> getDefaultLauncherTarget, RumbleManager rumbleManager) {
     m_intake = intake;
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
     addRequirements(intake, lift, feeder, launcher);
-    m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
+    m_getDefaultLauncherTarget = getDefaultLauncherTarget;
     m_rumbleManager = rumbleManager;
   }
 
@@ -52,8 +52,8 @@ public class RunIntake extends Command {
   public void execute() {
     m_rumbleManager.enableRumble();
     m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
-    var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
-    m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
+    var launcherTarget = m_getDefaultLauncherTarget.get();
+    m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
 
     if(m_launcher.getEncoderTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
       m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);

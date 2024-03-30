@@ -45,11 +45,11 @@ public class LobOntoField extends BaseLaunch {
       FieldPose2024 targetPose,
       double liftHeight,
       Rotation2d launchAngle,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds,
+      Supplier<LauncherTarget> getDefaultLauncherTarget,
       boolean isSourceIntake,
       String name
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_swerveDrive = swerveDrive;
     m_driver = driver;
     m_targetPose = targetPose;

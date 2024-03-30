@@ -43,15 +43,15 @@ public abstract class BaseLaunch extends Command {
   private DashboardNumber m_feederLaunchSpeed = new DashboardNumber("Feeder Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
   private DashboardNumber m_trapLaunchSpeed = new DashboardNumber("Trap Launch Speed", 1.0, kTuningEnabled, (Double newSpeed)->{});
 
-  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds;
+  private Supplier<LauncherTarget> m_getDefaultLauncherTarget;
 
   /** Creates a new Lanch Partay. */
-  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
+  public BaseLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherTarget> getDefaultLauncherTarget) {
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
     m_intake = intake;
-    m_getDefaultLauncherSpeeds = getDefaultLauncherSpeeds;
+    m_getDefaultLauncherTarget = getDefaultLauncherTarget;
     addRequirements(lift, launcher, feeder, intake);
   }
 
@@ -65,9 +65,9 @@ public abstract class BaseLaunch extends Command {
 
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
-    m_launcher.setTiltSpeed(0);
-    var launcherSpeeds = m_getDefaultLauncherSpeeds.get();
-    m_launcher.setLauncherRPM(launcherSpeeds.leftLauncherSpeedRPM, launcherSpeeds.rightLauncherSpeedRPM);
+    var launcherTarget = m_getDefaultLauncherTarget.get();
+    m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
+    m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
     m_feeder.setFeederPower(0);
 
   }
