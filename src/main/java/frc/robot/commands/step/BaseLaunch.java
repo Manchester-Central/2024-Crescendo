@@ -65,8 +65,8 @@ public abstract class BaseLaunch extends Command {
 
   protected void noTargetBehavior() {
     m_lift.setSpeed(0);
-    m_launcher.setTiltSpeed(0);
     var launcherTarget = m_getDefaultLauncherTarget.get();
+    m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
     m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
     m_feeder.setFeederPower(0);
 
