@@ -56,7 +56,7 @@ public class LaunchWithOdometry extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
     super.initialize();
