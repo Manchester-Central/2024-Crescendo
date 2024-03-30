@@ -17,10 +17,13 @@ import frc.robot.RobotContainer;
 public class Feeder extends SubsystemBase {
 	private SparkLimitSwitch m_feederSensorPrimary;
 	private SparkLimitSwitch m_feederSensorSecondary;
+	private SparkLimitSwitch m_feederSensorTertiary;
 	private Debouncer m_primaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
 	private Debouncer m_secondaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	// private Debouncer m_tertiaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
 	private boolean m_hasNoteAtPrimary = false;
 	private boolean m_hasNoteAtSecondary = false;
+	// private boolean m_hasNoteAtTertiary = false;
 
 	CANSparkFlex m_feederMainMotor = new CANSparkFlex(CANIdentifiers.FeederMain, MotorType.kBrushless);
 	CANSparkFlex m_feederTrapMotor = new CANSparkFlex(CANIdentifiers.FeederTrap, MotorType.kBrushless);
@@ -32,10 +35,11 @@ public class Feeder extends SubsystemBase {
 		m_feederTrapMotor.restoreFactoryDefaults();
 		m_feederSensorPrimary = m_feederMainMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorSecondary = m_feederMainMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+		m_feederSensorTertiary = m_feederTrapMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 		m_feederSensorPrimary.enableLimitSwitch(false);
 		m_feederSensorSecondary.enableLimitSwitch(false);
-		m_feederTrapMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);	
-		m_feederTrapMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);
+		m_feederSensorTertiary.enableLimitSwitch(false);	
+		m_feederTrapMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(false);
 
 		m_feederMainMotor.setIdleMode(IdleMode.kBrake);
 		m_feederTrapMotor.setIdleMode(IdleMode.kBrake);
@@ -54,6 +58,7 @@ public class Feeder extends SubsystemBase {
 		var logManager = LogManager.getInstance();
 		logManager.addBoolean("Feeder/HasNoteAtPrimary", true, () -> hasNoteAtPrimary());
 		logManager.addBoolean("Feeder/HasNoteAtSecondary", true, () -> hasNoteAtSecondary());
+		logManager.addBoolean("Feeder/HasNoteAtTertiary", true, () -> hasNoteAtTertiary());
 
 		logManager.addNumber("FeederMain/MotorPosition", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getEncoder().getPosition());
 		logManager.addNumber("FeederMain/CurrentAmps", DebugConstants.FeederDebugEnable, () -> m_feederMainMotor.getOutputCurrent());
@@ -101,11 +106,18 @@ public class Feeder extends SubsystemBase {
 		return m_hasNoteAtSecondary;
 	}
 
+	public boolean hasNoteAtTertiary(){
+		if (Robot.isSimulation()) {
+			return RobotContainer.SimKeyboard.x().getAsBoolean(); //c on keyboard 0
+		}
+		return m_feederSensorTertiary.isPressed();
+	}
+
 	/**
 	 * Checks is there is a note at either sensor
 	 */
 	public boolean hasNote() {
-		return hasNoteAtPrimary() || hasNoteAtSecondary();
+		return hasNoteAtPrimary() || hasNoteAtSecondary() || hasNoteAtTertiary();
 	}
 
 	/** 
@@ -123,5 +135,6 @@ public class Feeder extends SubsystemBase {
 		super.periodic();
 		m_hasNoteAtPrimary = m_primaryDebouncer.calculate(m_feederSensorPrimary.isPressed());
 		m_hasNoteAtSecondary = m_secondaryDebouncer.calculate(m_feederSensorSecondary.isPressed());
+		// m_hasNoteAtTertiary = m_tertiaryDebouncer.calculate(m_feederSensorTertiary.isPressed());
 	}
 }

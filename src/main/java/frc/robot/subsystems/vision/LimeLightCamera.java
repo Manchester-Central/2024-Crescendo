@@ -109,7 +109,8 @@ public class LimelightCamera implements CameraInterface {
 		// if (VisionConstants.PoseDeviationThreshold < deviation) {
 		// 	return 0;
 		// }
-		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance || VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get()) {
+		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
+		if (VisionConstants.AprilTagAverageDistanceThresholdMeters < distance || isMovingTooFast) {
 			return 0;
 		}
 		return 1.0;
