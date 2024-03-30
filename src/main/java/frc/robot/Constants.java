@@ -146,6 +146,7 @@ public class Constants {
 		public static final double TiltD = 0;
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
+		public static final Rotation2d VisionIntakeAngle = Rotation2d.fromDegrees(50);
 		public static final Rotation2d SourceIntakeAngle = Rotation2d.fromDegrees(34.2);
 		public static final Rotation2d SourceIntakeAngleHigh = Rotation2d.fromDegrees(39.3);
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);

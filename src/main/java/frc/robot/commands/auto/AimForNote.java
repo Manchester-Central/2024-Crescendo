@@ -6,19 +6,23 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.proto.Translation2dProto;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.vision.CameraInterface.CameraMode;
 
 public class AimForNote extends Command {
 	private BaseSwerveDrive m_swerveDrive;
 	private Vision m_vision;
 	private final double m_speed = -0.1; // needs to be in range [-1.0, 1.0] negative values are backwards
+	private Launcher m_launcher;
 
-	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision){
+	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Launcher launcher){
 		m_swerveDrive = swerveDrive;
 		m_vision = vision;
-		addRequirements(swerveDrive, vision);
+		m_launcher = launcher;
+		addRequirements(swerveDrive, vision, launcher);
 	}
 
 	public void initialize() {
@@ -30,9 +34,8 @@ public class AimForNote extends Command {
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
+		m_launcher.setTiltAngle(Constants.LauncherConstants.VisionIntakeAngle);
 		Double tx = m_vision.getCamera(CameraDirection.Back).getTargetAzimuth(true);
-
-		
 		if(!m_vision.getCamera(CameraDirection.Back).hasTarget()) return;
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
