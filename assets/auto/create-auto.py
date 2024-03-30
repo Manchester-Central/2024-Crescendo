@@ -1,4 +1,3 @@
-from itertools import combinations
 from pathplannerutil import createAutoPath, getAllPoints, createPathFolder, createAuto, createNamedCommand, createPathCommand
 from tkinter import ttk, messagebox
 import tkinter as tk
@@ -6,11 +5,9 @@ import tkinter as tk
 COMMAND_PREFIX = "[Command] "
 
 points = getAllPoints()
-print(points)
 point_names = list(map(lambda p: p["name"], points))
 point_names.insert(0, COMMAND_PREFIX + "launch")
 point_names.insert(0, "")
-print(point_names)
 
 main_window = tk.Tk()
 main_window.config(width=300, height=800)
@@ -31,7 +28,6 @@ for i in range(numBoxes):
 
 def save():
     name = auto_name.get(1.0, "end-1c")
-    print(name)
     createPathFolder(name)
     if name.isspace() or len(name) is 0:
         messagebox.showerror('Unable to save', 'A name for the auto is required')
@@ -44,7 +40,6 @@ def save():
         line = box.get()
         if not line:
             continue
-        print(line)
         if line.startswith(COMMAND_PREFIX):
             commands.append(createNamedCommand(line.replace(COMMAND_PREFIX, "")))
             continue

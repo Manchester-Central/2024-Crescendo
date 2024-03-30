@@ -1,13 +1,11 @@
 import json
 from pathlib import Path
-from itertools import combinations
 from string import Template
 import csv
 
 SETTINGS_FILE = Path('../../.pathplanner/settings.json')
 def getSettings():
     settings = json.loads(SETTINGS_FILE.read_text())
-    print(settings)
     return settings
 
 initialSettings = getSettings()
@@ -20,7 +18,6 @@ def getAllPoints():
     with open('./points.csv', 'r') as file:
         csv_reader = csv.DictReader(file)
         points = [row for row in csv_reader]
-    print(points)
     return points
 
 json_path = Template("""
@@ -95,7 +92,6 @@ json_path = Template("""
   "useDefaultConstraints": true
 }
 """)
-print(json_path)
 
 json_auto = Template("""
 {
@@ -117,10 +113,8 @@ json_auto = Template("""
   "choreoAuto": false
 }
 """)
-print(json_auto)
 
 def createAutoPath(auto_name, folder, start_point, end_point, previous_link = None):
-    print("-----------")
     full_path_name = auto_name + " " + start_point["name"] + " - " + end_point["name"]
     start_link = previous_link if previous_link is not None else full_path_name + " - START"
     end_link = full_path_name + " - END"
@@ -143,9 +137,7 @@ def createAutoPath(auto_name, folder, start_point, end_point, previous_link = No
         end_heading_y = end_point["defaultHeadingYMeters"],
         folder = folder
     )
-    print(generated_path_string)
     generated_path = json.loads(generated_path_string)
-    print(generated_path)
     with open("../../src/main/deploy/pathplanner/paths/" + full_path_name + ".path", 'w') as f:
         json.dump(generated_path, f, ensure_ascii=False, indent=4)
     return {
