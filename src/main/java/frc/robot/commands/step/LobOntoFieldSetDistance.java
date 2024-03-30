@@ -45,10 +45,10 @@ public class LobOntoFieldSetDistance extends BaseLaunch {
       double distanceMeters,
       double liftHeight,
       Rotation2d launchAngle,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds,
+      Supplier<LauncherTarget> getDefaultLauncherTarget,
       boolean isSourceIntake
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_swerveDrive = swerveDrive;
     m_driver = driver;
     m_aimPose = aimPose;

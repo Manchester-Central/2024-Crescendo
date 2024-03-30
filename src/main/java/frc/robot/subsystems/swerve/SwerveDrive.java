@@ -22,9 +22,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.Pose2dUtil;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.FieldPose2024;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
+    public enum Zone {
+        NEAR, MID, FAR
+    }
 
     public SwerveDrive(BaseSwerveModule[] swerveModules, SwerveConfigs swerveConfigs,
             Supplier<Rotation2d> getRotation) {
@@ -147,5 +151,16 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
                (maxTranslationSpeedPercent*normalizedDifference.getY()));
         double angle = m_AngleDegreesPid.calculate(pose.getRotation().getDegrees());
         moveFieldRelativeForPID(x, y, angle);
+    }
+
+    public Zone getZone() {
+        double xDistance = Math.abs(FieldPose2024.Speaker.getCurrentAlliancePose().getX() - getPose().getX());
+        if(xDistance < SwerveConstants2024.NearToMidThresholdXMeters) {
+            return Zone.NEAR;
+        } else if(xDistance < SwerveConstants2024.MidToFarThresholdXMeters) {
+            return Zone.MID;
+        } else {
+            return Zone.FAR;
+        }
     }
 }

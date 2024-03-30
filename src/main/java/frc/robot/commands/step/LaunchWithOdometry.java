@@ -45,9 +45,9 @@ public class LaunchWithOdometry extends BaseLaunch {
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
       Intake intake,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_swerveDrive = swerveDrive;
     m_driver = driver;
 
@@ -56,7 +56,7 @@ public class LaunchWithOdometry extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
     super.initialize();
