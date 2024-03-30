@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -66,6 +67,7 @@ import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveDrive2022;
 import frc.robot.subsystems.swerve.SwerveDrive2024;
+import frc.robot.subsystems.swerve.SwerveDrive.Zone;
 import frc.robot.subsystems.vision.VisionData;
 import frc.robot.util.DriveDirection;
 import frc.robot.util.FieldPose2024;
@@ -100,13 +102,26 @@ public class RobotContainer {
 
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
-    var launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+    Zone currentZone = m_swerveDrive.getZone();
+    Optional<LauncherTarget> launcherTargetsOptional = Optional.empty();
+    switch(currentZone) {
+      case NEAR:
+        launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+        break;
+      case MID:
+        launcherTargetsOptional = LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, m_lift.getCurrentHeightMeters(), FieldPose2024.AmpPass.getDistanceFromLocation(m_swerveDrive.getPose()), Rotation2d.fromDegrees(45));
+        break;
+      case FAR:
+        launcherTargetsOptional = LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, m_lift.getCurrentHeightMeters(), FieldPose2024.MidLinePass.getDistanceFromLocation(m_swerveDrive.getPose()), Rotation2d.fromDegrees(45));
+        break;
+    }
     if (launcherTargetsOptional.isEmpty()) {
       return new LauncherTarget(LauncherConstants.NoTargetRPM, 0.0, m_launcher.getAbsoluteTiltAngle().getDegrees(), m_lift.getCurrentHeightMeters());
     }
     var launcherTargets = launcherTargetsOptional.get();
     return launcherTargets; 
   };
+
 
   public RobotContainer() {
     m_PDH.setSwitchableChannel(false);
@@ -176,7 +191,8 @@ public class RobotContainer {
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
-    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> m_intake.hasNote()));
+    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
+    m_intake.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
   }
 

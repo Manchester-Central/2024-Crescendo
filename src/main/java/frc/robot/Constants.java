@@ -118,6 +118,9 @@ public class Constants {
 		public static final Rotation2d DefaultRotationTolerance = Rotation2d.fromDegrees(3);
 		public static final PIDValue DefaultModuleAnglePIDValue = new PIDValue(60.0, 12.0, 0.0);
 		public static final PIDFValue DefaultModuleVelocityPIDFValues = new PIDFValue(5.0, 0.0, 0.0, 2.19);
+
+		public static final double NearToMidThresholdXMeters = 6;
+		public static final double MidToFarThresholdXMeters = 10;
 	}	
 
 	public static class LauncherConstants {
@@ -160,7 +163,6 @@ public class Constants {
 
 		public static final double MaxRPM = 5500;
 		public static final double NoTargetRPM = 2000;
-
 	}
 
 	public static class LiftConstants {
