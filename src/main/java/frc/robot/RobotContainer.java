@@ -192,7 +192,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
-    m_intake.hasNote()));
+    m_feeder.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
   }
 

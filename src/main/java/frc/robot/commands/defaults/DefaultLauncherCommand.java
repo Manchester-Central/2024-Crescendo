@@ -48,6 +48,7 @@ public class DefaultLauncherCommand extends Command {
       m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
     }else{
       m_launcher.setLauncherPower(0.0);
+      m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
     }
     // m_launcher.setTiltAngle(Rotation2d.fromDegrees(0));
   }
