@@ -106,7 +106,7 @@ public class RobotContainer {
     Optional<LauncherTarget> launcherTargetsOptional = Optional.empty();
     switch(currentZone) {
       case NEAR:
-        launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
+        launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getEncoderTiltAngle(), TargetAngleMode.Lower);
         break;
       case MID:
         launcherTargetsOptional = LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, m_lift.getCurrentHeightMeters(), FieldPose2024.AmpPass.getDistanceFromLocation(m_swerveDrive.getPose()), Rotation2d.fromDegrees(45));
@@ -116,7 +116,7 @@ public class RobotContainer {
         break;
     }
     if (launcherTargetsOptional.isEmpty()) {
-      return new LauncherTarget(LauncherConstants.NoTargetRPM, 0.0, m_launcher.getAbsoluteTiltAngle().getDegrees(), m_lift.getCurrentHeightMeters());
+      return new LauncherTarget(LauncherConstants.NoTargetRPM, 0.0, m_launcher.getEncoderTiltAngle().getDegrees(), m_lift.getCurrentHeightMeters());
     }
     var launcherTargets = launcherTargetsOptional.get();
     return launcherTargets; 
@@ -131,7 +131,7 @@ public class RobotContainer {
     // Sets up the back camera with a pose offset to correct the pose
     // This generates the offset from the robot origin to the camera location
     m_vision.getCamera(CameraDirection.Back).setOffsetHandler(() -> {
-      var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
+      var launcherRotation = -(m_launcher.getEncoderTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
       Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
@@ -149,7 +149,7 @@ public class RobotContainer {
       var limelightlocation = rotatedLauncherVector.plus(liftheight).plus(StaticOffset);
       SmartDashboard.putNumberArray("CameraCalc/FinalVector", new double[]{limelightlocation.getX(),limelightlocation.getY(),limelightlocation.getZ()});
 
-      var finalRotation = new Rotation3d(0, m_launcher.getAbsoluteTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
+      var finalRotation = new Rotation3d(0, m_launcher.getEncoderTiltAngle().getRadians()-VisionConstants.RearCameraMountAngleRadians, 0);
       return new Pose3d(limelightlocation, finalRotation);
     });
 
@@ -286,7 +286,7 @@ public class RobotContainer {
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
-      m_launcher.getAbsoluteTiltAngle().getDegrees(),
+      m_launcher.getEncoderTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getCurrentLauncherPower(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 

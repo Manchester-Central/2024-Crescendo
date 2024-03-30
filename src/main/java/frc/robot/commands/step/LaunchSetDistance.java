@@ -60,7 +60,7 @@ public class LaunchSetDistance extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_liftHeightMeters.isEmpty() ? m_lift.getCurrentHeightMeters() : m_liftHeightMeters.get();
     super.initialize();
   }

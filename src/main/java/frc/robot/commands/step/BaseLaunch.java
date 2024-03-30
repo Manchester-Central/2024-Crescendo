@@ -84,7 +84,7 @@ public abstract class BaseLaunch extends Command {
     var liftError = m_lift.getCurrentHeightMeters() - target.getHeightMeters();
     var leftLauncherError = m_launcher.getLeftLauncherRPM() - target.getLeftLauncherSpeedRPM();
     var rightLauncherError = m_launcher.getRightLauncherRPM() - target.getRightLauncherSpeedRPM();
-    var tiltError = m_launcher.getAbsoluteTiltAngle().minus(target.getTiltAngle()).getDegrees();
+    var tiltError = m_launcher.getEncoderTiltAngle().minus(target.getTiltAngle()).getDegrees();
     return new ArrayList<String>(List.of(
       formatError("Left Launcher", leftLauncherError),
       formatError("Right Launcher", rightLauncherError),
