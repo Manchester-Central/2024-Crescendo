@@ -158,7 +158,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
-    NamedCommands.registerCommand("AimForNote", new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher));
+    NamedCommands.registerCommand("AimForNote", new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -218,8 +218,8 @@ public class RobotContainer {
     m_driver.leftBumper().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, false, "AmpPass"));
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake
     // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
-    // m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
-    m_driver.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher));
+    m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
+    // m_driver.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher));
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue(
         new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
@@ -260,6 +260,7 @@ public class RobotContainer {
   }
 
   private void configureTesterCommands() {
+    m_tester.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder));
     // m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));

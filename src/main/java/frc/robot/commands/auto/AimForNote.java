@@ -2,11 +2,13 @@ package frc.robot.commands.auto;
 
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
@@ -19,18 +21,20 @@ public class AimForNote extends Command {
 	private Vision m_vision;
 	private Intake m_intake;
 	private CameraInterface m_camera;
-	private final double m_speed = -0.1; // needs to be in range [-1.0, 1.0] negative values are backwards
+	private final double m_speed = -0.5; // needs to be in range [-1.0, 1.0] negative values are backwards
 	private Launcher m_launcher;
+	private Feeder m_feeder;
 	private double m_startime;
 	private final double m_minDurationSeconds = 1.0;
 
-	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Intake intake, Launcher launcher){
+	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Intake intake, Launcher launcher, Feeder feeder){
 		m_swerveDrive = swerveDrive;
 		m_intake = intake;
 		m_vision = vision;
 		m_camera = m_vision.getCamera(CameraDirection.Back);
 		m_launcher = launcher;
-		addRequirements(swerveDrive, intake, vision, launcher);
+		m_feeder = feeder;
+		addRequirements(swerveDrive, intake, vision, launcher, feeder);
 	}
 
 	public void initialize() {
@@ -41,16 +45,20 @@ public class AimForNote extends Command {
 
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
+		m_feeder.grabAndHoldPiece(0.35);
+		m_launcher.setTiltAngle(Constants.LauncherConstants.VisionIntakeAngle);
+
 		if (!m_camera.isCorrectPipeline()) {
 			// lets protect ourselves from targetting an april tag and moving to it
 			return;
 		}
-		m_launcher.setTiltAngle(Constants.LauncherConstants.VisionIntakeAngle);
 		Double tx = m_camera.getTargetAzimuth(true);
+		Double ty = m_camera.getTargetElevation(true);
 		if(!m_camera.hasTarget()) return;
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
-		Translation2d speed = new Translation2d(m_speed, noteAngle);
+		var speedModifier = MathUtil.clamp(ty/50, 0.1, 1.0);
+		Translation2d speed = new Translation2d(m_speed * speedModifier, noteAngle);
 		m_swerveDrive.moveFieldRelativeAngle(speed.getX(), speed.getY(), noteAngle, 0.75);
 	}
 
@@ -75,6 +83,9 @@ public class AimForNote extends Command {
 	 * @return whether the command has finished.
 	 */
 	public boolean isFinished() {
+		if (m_feeder.hasNote()) {
+			return true;
+		}
 		if (m_camera.hasTarget()) {
 			return false;
 		}
