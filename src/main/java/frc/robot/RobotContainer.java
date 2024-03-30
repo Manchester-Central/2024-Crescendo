@@ -60,6 +60,7 @@ import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
+import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
 import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
 import frc.robot.subsystems.swerve.SwerveDrive;
@@ -97,13 +98,14 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
-  private Supplier<LauncherSpeeds> m_getDefaultLauncherSpeeds = () -> {
+
+  private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
     var launcherTargetsOptional = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_lift.getCurrentHeightMeters(), m_swerveDrive.getDistanceToSpeakerMeters(), m_launcher.getAbsoluteTiltAngle(), TargetAngleMode.Lower);
     if (launcherTargetsOptional.isEmpty()) {
-      return new LauncherSpeeds(LauncherConstants.NoTargetRPM, LauncherConstants.NoTargetRPM);
+      return new LauncherTarget(LauncherConstants.NoTargetRPM, 0.0, m_launcher.getAbsoluteTiltAngle().getDegrees(), m_lift.getCurrentHeightMeters());
     }
     var launcherTargets = launcherTargetsOptional.get();
-    return new LauncherSpeeds(launcherTargets.getLeftLauncherSpeedRPM(), launcherTargets.getRightLauncherSpeedRPM()); 
+    return launcherTargets; 
   };
 
   public RobotContainer() {
@@ -136,10 +138,10 @@ public class RobotContainer {
       return new Pose3d(limelightlocation, finalRotation);
     });
 
-    NamedCommands.registerCommand("launch", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
-    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds).withTimeout(3.0));
-    NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager));
-    NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager).withTimeout(0.25));
+    NamedCommands.registerCommand("launch", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
+    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget).withTimeout(3.0));
+    NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
+    NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
@@ -174,7 +176,7 @@ public class RobotContainer {
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
-    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherSpeeds));
+    m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
   }
 
@@ -192,17 +194,17 @@ public class RobotContainer {
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
     m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
     m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
-    m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, true, "MidLinePass"));  // Align angle to HP (but allow translation)
-    // m_driver.y().whileTrue(new LobOntoFieldSetDistance(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.PassFromSource, 8.0, LiftConstants.SourceIntakeHeightHighMeters, LauncherConstants.SourceIntakeAngleHigh, m_getDefaultLauncherSpeeds, true));  // Align angle to HP (but allow translation)
+    m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, true, "MidLinePass"));  // Align angle to HP (but allow translation)
+    // m_driver.y().whileTrue(new LobOntoFieldSetDistance(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.PassFromSource, 8.0, LiftConstants.SourceIntakeHeightHighMeters, LauncherConstants.SourceIntakeAngleHigh, m_getdefaultLauncherTarget, true));  // Align angle to HP (but allow translation)
 
     //find a way for the leftBumpper commands not override one another ~ jojo ;)
-    m_driver.leftBumper().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, false, "AmpPass"));
-    m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager)); // Intake
+    m_driver.leftBumper().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.AmpPass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, false, "AmpPass"));
+    m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake
     // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherSpeeds));
+        new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
 
     m_driver.leftStick().whileTrue(m_getSlowCommand.get()); //
     m_driver.rightStick(); //
@@ -227,10 +229,10 @@ public class RobotContainer {
         .alongWith(createGetTiltCommand.apply(LauncherConstants.TrapAngle))
         .alongWith(m_getSlowCommand.get())); // Max height
 
-    m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, LiftConstants.MaxHeightMeters, m_getDefaultLauncherSpeeds));
-    m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherSpeeds));
+    m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, LiftConstants.MaxHeightMeters, m_getDefaultLauncherTarget));
+    m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherTarget));
     m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
-    m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherSpeeds, m_rumbleManager)); // Intake (smart)
+    m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake (smart)
 
     m_operator.leftStick(); //
     m_operator.rightStick(); //
@@ -250,8 +252,8 @@ public class RobotContainer {
     //m_tester.rightTrigger().whileTrue(new DashboardLaunch(m_lift, m_launcher, m_feeder, m_intake));
     //m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     // m_tester.rightTrigger().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
-    // m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(45), m_getDefaultLauncherSpeeds, false));
-    // m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(10), m_getDefaultLauncherSpeeds, false));
+    // m_tester.x().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(45), m_getdefaultLauncherTarget, false));
+    // m_tester.a().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.Note2, 0.15, Rotation2d.fromDegrees(10), m_getdefaultLauncherTarget, false));
     // m_tester.b().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher));
   }
   

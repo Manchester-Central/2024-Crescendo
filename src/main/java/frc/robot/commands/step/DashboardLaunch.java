@@ -23,8 +23,8 @@ public class DashboardLaunch extends BaseLaunch {
   double m_targetHeight = 0.096;
   
   /** Creates a new Lanch Partay. */
-  public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherSpeeds> getDefaultLauncherSpeeds) {
-    super (lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+  public DashboardLaunch(Lift lift, Launcher launcher, Feeder feeder, Intake intake, Supplier<LauncherTarget> getDefaultLauncherTarget) {
+    super (lift, launcher, feeder, intake, getDefaultLauncherTarget);
     SmartDashboard.putNumber("DSLaunch Target RPM", m_targetRPM);
     SmartDashboard.putNumber("DSLaunch Speed Offset RPM", m_speedOffsetRPM);
     SmartDashboard.putNumber("DSLaunch Target Height Meters", m_targetHeight);
