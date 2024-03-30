@@ -8,17 +8,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.IOPorts;
@@ -49,6 +45,8 @@ public class Lift extends SubsystemBase {
 
 		m_liftLeftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 		m_liftLeftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		m_liftLeftConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_liftLeftConfig.CurrentLimits.SupplyCurrentLimit = 40;
 		m_liftLeftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 		m_liftLeftConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
 		m_liftLeftConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = LiftConstants.LiftRampRate;
@@ -56,6 +54,8 @@ public class Lift extends SubsystemBase {
 		
 		m_liftRightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 		m_liftRightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		m_liftRightConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+		m_liftRightConfig.CurrentLimits.SupplyCurrentLimit = 40;
 		m_liftRightConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 		m_liftRightConfig.Feedback.SensorToMechanismRatio = LiftConstants.LiftEncoderConversionFactor;
 		m_liftRightConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = LiftConstants.LiftRampRate;

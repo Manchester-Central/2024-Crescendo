@@ -45,12 +45,24 @@ public class Constants {
 		public static final boolean UseVisionForOdometry = true;
 		public static final int[] AprilTagPipelines = {0, 1, 2, 3, 4};
 		public static final double TxLaunchTolerance = 2;
-		public static final double AprilTagAverageDistanceThresholdMeters = 3.5; // TODO: 2.5 used at week 1, but we should be to use a much higher value with confidence
+		public static final double AprilTagAverageDistanceThresholdMeters = 3.5;
 		public static final double XMetersMidPoint = 8.25; //TODO Confirm
 		public static final double RearCameraMountAngleRadians = Units.Degrees.of(30).in(Units.Radians);
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
 		public static final double RobotSpeedThresholdMPS = 1.0;
+		public static final double PoseDeviationThreshold = 1.5;
+
+		public static class LL3G {
+			public static final double MinimumError = 0.02;
+			public static final double ErrorExponent = 3.0;
+			public static final double DistanceScalar = 1/3.15;
+			public static final double TotalDeviationMultiplier = 1;
+			public static final double TagCountErrorScalar = 1.0;
+			public static final double RobotSpeedErrorScalar = 1.0;
+			public static final double VFOV = 56.0;
+			public static final double HFOV = 80.0;
+		}
 	}
 
 	public static class CANIdentifiers {
@@ -114,13 +126,15 @@ public class Constants {
 		// public static final double TiltPotConversionFactor = 10.90146751;
 		public static final double TiltAbsoluteEncoderConversionFactor = 90.151; // Old Value: 99.91
 		public static final Rotation2d TiltCANCoderOffset = Rotation2d.fromDegrees(0);
-		public static final double TiltAbsoluteEncoderOffset = 73.75 + 1.7; // Old Value: 86.67
+		public static final double TiltAbsoluteEncoderOffset = 75.45; // Old Value: 86.67
 		public static final double TiltEncoderConversionFactor = 2.0147; //2.144329897;
 		public static final Rotation2d TiltToleranceAngle = Rotation2d.fromDegrees(0.6);
 		public static final double TiltRampRate = 0.1;
 		public static final int TiltCurrentLimitAmps = 40;
-		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // actual 5.65 - 6.65 is a safe limit
-		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58.2); // actual 59.2 - 58.2 is a safe limit
+		public static final Rotation2d ActualMinAngle = Rotation2d.fromDegrees(5.65); // The physical min angle the tilt can go
+		public static final Rotation2d ActualMaxAngle = Rotation2d.fromDegrees(59.2); // The physical max angle the tilt can go
+		public static final Rotation2d MinAngle = Rotation2d.fromDegrees(6.65); // The safe min angle we allow the tilt to move to
+		public static final Rotation2d MaxAngle = Rotation2d.fromDegrees(58.2); // The safe max angle we allow the tilt to move to
 		public static final Rotation2d MinLaunchOverAngle = Rotation2d.fromDegrees(32);
 		public static final Rotation2d MinLaunchOnClimb = Rotation2d.fromDegrees(16);
 
@@ -130,6 +144,7 @@ public class Constants {
 
 		public static final Rotation2d IntakeAngle = Rotation2d.fromDegrees(31.5);
 		public static final Rotation2d SourceIntakeAngle = Rotation2d.fromDegrees(34.2);
+		public static final Rotation2d SourceIntakeAngleHigh = Rotation2d.fromDegrees(39.3);
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
 		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(7);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(7);
@@ -166,12 +181,13 @@ public class Constants {
 		public static final double MaxSpeed = 0.3;
 
 		public static final double DefaultLaunchMeters = 0.5;
-		public static final double AmpMeters = 0.64; // 0.532
+		public static final double AmpMeters = 0.532; // 0.64
 		public static final double SourceMeters = 0.3;
 
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;
 		public static final double IntakeHeightMeters = MinHeightMeters;
 		public static final double SourceIntakeHeightMeters = 0.38;
+		public static final double SourceIntakeHeightHighMeters = 0.59;
 		public static final double LaunchSpitHeightMeters = MinHeightMeters;
 		public static final double PassNoteHeight = 0.05;
 

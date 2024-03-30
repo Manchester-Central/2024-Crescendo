@@ -6,6 +6,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
 public interface CameraInterface {
+	
+	public enum CameraMode {
+		LOCALIZATION,
+		PIECE_TRACKING
+	};
 
 	public void recordMeasuredData();
 
@@ -22,4 +27,5 @@ public interface CameraInterface {
 	public void setPriorityID(int id);
 	public void resetPriorityID();
 
+	public CameraInterface setMode(CameraMode mode);
 }

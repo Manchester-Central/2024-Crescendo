@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.577030538676463,
-        "y": 4.262519294269358
+        "x": 2.8927727086223416,
+        "y": 6.985795510052559
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9258123131630895,
-        "y": 5.190011918485376
+        "x": 4.678689357378716,
+        "y": 6.975928567241751
       },
       "isLocked": false,
-      "linkedName": "NC3-Pickup-End"
+      "linkedName": "NC1-PickupEnd"
     },
     {
       "anchor": {
-        "x": 2.9026396514331507,
-        "y": 6.9956624528633675
+        "x": 8.289990426134699,
+        "y": 5.7721615443230885
       },
       "prevControl": {
-        "x": 0.8700494324065587,
-        "y": 6.196440085187864
+        "x": 6.32646880678377,
+        "y": 6.719388054160724
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NF2-Pickup-End"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8,
-      "rotationDegrees": -152.57,
+      "rotationDegrees": 155.97,
       "rotateFast": false
     }
   ],
@@ -63,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -152.56928176650467,
+    "rotation": 155.96571184055733,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "EasySoloFast-NC2-NF3-NC3-NC1",
+  "folder": "AmpSide-NC1-NF1-NF2-NF3",
   "previewStartingState": {
-    "rotation": 153.2547740095538,
+    "rotation": -163.175351779577,
     "velocity": 0
   },
   "useDefaultConstraints": true
