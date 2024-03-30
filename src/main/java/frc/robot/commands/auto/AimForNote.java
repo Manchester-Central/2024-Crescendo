@@ -3,13 +3,17 @@ package frc.robot.commands.auto;
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.proto.Translation2dProto;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
+import frc.robot.subsystems.vision.CameraInterface.CameraMode;
 
 public class AimForNote extends Command {
 	private BaseSwerveDrive m_swerveDrive;
 	private Vision m_vision;
+	private final double m_speed = -0.1; // needs to be in range [-1.0, 1.0] negative values are backwards
 
 	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision){
 		m_swerveDrive = swerveDrive;
@@ -18,7 +22,8 @@ public class AimForNote extends Command {
 	}
 
 	public void initialize() {
-		// 
+		m_vision.getCamera(CameraDirection.Back).setMode(CameraMode.PIECE_TRACKING);
+		
 	}
 
 	
@@ -26,13 +31,16 @@ public class AimForNote extends Command {
 	/** The main body of a command. Called repeatedly while the command is scheduled. */
 	public void execute() {
 		Double tx = m_vision.getCamera(CameraDirection.Back).getTargetAzimuth(true);
+
+		
 		if(!m_vision.getCamera(CameraDirection.Back).hasTarget()) return;
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
+		Translation2d speed = new Translation2d(m_speed, noteAngle);
 		// TODO: Drive into the note until it is intaken (intook?)
-		m_swerveDrive.moveFieldRelativeAngle(0, 0, noteAngle, 0.6);
+		m_swerveDrive.moveFieldRelativeAngle(speed.getX(), speed.getY(), noteAngle, 0.75);
 	}
-
+//
 	/**
 	 * The action to take when the command ends. Called when either the command finishes normally, or
 	 * when it interrupted/canceled.
@@ -43,7 +51,7 @@ public class AimForNote extends Command {
 	 * @param interrupted whether the command was interrupted/canceled
 	 */
 	public void end(boolean interrupted) {
-		//
+		m_vision.getCamera(CameraDirection.Back).setMode(CameraMode.LOCALIZATION);
 	}
 
 	/**

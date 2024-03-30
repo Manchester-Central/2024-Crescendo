@@ -117,7 +117,7 @@ public class RobotContainer {
       var launcherRotation = -(m_launcher.getAbsoluteTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
-      Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
+      Translation3d LauncherOffset = new Translation3d(0.186, 0, 0.177);
       Translation3d StaticOffset = new Translation3d(-0.299, 0, 0.277);
 
       LiftOffset = LiftOffset.div(LiftOffset.getNorm());
