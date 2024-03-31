@@ -20,10 +20,8 @@ public class Feeder extends SubsystemBase {
 	private SparkLimitSwitch m_feederSensorTertiary;
 	private Debouncer m_primaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
 	private Debouncer m_secondaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
-	// private Debouncer m_tertiaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
 	private boolean m_hasNoteAtPrimary = false;
 	private boolean m_hasNoteAtSecondary = false;
-	// private boolean m_hasNoteAtTertiary = false;
 
 	CANSparkFlex m_feederMainMotor = new CANSparkFlex(CANIdentifiers.FeederMain, MotorType.kBrushless);
 	CANSparkFlex m_feederTrapMotor = new CANSparkFlex(CANIdentifiers.FeederTrap, MotorType.kBrushless);
@@ -135,6 +133,5 @@ public class Feeder extends SubsystemBase {
 		super.periodic();
 		m_hasNoteAtPrimary = m_primaryDebouncer.calculate(m_feederSensorPrimary.isPressed());
 		m_hasNoteAtSecondary = m_secondaryDebouncer.calculate(m_feederSensorSecondary.isPressed());
-		// m_hasNoteAtTertiary = m_tertiaryDebouncer.calculate(m_feederSensorTertiary.isPressed());
 	}
 }

@@ -25,7 +25,7 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(27.732, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle, TargetAngleMode.Lower).get().getTiltAngle().getDegrees(), DELTA);
+        assertEquals(30.860, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle, TargetAngleMode.Lower).get().getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test

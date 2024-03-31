@@ -267,23 +267,6 @@ public class LauncherModel {
         return Math.sin(kLiftAngle.getRadians()) * currentLiftHeight;
     }
 
-    // /**
-    //  * Converts from a TY value to distance meters from the camera to the speaker opening
-    //  * @param ty the degrees the april tag target is above the camera's center line
-    //  */
-    // public static double speakerOpeningToBotCenterDistanceMetersByTY(double ty) {
-    //     double distanceMeters = kAprilTagLimelightHeightDifferenceMeters / Math.tan(Math.toRadians(kFrontLimelightOffsetAngleDegrees + ty));
-    //     return distanceMeters + kDistanceFromLimelightToBotCenterMeters - kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
-    // }
-
-    // public static double speakerAprilTagToLimelightDistanceMetersByTY(double ty) {
-    //     return speakerOpeningToBotCenterDistanceMetersByTY(ty) - kDistanceFromLimelightToBotCenterMeters + kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
-    // }
-
-    // public static double speakerAprilTagToBotCenterDistanceMetersByTY(double ty) {
-    //     return speakerOpeningToBotCenterDistanceMetersByTY(ty) + kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
-    // }
-
      /**
      * Converts from a TY value to distance meters from the camera to the speaker opening
      * @param ty the degrees the april tag target is above the camera's center line

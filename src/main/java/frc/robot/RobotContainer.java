@@ -317,10 +317,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("Robot Angular Velocity", m_swerveDrive.getRobotRotationSpeedRadsPerSec());
 
     SmartDashboard.putNumber("Distance BotCenter to SpeakerAprilTag (odometry)", m_swerveDrive.getDistanceToSpeakerMeters());
-    SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (odometry)", m_swerveDrive.getDistanceToSpeakerMeters() - 0.177306);
+    // SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (odometry)", m_swerveDrive.getDistanceToSpeakerMeters() - 0.177306);
     SmartDashboard.putNumber("Distance BotCenter to SpeakerOpening (ty)", LauncherModel.speakerOpeningToBotCenterDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
-    SmartDashboard.putNumber("Distance BotCenter to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToBotCenterDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
-    SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToLimelightDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
+    // SmartDashboard.putNumber("Distance BotCenter to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToBotCenterDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
+    // SmartDashboard.putNumber("Distance Limelight to SpeakerAprilTag (ty)", LauncherModel.speakerAprilTagToLimelightDistanceMetersByTY(m_vision.getCamera(CameraDirection.Front).getTargetElevation(true)));
     // Doing these rumbles in this periodic function so they trigger for regardless of what driver or operator command is being run
     if (!DriverStation.isTeleopEnabled()){
       m_rumbleManager.disableRumble();
