@@ -1,5 +1,7 @@
 package frc.robot.subsystems.launcher;
 
+import java.util.Optional;
+
 import com.chaos131.logging.LogManager;
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDTuner;
@@ -37,7 +39,7 @@ public class Launcher extends SubsystemBase {
 
 	//Target values
 	private double m_targetRPM = 0;
-	private Rotation2d m_targetAngle = Rotation2d.fromDegrees(0);
+	private Optional<Rotation2d> m_targetAngle = Optional.empty();
 
 	// Angle Sim
 	private Rotation2d m_simAngle = Rotation2d.fromDegrees(0);
@@ -113,7 +115,7 @@ public class Launcher extends SubsystemBase {
 		// logManager.addNumber("Launcher/AngleDegrees", true, () -> getCurrentAngle().getDegrees());
 		logManager.addNumber("Launcher/EncoderAngleDegrees", true, () -> getEncoderTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/CANCoderAngleDegrees", true, () -> getCANcoderTiltAngle().getDegrees());
-		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.getDegrees());
+		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.orElse(Rotation2d.fromDegrees(-1)).getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getAppliedOutput());
 		logManager.addNumber("Launcher/TiltCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getOutputCurrent());
 		logManager.addNumber("Launcher/TiltRawPosition", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getEncoder().getPosition());
@@ -126,7 +128,8 @@ public class Launcher extends SubsystemBase {
 			speed = MathUtil.clamp(speed, 0, 1);
 		} else if (getEncoderTiltAngle().getDegrees() > LauncherConstants.MaxAngle.getDegrees()) {
 			speed = MathUtil.clamp(speed, -1, 0);
-		} 
+		}
+		m_targetAngle = Optional.empty();
 		m_simAnglePower = speed;
 		m_tiltController.set(speed);
 	}
@@ -137,10 +140,7 @@ public class Launcher extends SubsystemBase {
 	 */
 	public void setTiltAngle(Rotation2d angle) {
 		angle = Rotation2d.fromDegrees(MathUtil.clamp(angle.getDegrees(), LauncherConstants.MinAngle.getDegrees(), LauncherConstants.MaxAngle.getDegrees()));
-		m_targetAngle = angle;
-		if (Robot.isSimulation()) {
-			m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), angle.getDegrees()), -1.0, 1.0);
-		}
+		m_targetAngle = Optional.of(angle);
 		m_tiltController.getPIDController().setReference(angle.getDegrees(), ControlType.kPosition);
 	}
 
@@ -257,6 +257,10 @@ public class Launcher extends SubsystemBase {
 		m_flywheelPidTuner.tune();
 
 		if (Robot.isSimulation()) {
+			
+			if (m_targetAngle.isPresent()) {
+				m_simAnglePower = MathUtil.clamp(m_simAnglePid.calculate(m_simAngle.getDegrees(), m_targetAngle.get().getDegrees()), -1.0, 1.0);
+			}
 			m_simAngle = m_simAngle.plus(Rotation2d.fromDegrees(m_simAnglePower * m_simMaxDegreesChangePerLoop));
 			m_simFlywheelRPM = m_simFlywheelPower * LauncherConstants.MaxRPM;
 		}

@@ -285,16 +285,17 @@ public class RobotContainer {
     // Enables Dashboard Numbers to be updated each loop
     DashboardNumber.checkAll();
 
-    // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherPower, atFeederPrimary, atFeederSecondary]
+    // Chaosboard expects: [intakePower, liftHeightMeters, launcherAngleDegrees, feederPower, launcherRpm, atFeederPrimary, atFeederSecondary, atFeederSecondary, atIntake]
     double[] RobotState = {
       m_intake.getCurrentIntakePower(),
       m_lift.getCurrentHeightMeters(),
       m_launcher.getEncoderTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
-      m_launcher.getCurrentLauncherPower(),
+      m_launcher.getLeftLauncherRPM(),
       m_feeder.hasNoteAtPrimary() ? 1 : 0, 
       m_feeder.hasNoteAtSecondary() ? 1 : 0,
-      m_feeder.hasNoteAtTertiary() ? 1 : 0
+      m_feeder.hasNoteAtTertiary() ? 1 : 0,
+      m_intake.hasNote() ? 1 : 0,
     };
     SmartDashboard.putNumberArray("Robot2024/State", RobotState);
 
