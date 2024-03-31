@@ -25,7 +25,7 @@ public class LauncherModelTests {
 
     @Test
     public void testGetLauncherTarget() {
-        assertEquals(27.732, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle, TargetAngleMode.Lower).get().getTiltAngle().getDegrees(), DELTA);
+        assertEquals(30.860, LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, 0.09454154429, 3.327, LauncherConstants.MinAngle, TargetAngleMode.Lower).get().getTiltAngle().getDegrees(), DELTA);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class LauncherModelTests {
 
     @Test
     public void testSpeakerTyToDistanceMeters() {
-        assertEquals(3.927, LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(-10.63), 0.01);
+        assertEquals(3.927, LauncherModel.speakerOpeningToBotCenterDistanceMetersByTY(-10.63), 0.01);
     }
 
     @Test

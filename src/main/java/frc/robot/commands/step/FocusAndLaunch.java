@@ -45,9 +45,9 @@ public class FocusAndLaunch extends BaseLaunch {
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
       Intake intake,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_vision = vision;
     m_swerveDrive = swerveDrive;
     m_driver = driver;
@@ -57,16 +57,16 @@ public class FocusAndLaunch extends BaseLaunch {
 
   @Override
   public void initialize() {
-    m_lastLauncherTilt = m_launcher.getAbsoluteTiltAngle();
+    m_lastLauncherTilt = m_launcher.getEncoderTiltAngle();
     m_initialLiftHeightMeters = m_lift.getCurrentHeightMeters();
     m_swerveDrive.resetPids();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
+    m_vision.getCamera(CameraDirection.Front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
   }
 
   @Override
   public void execute() {
-    if (m_vision.getCamera(CameraDirection.front).hasTarget()) {
+    if (m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       var currentPose = m_swerveDrive.getPose();
       var currentRotation = currentPose.getRotation();
       var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
@@ -81,17 +81,17 @@ public class FocusAndLaunch extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.getCamera(CameraDirection.front).resetPriorityID();
+    m_vision.getCamera(CameraDirection.Front).resetPriorityID();
     super.end(interrupted);
   }
 
   @Override
   protected Optional<LauncherTarget> getTargets() {
-    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
-    if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
+    var ty = m_vision.getCamera(CameraDirection.Front).getTargetElevation(true);
+    if (!m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       return Optional.empty();
     }
-    double distanceToSpeakerMeters = LauncherModel.speakerAprilTagTyToBotCenterDistanceMeters(ty);
+    double distanceToSpeakerMeters = LauncherModel.speakerOpeningToBotCenterDistanceMetersByTY(ty);
     var target = LauncherModel.getLauncherTarget(LauncherHeightTarget.Speaker, m_initialLiftHeightMeters, distanceToSpeakerMeters, m_lastLauncherTilt, TargetAngleMode.Lower);
     m_lastLauncherTilt = target.isPresent() ? target.get().getTiltAngle() : m_lastLauncherTilt;
     return target;
@@ -104,7 +104,7 @@ public class FocusAndLaunch extends BaseLaunch {
   }
 
   private double getDriveAngleErrorDegrees() {
-    return m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true);
+    return m_vision.getCamera(CameraDirection.Front).getTargetAzimuth(true);
   }
 
   @Override

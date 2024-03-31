@@ -50,7 +50,7 @@ public class LauncherModel {
     private static final double kMaxLaunchDistanceMeters = 9.0;
 
     // Efficiency Lost Multiplier
-    private static final double kEfficiencyLossMultiplier = 0.8;
+    private static final double kEfficiencyLossMultiplier = 0.6;
     private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
 
     /**
@@ -267,13 +267,21 @@ public class LauncherModel {
         return Math.sin(kLiftAngle.getRadians()) * currentLiftHeight;
     }
 
-    /**
+     /**
      * Converts from a TY value to distance meters from the camera to the speaker opening
      * @param ty the degrees the april tag target is above the camera's center line
      */
-    public static double speakerAprilTagTyToBotCenterDistanceMeters(double ty) {
-        double distanceMeters = kAprilTagLimelightHeightDifferenceMeters / Math.tan(Math.toRadians(kFrontLimelightOffsetAngleDegrees + ty));
+    public static double speakerOpeningToBotCenterDistanceMetersByTY(double ty) {
+        double distanceMeters = speakerAprilTagToLimelightDistanceMetersByTY(ty);
         return distanceMeters + kDistanceFromLimelightToBotCenterMeters - kDistanceOffsetFromSpeakerTagToSpeakerOpeningMeters;
+    }
+
+    public static double speakerAprilTagToLimelightDistanceMetersByTY(double ty) {
+        return kAprilTagLimelightHeightDifferenceMeters / Math.tan(Math.toRadians(kFrontLimelightOffsetAngleDegrees + ty));
+    }
+
+    public static double speakerAprilTagToBotCenterDistanceMetersByTY(double ty) {
+        return speakerAprilTagToLimelightDistanceMetersByTY(ty) + kDistanceFromLimelightToBotCenterMeters;
     }
 
     /**

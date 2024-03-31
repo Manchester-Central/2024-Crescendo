@@ -6,7 +6,6 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
-import com.chaos131.logging.LogManager;
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
@@ -20,15 +19,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
-import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.Pose2dUtil;
+import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.util.FieldPose2024;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
+    public enum Zone {
+        NEAR, MID, FAR
+    }
 
     public SwerveDrive(BaseSwerveModule[] swerveModules, SwerveConfigs swerveConfigs,
             Supplier<Rotation2d> getRotation) {
@@ -72,6 +72,10 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
         var xMetersPerSecond = robotSpeeds.vxMetersPerSecond;
         var yMetersPerSecond = robotSpeeds.vyMetersPerSecond;
         return Math.sqrt(Math.pow(xMetersPerSecond, 2) + Math.pow(yMetersPerSecond, 2));
+    }
+
+    public double getRobotRotationSpeedRadsPerSec() {
+        return getRobotRelativeSpeeds().omegaRadiansPerSecond;
     }
 
     public void pathPlannerRobotRelative(ChassisSpeeds chassisSpeeds) {
@@ -151,5 +155,16 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
                (maxTranslationSpeedPercent*normalizedDifference.getY()));
         double angle = m_AngleDegreesPid.calculate(pose.getRotation().getDegrees());
         moveFieldRelativeForPID(x, y, angle);
+    }
+
+    public Zone getZone() {
+        double xDistance = Math.abs(FieldPose2024.Speaker.getCurrentAlliancePose().getX() - getPose().getX());
+        if(xDistance < SwerveConstants2024.NearToMidThresholdXMeters) {
+            return Zone.NEAR;
+        } else if(xDistance < SwerveConstants2024.MidToFarThresholdXMeters) {
+            return Zone.MID;
+        } else {
+            return Zone.FAR;
+        }
     }
 }

@@ -44,9 +44,9 @@ public class OldFocusAndLaunch extends BaseLaunch {
       BaseSwerveDrive swerveDrive,
       Gamepad driver,
       Intake intake,
-      Supplier<LauncherSpeeds> getDefaultLauncherSpeeds
+      Supplier<LauncherTarget> getDefaultLauncherTarget
   ) {
-    super(lift, launcher, feeder, intake, getDefaultLauncherSpeeds);
+    super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_flywheelTableLowerHeight = flywheelTableLowerHeight;
     m_flywheelTableUpperHeight = flywheelTableUpperHeight;
     m_vision = vision;
@@ -60,13 +60,13 @@ public class OldFocusAndLaunch extends BaseLaunch {
   public void initialize() {
     m_beenAboveThreshold = false;
     m_swerveDrive.resetPids();
-    m_vision.getCamera(CameraDirection.front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
+    m_vision.getCamera(CameraDirection.Front).setPriorityID(DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4);
     super.initialize();
   }
 
   @Override
   public void execute() {
-    if (m_vision.getCamera(CameraDirection.front).hasTarget()) {
+    if (m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       var currentPose = m_swerveDrive.getPose();
       var currentRotation = currentPose.getRotation();
       var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
@@ -81,14 +81,14 @@ public class OldFocusAndLaunch extends BaseLaunch {
   public void end(boolean interrupted) {
     m_swerveDrive.resetPids();
     m_swerveDrive.stop();
-    m_vision.getCamera(CameraDirection.front).resetPriorityID();
+    m_vision.getCamera(CameraDirection.Front).resetPriorityID();
     super.end(interrupted);
   }
 
   @Override
   protected Optional<LauncherTarget> getTargets() {
-    var ty = m_vision.getCamera(CameraDirection.front).getTargetElevation(true);
-    if (!m_vision.getCamera(CameraDirection.front).hasTarget()) {
+    var ty = m_vision.getCamera(CameraDirection.Front).getTargetElevation(true);
+    if (!m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       return Optional.empty();
     }
     if (ty <= m_flywheelTableLowerHeight.getMinTY()) {
@@ -105,7 +105,7 @@ public class OldFocusAndLaunch extends BaseLaunch {
   }
 
   private double getDriveAngleErrorDegrees() {
-    return m_vision.getCamera(CameraDirection.front).getTargetAzimuth(true);
+    return m_vision.getCamera(CameraDirection.Front).getTargetAzimuth(true);
   }
 
   @Override
