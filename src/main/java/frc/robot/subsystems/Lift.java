@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import com.chaos131.logging.LogManager;
 import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDTuner;
@@ -37,7 +39,7 @@ public class Lift extends SubsystemBase {
 	
 
 	private boolean m_hasSeenBottom = false;
-	private double m_targetHeightMeters = 0; 
+	private Optional<Double> m_targetHeightMeters = Optional.empty(); 
 
 	public static boolean SafeftyLimtEnabled = true;
 
@@ -72,7 +74,7 @@ public class Lift extends SubsystemBase {
 		logManager.addNumber("Lift/CurrentHeightMeters", true, () -> getCurrentHeightMeters());
 		logManager.addNumber("Lift/LeftHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getPosition().getValueAsDouble());
 		logManager.addNumber("Lift/RightHeightMeters", DebugConstants.LiftDebugEnable, () -> m_liftRight.getPosition().getValueAsDouble());
-		logManager.addNumber("Lift/TargetHeightMeters", DebugConstants.LiftDebugEnable, () -> m_targetHeightMeters);
+		logManager.addNumber("Lift/TargetHeightMeters", DebugConstants.LiftDebugEnable, () -> m_targetHeightMeters.orElse(-1.0));
 		logManager.addNumber("Lift/LeftPowerVoltage", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getMotorVoltage().getValueAsDouble());
 		logManager.addNumber("Lift/RightPowerVoltage", DebugConstants.LiftDebugEnable, () -> m_liftRight.getMotorVoltage().getValueAsDouble());
 		logManager.addNumber("Lift/LeftCurrentAmps", DebugConstants.LiftDebugEnable, () -> m_liftLeft.getSupplyCurrent().getValueAsDouble());
@@ -99,6 +101,8 @@ public class Lift extends SubsystemBase {
 
 		m_liftLeft.set(speed);
 		m_liftRight.set(speed);
+
+		m_targetHeightMeters = Optional.empty();
 	}
 
 	public boolean atTargetHeight(double targetHeight) {
@@ -122,7 +126,7 @@ public class Lift extends SubsystemBase {
 	 * @param heightMeters the height to move to
 	 */
 	public void moveToHeight(double heightMeters) {
-		m_targetHeightMeters = heightMeters;
+		m_targetHeightMeters = Optional.of(heightMeters);
 		if (!hasSeenBottom()) {
 			m_simPower = 0;
 			// If we haven't seen the bottom, don't allow Closed-loop control
@@ -130,14 +134,9 @@ public class Lift extends SubsystemBase {
 		}
 
 		heightMeters = MathUtil.clamp(heightMeters, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
-
-		if (Robot.isSimulation()) {
-			m_simPower = MathUtil.clamp(m_simPid.calculate(m_simHeight, heightMeters), -1.0, 1.0);
-		}
 		m_positionVoltage.Slot = 0;
 		m_liftLeft.setControl(m_positionVoltage.withPosition(heightMeters));
 		m_liftRight.setControl(m_positionVoltage.withPosition(heightMeters));
-
 	}
 
 	/**
@@ -175,6 +174,10 @@ public class Lift extends SubsystemBase {
 		}
 
 		if (Robot.isSimulation()) {
+
+			if (m_targetHeightMeters.isPresent()) {
+				m_simPower = MathUtil.clamp(m_simPid.calculate(m_simHeight, m_targetHeightMeters.get()), -1.0, 1.0);
+			}
 			m_simHeight += m_simPower * m_simMaxMetersChangePerLoop;
 		}
 
