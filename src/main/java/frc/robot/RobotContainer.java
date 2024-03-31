@@ -169,10 +169,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     if (Robot.isSimulation()) {
+      // SimKeyboard should only be used for faking values (such as the note sensors while simulating)
       SimKeyboard = new Gamepad(ControllerConstants.SimKeyboardPort);
-
-      //SimKeyboard.x().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("AmpPath")));
-      SimKeyboard.x().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision));
     }
 
     configureDefaultCommands();

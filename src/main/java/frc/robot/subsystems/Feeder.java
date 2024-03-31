@@ -92,21 +92,21 @@ public class Feeder extends SubsystemBase {
 
 	public boolean hasNoteAtPrimary(){
 		if (Robot.isSimulation()) {
-			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
+			return RobotContainer.SimKeyboard.x().getAsBoolean(); //c on keyboard 0
 		}
 		return m_hasNoteAtPrimary;
 	}
 
 	public boolean hasNoteAtSecondary(){
 		if (Robot.isSimulation()) {
-			return RobotContainer.SimKeyboard.a().getAsBoolean(); //z on keyboard 0
+			return RobotContainer.SimKeyboard.b().getAsBoolean(); //x on keyboard 0
 		}
 		return m_hasNoteAtSecondary;
 	}
 
 	public boolean hasNoteAtTertiary(){
 		if (Robot.isSimulation()) {
-			return RobotContainer.SimKeyboard.x().getAsBoolean(); //c on keyboard 0
+			return RobotContainer.SimKeyboard.a().getAsBoolean(); //z on keyboard 0
 		}
 		return m_feederSensorTertiary.isPressed();
 	}
