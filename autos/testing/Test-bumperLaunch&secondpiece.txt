@@ -1,4 +1,0 @@
-resetPosition?X=1.333&Y=5.631&Angle=180
-launch?TimeMs=3000
-driveAndIntake?X=2.664&Y=5.631&Angle=180&TimeMs=5000
-launch?TimeMs=3000

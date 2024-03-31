@@ -1,4 +1,0 @@
-resetPosition?X=1.4&Y=5.609&Angle=180
-tiltDown?TimeMs=750
-flyWheelOn?TimeMs=2000
-flyWheelAndFeederOn?TimeMs=2000

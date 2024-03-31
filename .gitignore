@@ -181,3 +181,4 @@ ctre_sim/
 
 # Secrets
 secrets.json
+assets/auto/__pycache__/pathplannerutil.cpython-311.pyc
