@@ -8,22 +8,25 @@ import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.Absolut
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.AngleControllerConfig;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.DriveConfig;
 import com.chaos131.swerve.implementation.TalonFxAndCancoderSwerveModule.SpeedControllerConfig;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants2024;
 
 public class SwerveDrive2024 extends SwerveDrive {
-	private SwerveDrive2024(BaseSwerveModule[] modules, SwerveConfigs configs, Supplier<Rotation2d> getRotation) {
+	private Pigeon2 m_gyro;
 
-		super(modules, configs, getRotation);
+	private SwerveDrive2024(BaseSwerveModule[] modules, SwerveConfigs configs, Pigeon2 gyro) {
+
+		super(modules, configs, () -> gyro.getRotation2d());
+		m_gyro = gyro;
 	}
 
 	public static SwerveDrive2024 createSwerveDrive() {
@@ -98,9 +101,9 @@ public class SwerveDrive2024 extends SwerveDrive {
 		);
 
 		BaseSwerveModule[] modules = { frontLeftModule, frontRightModule, backLeftModule, backRightModule };
-		var gyro = new AHRS(SPI.Port.kMXP);
+		var gyro = new Pigeon2(CANIdentifiers.PigeonGyro);
 
-		return new SwerveDrive2024(modules, configs, () -> gyro.getRotation2d());
+		return new SwerveDrive2024(modules, configs, gyro);
 	}
 
 	// public void testModuleSpeed(double percentSpeed) {

@@ -124,7 +124,7 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    m_PDH.setSwitchableChannel(false);
+    m_PDH.setSwitchableChannel(true);
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
 
