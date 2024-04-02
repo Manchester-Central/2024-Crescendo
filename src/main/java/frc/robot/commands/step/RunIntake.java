@@ -56,7 +56,7 @@ public class RunIntake extends Command {
     m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
 
     var tiltTarget = launcherTarget.getTiltAngle();
-    if(m_launcher.getEncoderTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
+    if(tiltTarget.getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
       tiltTarget = LauncherConstants.IntakeAngle;
     }
     m_launcher.setTiltAngle(tiltTarget);
