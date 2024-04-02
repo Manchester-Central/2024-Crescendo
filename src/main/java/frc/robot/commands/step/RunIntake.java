@@ -55,9 +55,11 @@ public class RunIntake extends Command {
     var launcherTarget = m_getDefaultLauncherTarget.get();
     m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
 
+    var tiltTarget = launcherTarget.getTiltAngle();
     if(m_launcher.getEncoderTiltAngle().getDegrees() < LauncherConstants.IntakeAngle.getDegrees()){
-      m_launcher.setTiltAngle(LauncherConstants.IntakeAngle);
+      tiltTarget = LauncherConstants.IntakeAngle;
     }
+    m_launcher.setTiltAngle(tiltTarget);
     //if (m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.IntakeAngle)) {
     var atIntakeHeight = m_lift.atTargetHeight(LiftConstants.IntakeHeightMeters) || (m_lift.atBottom());
     var hasPiece = m_feeder.hasNote();
