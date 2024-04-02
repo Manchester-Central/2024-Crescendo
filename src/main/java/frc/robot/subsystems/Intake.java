@@ -14,6 +14,7 @@ import frc.robot.Constants.CANIdentifiers;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.IOPorts;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
@@ -72,6 +73,9 @@ public class Intake extends SubsystemBase {
 	}
 
 	public boolean hasNote() {
+		if (Robot.isSimulation()) {
+			return RobotContainer.SimKeyboard.y().getAsBoolean(); //v on keyboard 0
+		}
 		return m_hasNote;
 	}
 
