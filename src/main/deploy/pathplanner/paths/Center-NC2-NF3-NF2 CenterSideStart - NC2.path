@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.412,
+        "y": 5.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9829204394527877,
+        "y": 5.55
+      },
+      "isLocked": false,
+      "linkedName": "Center-NC2-NF3-NF2 CenterSideStart - NC2 - START"
+    },
+    {
+      "anchor": {
+        "x": 2.892,
+        "y": 5.545
+      },
+      "prevControl": {
+        "x": 2.1921533030368368,
+        "y": 5.545
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Center-NC2-NF3-NF2 CenterSideStart - NC2 - END"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Center-NC2-NF3-NF2",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
