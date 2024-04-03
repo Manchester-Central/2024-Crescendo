@@ -20,7 +20,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 
-public class LimelightCamera implements CameraInterface {
+public class Limelight implements CameraInterface {
 	private String m_name;
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
 	private LimelightVersion m_limeLightVersion;
@@ -85,7 +85,7 @@ public class LimelightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimelightCamera(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
