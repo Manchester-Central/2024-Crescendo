@@ -40,6 +40,7 @@ public class LimelightCamera implements CameraInterface {
 	private NetworkTableEntry m_tx;
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
+	private NetworkTableEntry m_priorityid;
 
 	public enum LimelightVersion {
 		LL2,
@@ -92,6 +93,7 @@ public class LimelightCamera implements CameraInterface {
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
 		m_tv = m_visionTable.getEntry("tv");
+		m_priorityid = m_visionTable.getEntry("priorityid");
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
 		m_robotSpeedSupplier = robotSpeedSupplier;
@@ -272,14 +274,22 @@ public class LimelightCamera implements CameraInterface {
 	}
 
 	/**
+	 * Returns the ApriltTag ID of the current tx/ty target
+	 */
+	@Override
+	public int getPriorityID() {
+		return (int) m_priorityid.getInteger(-1);
+	}
+
+	/**
 	 * ID must be the number of the tag you want to track. -1 to reset it.
 	 */
 	@Override
 	public void setPriorityID(int id) {
-		m_visionTable.getEntry("priorityid").setNumber(id);
+		m_priorityid.setNumber(id);
 	}
 
 	public void resetPriorityID() {
-		m_visionTable.getEntry("priorityid").setNumber(-1);
+		m_priorityid.setNumber(-1);
 	}
 }
