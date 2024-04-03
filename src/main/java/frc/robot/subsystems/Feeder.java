@@ -18,8 +18,8 @@ public class Feeder extends SubsystemBase {
 	private SparkLimitSwitch m_feederSensorPrimary;
 	private SparkLimitSwitch m_feederSensorSecondary;
 	private SparkLimitSwitch m_feederSensorTertiary;
-	private Debouncer m_primaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
-	private Debouncer m_secondaryDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private Debouncer m_primaryDebouncer = new Debouncer(0.05, DebounceType.kFalling);
+	private Debouncer m_secondaryDebouncer = new Debouncer(0.05, DebounceType.kFalling);
 	private boolean m_hasNoteAtPrimary = false;
 	private boolean m_hasNoteAtSecondary = false;
 

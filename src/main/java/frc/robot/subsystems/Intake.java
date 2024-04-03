@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
 	private TalonFXConfiguration m_intakeUpperConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_intakeLowerConfig = new TalonFXConfiguration();
 	DigitalInput m_intakeSensor = new DigitalInput(IOPorts.IntakeNoteSensor);
-	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kFalling);
 	private boolean m_hasNote = false;
 
 	private double simPower = 0;
