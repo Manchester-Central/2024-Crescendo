@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
@@ -103,6 +104,8 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
+  private boolean m_isOdometryAndLaunchModeEnabled = false;
+  private Trigger m_isOdometryAndLaunchModeEnabledTrigger = new Trigger(() -> m_isOdometryAndLaunchModeEnabled);
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
     Zone currentZone = m_swerveDrive.getZone();
@@ -219,10 +222,10 @@ public class RobotContainer {
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake
     // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
-    m_driver.rightTrigger().and(m_operator.start().negate()) // Aim and launch at speaker 
+    m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger.negate()) // Aim and launch at speaker 
       .whileTrue( 
         new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
-    m_driver.rightTrigger().and(m_operator.start()) // Aim and launch at speaker 
+    m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger) // Aim and launch at speaker 
       .whileTrue( 
         new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_getDefaultLauncherTarget, () -> true));
 
@@ -231,8 +234,8 @@ public class RobotContainer {
   }
 
   private void configureOperatorCommands() {
-    m_operator.back(); // Enable Automation (?)
-    m_operator.start(); // Disable Automation (?)
+    m_operator.back().onTrue(new InstantCommand(() -> m_isOdometryAndLaunchModeEnabled = false)); // Disable Automation (?)
+    m_operator.start().onTrue(new InstantCommand(() -> m_isOdometryAndLaunchModeEnabled = true)); // Enable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
