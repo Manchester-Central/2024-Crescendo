@@ -6,39 +6,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Deny Begin"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "launchWithTimeout"
+            "name": "launch"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Deny NF4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Push NF2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Deny NF2 To NF3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Deny NF3Launch"
+            "pathName": "Ampside-NC1"
           }
         },
         {
@@ -50,24 +26,48 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Deny GoBackNF4"
+            "pathName": "NF2-Pickup-GBElims"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Deny NF4 Launch"
+            "pathName": "NF2-Launch"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ampside-NF3-Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpSide-NF3-Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ampside-NF3-Approach"
           }
         }
       ]
     }
   },
-  "folder": "Deny",
+  "folder": null,
   "choreoAuto": false
 }
