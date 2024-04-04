@@ -112,11 +112,11 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
 
   @Override
   protected boolean isClearToLaunch() {
-    var isVisionEnabled = !m_isVisionEnabledSupplier.get();
+    var isVisionEnabled = m_isVisionEnabledSupplier.get();
     if (isVisionEnabled && m_camera.hasTarget()) {
       return Math.abs(m_camera.getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
     }
-    return m_focusTimer.hasElapsed(2) && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+    return m_focusTimer.hasElapsed(10) && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
   }
 
   private double getDriveAngleErrorDegrees() {

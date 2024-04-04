@@ -35,7 +35,7 @@ public abstract class BaseLaunch extends Command {
   protected Feeder m_feeder;
   protected Intake m_intake;
   protected Optional<LauncherTarget> m_currentTarget = Optional.empty();
-  protected Debouncer m_goodToLaunch = new Debouncer(0.05, DebounceType.kRising); // Only launch if it's been safe to launch for 0.05 seconds
+  protected Debouncer m_goodToLaunch = new Debouncer(0.05, DebounceType.kBoth); // Only launch if it's been safe to launch for 0.05 seconds
 
   private Timer m_launchTimer = new Timer();
   private boolean m_hasLostNote = false;
