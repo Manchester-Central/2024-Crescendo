@@ -194,6 +194,7 @@ public class Constants {
 		public static final double SourceIntakeHeightHighMeters = 0.59;
 		public static final double LaunchSpitHeightMeters = MinHeightMeters;
 		public static final double PassNoteHeight = 0.05;
+		public static final double AfterTrapHeight = 0.2;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 

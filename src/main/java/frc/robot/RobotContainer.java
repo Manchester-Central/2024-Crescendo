@@ -45,6 +45,7 @@ import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DropInAmp;
+import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
 import frc.robot.commands.step.PassNote;
 import frc.robot.commands.step.RunIntake;
@@ -104,8 +105,8 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
-  private boolean m_isOdometryAndLaunchModeEnabled = true;
-  private Trigger m_isOdometryAndLaunchModeEnabledTrigger = new Trigger(() -> m_isOdometryAndLaunchModeEnabled);
+  private boolean m_isAutomationEnabled = false;
+  private Trigger m_isAutomationEnabledTrigger = new Trigger(() -> m_isAutomationEnabled);
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
     Zone currentZone = m_swerveDrive.getZone();
@@ -222,10 +223,10 @@ public class RobotContainer {
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake
     // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
-    m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger.negate()) // Aim and launch at speaker 
-      .whileTrue( 
-        new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
-    m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger) // Aim and launch at speaker 
+    // m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger.negate()) // Aim and launch at speaker 
+    //   .whileTrue( 
+    //     new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
+    m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
         new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_getDefaultLauncherTarget, () -> true));
 
@@ -234,8 +235,8 @@ public class RobotContainer {
   }
 
   private void configureOperatorCommands() {
-    m_operator.back().onTrue(new InstantCommand(() -> m_isOdometryAndLaunchModeEnabled = false)); // Disable Automation (?)
-    m_operator.start().onTrue(new InstantCommand(() -> m_isOdometryAndLaunchModeEnabled = true)); // Enable Automation (?)
+    m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
+    m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
@@ -254,7 +255,8 @@ public class RobotContainer {
 
     m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, LiftConstants.MaxHeightMeters, m_getDefaultLauncherTarget));
     m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherTarget));
-    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
+    m_operator.rightBumper().and(m_isAutomationEnabledTrigger.negate()).whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
+    m_operator.rightBumper().and(m_isAutomationEnabledTrigger).whileTrue(new DropInTrap(m_lift, m_launcher, m_feeder));
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake (smart)
 
     m_operator.leftStick(); //
