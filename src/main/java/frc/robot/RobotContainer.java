@@ -104,7 +104,7 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
-  private boolean m_isOdometryAndLaunchModeEnabled = false;
+  private boolean m_isOdometryAndLaunchModeEnabled = true;
   private Trigger m_isOdometryAndLaunchModeEnabledTrigger = new Trigger(() -> m_isOdometryAndLaunchModeEnabled);
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {

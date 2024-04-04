@@ -116,7 +116,7 @@ public class Limelight implements CameraInterface {
 		var rotationSpeed = m_robotRotationSpeedSupplier.get();
 		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
 		var isRotatingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? rotationSpeed > 0.8 : rotationSpeed > 0.2; // TODO: change values and make constants
-		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
+		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? distance > 2.9 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
 		if (isTooFar || isMovingTooFast || isRotatingTooFast) {
 			return 0;
 		}

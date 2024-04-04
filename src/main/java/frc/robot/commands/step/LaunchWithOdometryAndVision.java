@@ -116,7 +116,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
     if (isVisionEnabled && m_camera.hasTarget()) {
       return Math.abs(m_camera.getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
     }
-    return m_focusTimer.hasElapsed(10) && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+    return m_focusTimer.hasElapsed(1.7) && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
   }
 
   private double getDriveAngleErrorDegrees() {
