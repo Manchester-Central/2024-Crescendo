@@ -55,6 +55,8 @@ public class DropInTrap extends Command {
       m_feeder.setFeederPower(-0.1);
     } else if (m_hasLostNote) {
       m_feeder.setFeederPower(-0.2);
+    }else{
+      m_feeder.grabAndHoldPiece(0.0);
     }
     if (!m_hasLostNote && !m_feeder.hasNote()) {
       m_hasLostNote = true;

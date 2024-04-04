@@ -51,6 +51,8 @@ public class DropInAmp extends Command {
     m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
     if (m_lift.atTargetHeight(LiftConstants.AmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
       m_feeder.setFeederPower(-1.0);
+    }else{
+      m_feeder.grabAndHoldPiece(0.0);
     }
     if (!m_hasLostNote && !m_feeder.hasNote()) {
       m_hasLostNote = true;
