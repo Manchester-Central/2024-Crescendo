@@ -42,9 +42,10 @@ public class DropInTrap extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_spitTimer.hasElapsed(0.45)) {
+    if (m_spitTimer.hasElapsed(0.15)) {
       m_lift.moveToHeight(LiftConstants.AfterTrapHeight);
-      m_feeder.setFeederPower(-1.0);
+      m_feeder.setFeederPower(-0.2);
+      m_launcher.setTiltAngle(Rotation2d.fromDegrees(40));
       return;
     }
     m_lift.moveToHeight(LiftConstants.MaxHeightMeters);
@@ -53,7 +54,7 @@ public class DropInTrap extends Command {
     if (m_lift.atTargetHeight(LiftConstants.MaxHeightMeters) && m_launcher.atTargetAngle(LauncherConstants.TrapAngle) && !m_hasLostNote) {
       m_feeder.setFeederPower(-0.1);
     } else if (m_hasLostNote) {
-      m_feeder.setFeederPower(-1.0);
+      m_feeder.setFeederPower(-0.2);
     }
     if (!m_hasLostNote && !m_feeder.hasNote()) {
       m_hasLostNote = true;

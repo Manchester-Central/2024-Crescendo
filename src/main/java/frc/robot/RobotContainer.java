@@ -105,7 +105,7 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
-  private boolean m_isAutomationEnabled = false;
+  private boolean m_isAutomationEnabled = true;
   private Trigger m_isAutomationEnabledTrigger = new Trigger(() -> m_isAutomationEnabled);
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
