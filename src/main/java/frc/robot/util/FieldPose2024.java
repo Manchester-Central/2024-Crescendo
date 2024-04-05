@@ -52,7 +52,7 @@ public class FieldPose2024 extends MirroredDrivePose {
     public static final FieldPose2024 Note7         = new FieldPose2024("Note7", new Pose2d(8.26, 2.5, Rotation2d.fromDegrees(180)));
     public static final FieldPose2024 Note8         = new FieldPose2024("Note8", new Pose2d(8.26, 0.8, Rotation2d.fromDegrees(180)));
 
-    public static final FieldPose2024 MidLinePass   = new FieldPose2024("MidLinePass", new Pose2d(7.75, 6.7, Rotation2d.fromDegrees(180)));
+    public static final FieldPose2024 MidLinePass   = new FieldPose2024("MidLinePass", new Pose2d(8.25, 5.7, Rotation2d.fromDegrees(180)));
     public static final FieldPose2024 PassFromSource = new FieldPose2024("PassFromSource", new Pose2d(14.5, 0.7, Rotation2d.fromDegrees(130)));
     public static final FieldPose2024 AmpPass       = new FieldPose2024("AmpPass", new Pose2d(3.11, 6.25, Rotation2d.fromDegrees(180)));
     
