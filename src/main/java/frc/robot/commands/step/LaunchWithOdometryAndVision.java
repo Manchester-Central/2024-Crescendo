@@ -20,7 +20,9 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.LightStrip.Color;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
@@ -39,6 +41,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
   private Rotation2d m_lastLauncherTilt = null;
   private Supplier<Boolean> m_isVisionEnabledSupplier;
 	private Timer m_focusTimer = new Timer();
+  private LightStrip m_lightStrip;
 
   /** Creates a new Lanch Partay. */
   public LaunchWithOdometryAndVision(
@@ -49,6 +52,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
       Gamepad driver,
       Intake intake,
       Vision vision,
+      LightStrip lightStrip,
       Supplier<LauncherTarget> getDefaultLauncherTarget,
       Supplier<Boolean> isVisionEnabledSupplier
   ) {
@@ -57,8 +61,9 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
     m_driver = driver;
     m_camera = vision.getCamera(CameraDirection.Front);
     m_isVisionEnabledSupplier = isVisionEnabledSupplier;
+    m_lightStrip = lightStrip;
 
-    addRequirements(lift, launcher, feeder, swerveDrive);
+    addRequirements(lift, launcher, feeder, swerveDrive, lightStrip);
   }
 
   @Override
@@ -116,7 +121,11 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
     if (isVisionEnabled && m_camera.hasTarget()) {
       return Math.abs(m_camera.getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
     }
-    return m_focusTimer.hasElapsed(1.7) && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+    var hasTimedOut = m_focusTimer.hasElapsed(1.7);
+    if (hasTimedOut) {
+      m_lightStrip.setSingleColor(Color.PURPLE);
+    }
+    return hasTimedOut && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
   }
 
   private double getDriveAngleErrorDegrees() {

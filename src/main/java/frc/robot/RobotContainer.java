@@ -39,6 +39,7 @@ import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
 import frc.robot.commands.defaults.DefaultLiftCommand;
+import frc.robot.commands.defaults.DefaultLightStripCommand;
 import frc.robot.commands.defaults.DefaultVisionCommand;
 import frc.robot.commands.simpledrive.DriverRelativeDrive;
 import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
@@ -97,7 +98,7 @@ public class RobotContainer {
   private Launcher m_launcher = new Launcher();
   private PowerDistribution m_PDH = new PowerDistribution(1, ModuleType.kRev);
   private RumbleManager m_rumbleManager = new RumbleManager(m_driver, m_operator, m_feeder, m_intake);
-  private LightStrip m_leds = new LightStrip(() -> m_intake.hasNote(), () -> m_feeder.hasNote());
+  private LightStrip m_leds = new LightStrip();
   private final SendableChooser<Command> m_pathPlannerChooser;
 
   private Supplier<Command> m_getSlowCommand = () -> new StartEndCommand(
@@ -160,8 +161,8 @@ public class RobotContainer {
       return new Pose3d(limelightlocation, finalRotation);
     });
 
-    NamedCommands.registerCommand("launch", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_getDefaultLauncherTarget, () -> true));
-    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_getDefaultLauncherTarget, () -> true).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
+    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
@@ -199,6 +200,7 @@ public class RobotContainer {
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote()));
   }
 
   private void configureDriverCommands() {
@@ -228,7 +230,7 @@ public class RobotContainer {
     //     new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_getDefaultLauncherTarget, () -> true));
+        new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
 
     m_driver.leftStick().whileTrue(m_getSlowCommand.get()); //
     m_driver.rightStick(); //
