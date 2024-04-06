@@ -14,38 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Deny NF4"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "launchSpit"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": " Deny NF4 To NF3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Deny NF3Launch"
+            "pathName": "NC2-Pickup"
           }
         },
         {
@@ -57,13 +26,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Deny GoBackNF4"
+            "pathName": "NF3-Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Deny NF4 Launch"
+            "pathName": "NF3-Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NC3-Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "easysoloMidLine"
           }
         },
         {
@@ -75,6 +68,6 @@
       ]
     }
   },
-  "folder": "Deny",
+  "folder": null,
   "choreoAuto": false
 }
