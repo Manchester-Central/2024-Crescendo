@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.049378609967983,
-        "y": 2.2916085294054005
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.534596794182373,
-        "y": 0.9396092371071987
-      },
-      "isLocked": false,
-      "linkedName": "SrcSide-5Ns-AroundStage-Part3-End"
-    },
-    {
-      "anchor": {
         "x": 2.3525686513256443,
         "y": 3.193526745797886
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.9090678181356378,
+        "y": 1.637912506594245
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.356069635216194,
+        "y": 1.2531017369727058
+      },
       "prevControl": {
-        "x": 5.408046690532844,
-        "y": 1.0767799114073566
+        "x": 5.356069635216194,
+        "y": 1.2531017369727058
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SrcSide-5Ns-AroundStage-CommonReturn"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 134.32,
+    "rotation": 179.71208393344295,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "SrcSide-5Ns-AroundStage",
   "previewStartingState": {
-    "rotation": -133.89829388479362,
+    "rotation": 134.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
