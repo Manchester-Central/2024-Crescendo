@@ -80,6 +80,7 @@ import frc.robot.util.RumbleManager;
 public class RobotContainer {
 
   public static boolean PreSpinEnabled = true;
+  public boolean m_isPoseUpdateEnabled = true;
 
   private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
@@ -166,6 +167,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
+    NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -341,6 +344,7 @@ public class RobotContainer {
 
   public void autoAndTeleopInit(boolean isAuto) {
     PreSpinEnabled = true;
+    m_isPoseUpdateEnabled = true;
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
 
@@ -350,7 +354,10 @@ public class RobotContainer {
 
   public synchronized void updatePoseEstimator(VisionData data) {
     var pose = data.getPose2d();
-    if(pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
+    if (!m_isPoseUpdateEnabled) {
+      return;
+    }
+    if (pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
       return;
     }
 
