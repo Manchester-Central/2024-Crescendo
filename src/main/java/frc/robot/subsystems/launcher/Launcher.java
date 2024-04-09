@@ -90,7 +90,7 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate); 
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
-		m_tiltController.getEncoder().setPosition(59.2); // TODO: Remove when abs angle is working again
+		m_tiltController.getEncoder().setPosition(LauncherConstants.ActualMaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
 		// m_tiltController.getEncoder().setPosition(getCANcoderTiltAngle().getDegrees());
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", DebugConstants.LauncherDebugEnable, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);

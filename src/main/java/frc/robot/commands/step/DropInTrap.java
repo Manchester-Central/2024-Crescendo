@@ -4,8 +4,6 @@
 
 package frc.robot.commands.step;
 
-
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,7 +53,7 @@ public class DropInTrap extends Command {
       m_feeder.setFeederPower(-0.1);
     } else if (m_hasLostNote) {
       m_feeder.setFeederPower(-0.2);
-    }else{
+    } else {
       m_feeder.grabAndHoldPiece(0.0);
     }
     if (!m_hasLostNote && !m_feeder.hasNote()) {

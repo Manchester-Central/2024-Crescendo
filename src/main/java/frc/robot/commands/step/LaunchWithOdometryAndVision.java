@@ -54,8 +54,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
       Vision vision,
       LightStrip lightStrip,
       Supplier<LauncherTarget> getDefaultLauncherTarget,
-      Supplier<Boolean> isVisionEnabledSupplier
-  ) {
+      Supplier<Boolean> isVisionEnabledSupplier) {
     super(lift, launcher, feeder, intake, getDefaultLauncherTarget);
     m_swerveDrive = swerveDrive;
     m_driver = driver;
