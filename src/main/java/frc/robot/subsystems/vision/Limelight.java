@@ -20,7 +20,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 
-public class LimelightCamera implements CameraInterface {
+public class Limelight implements CameraInterface {
 	private String m_name;
 	private Mode m_mode = Mode.BLUE_APRIL_TAGS; // By default we just using the limelight for localization
 	private LimelightVersion m_limeLightVersion;
@@ -40,6 +40,7 @@ public class LimelightCamera implements CameraInterface {
 	private NetworkTableEntry m_tx;
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
+	private NetworkTableEntry m_priorityid;
 
 	public enum LimelightVersion {
 		LL2,
@@ -84,7 +85,7 @@ public class LimelightCamera implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public LimelightCamera(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
@@ -92,6 +93,7 @@ public class LimelightCamera implements CameraInterface {
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
 		m_tv = m_visionTable.getEntry("tv");
+		m_priorityid = m_visionTable.getEntry("priorityid");
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
 		m_robotSpeedSupplier = robotSpeedSupplier;
@@ -114,7 +116,7 @@ public class LimelightCamera implements CameraInterface {
 		var rotationSpeed = m_robotRotationSpeedSupplier.get();
 		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
 		var isRotatingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? rotationSpeed > 0.8 : rotationSpeed > 0.2; // TODO: change values and make constants
-		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
+		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? distance > 2.9 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
 		if (isTooFar || isMovingTooFast || isRotatingTooFast) {
 			return 0;
 		}
@@ -273,14 +275,22 @@ public class LimelightCamera implements CameraInterface {
 	}
 
 	/**
+	 * Returns the ApriltTag ID of the current tx/ty target
+	 */
+	@Override
+	public int getPriorityID() {
+		return (int) m_priorityid.getInteger(-1);
+	}
+
+	/**
 	 * ID must be the number of the tag you want to track. -1 to reset it.
 	 */
 	@Override
 	public void setPriorityID(int id) {
-		m_visionTable.getEntry("priorityid").setNumber(id);
+		m_priorityid.setNumber(id);
 	}
 
 	public void resetPriorityID() {
-		m_visionTable.getEntry("priorityid").setNumber(-1);
+		m_priorityid.setNumber(-1);
 	}
 }

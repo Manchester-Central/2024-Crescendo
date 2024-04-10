@@ -33,8 +33,8 @@ public class Launcher extends SubsystemBase {
 	private CANSparkFlex m_tiltController = new CANSparkFlex(CANIdentifiers.LauncherTilt, MotorType.kBrushless);
 	// private SparkAnalogSensor m_tiltPot = m_tiltController.getAnalog(Mode.kAbsolute);
 	// private SparkAbsoluteEncoder m_absAngleEncoder;
-	private CANcoder m_tiltCANCoder = new CANcoder(CANIdentifiers.TiltCANCoder);
-	private CANcoderConfiguration m_canCoderConfig = new CANcoderConfiguration();
+	//private CANcoder m_tiltCANCoder = new CANcoder(CANIdentifiers.TiltCANCoder);
+	//private CANcoderConfiguration m_canCoderConfig = new CANcoderConfiguration();
 	private PIDTuner m_tiltPIDTuner;
 
 	//Target values
@@ -60,10 +60,10 @@ public class Launcher extends SubsystemBase {
 		m_tiltController.restoreFactoryDefaults();
 		
 		// m_absAngleEncoder = m_tiltController.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-		m_canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-		m_canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-		m_canCoderConfig.MagnetSensor.MagnetOffset = LauncherConstants.TiltCANCoderOffset.getRotations();
-		m_tiltCANCoder.getConfigurator().apply(m_canCoderConfig);
+		// m_canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+		// m_canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+		// m_canCoderConfig.MagnetSensor.MagnetOffset = LauncherConstants.TiltCANCoderOffset.getRotations();
+		//m_tiltCANCoder.getConfigurator().apply(m_canCoderConfig);
 
 		m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 		m_flywheelRight.setIdleMode(IdleMode.kCoast);
@@ -87,11 +87,11 @@ public class Launcher extends SubsystemBase {
 		// m_tiltController.getPIDController().setFeedbackDevice(m_tiltPot);
 		// m_tiltController.getPIDController().setFeedbackDevice(m_absAngleEncoder);
 		m_tiltController.getPIDController().setFeedbackDevice(m_tiltController.getEncoder());
-		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate);
+		m_tiltController.setClosedLoopRampRate(LauncherConstants.TiltRampRate); 
 		m_tiltController.setInverted(true);
 		m_tiltController.setSmartCurrentLimit(LauncherConstants.TiltCurrentLimitAmps);
-		// m_tiltController.getEncoder().setPosition(59.2); // TODO: Remove when abs angle is working again
-		m_tiltController.getEncoder().setPosition(getCANcoderTiltAngle().getDegrees());
+		m_tiltController.getEncoder().setPosition(LauncherConstants.ActualMaxAngle.getDegrees()); // TODO: Remove when abs angle is working again
+		// m_tiltController.getEncoder().setPosition(getCANcoderTiltAngle().getDegrees());
 		m_tiltController.getEncoder().setPositionConversionFactor(LauncherConstants.TiltEncoderConversionFactor);
 		m_tiltPIDTuner = new PIDTuner("Launcher/Tilt", DebugConstants.LauncherDebugEnable, LauncherConstants.TiltP, LauncherConstants.TiltI, LauncherConstants.TiltD, this::tuneTiltPID);
 		
@@ -114,7 +114,7 @@ public class Launcher extends SubsystemBase {
 
 		// logManager.addNumber("Launcher/AngleDegrees", true, () -> getCurrentAngle().getDegrees());
 		logManager.addNumber("Launcher/EncoderAngleDegrees", true, () -> getEncoderTiltAngle().getDegrees());
-		logManager.addNumber("Launcher/CANCoderAngleDegrees", true, () -> getCANcoderTiltAngle().getDegrees());
+		//logManager.addNumber("Launcher/CANCoderAngleDegrees", true, () -> getCANcoderTiltAngle().getDegrees());
 		logManager.addNumber("Launcher/TargetAngleDegrees", DebugConstants.LauncherDebugEnable, () -> m_targetAngle.orElse(Rotation2d.fromDegrees(-1)).getDegrees());
 		logManager.addNumber("Launcher/TiltAppliedOutput", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getAppliedOutput());
 		logManager.addNumber("Launcher/TiltCurrentAmps", DebugConstants.LauncherDebugEnable, () -> m_tiltController.getOutputCurrent());
@@ -220,14 +220,14 @@ public class Launcher extends SubsystemBase {
 		return Rotation2d.fromDegrees(m_tiltController.getEncoder().getPosition());
 	}
 
-	public Rotation2d getCANcoderTiltAngle() {
-		if (Robot.isSimulation()) {
-			return m_simAngle;
-		}
+	// public Rotation2d getCANcoderTiltAngle() {
+	// 	if (Robot.isSimulation()) {
+	// 		return m_simAngle;
+	// 	}
 		// return Rotation2d.fromDegrees(m_tiltPot.getPosition());
 		// return Rotation2d.fromDegrees(m_absAngleEncoder.getPosition());
-		return Rotation2d.fromRotations(m_tiltCANCoder.getAbsolutePosition().getValueAsDouble());
-	}
+		//return Rotation2d.fromRotations(m_tiltCANCoder.getAbsolutePosition().getValueAsDouble());
+	//}
 
 	// public void recalibrateTilt() {
     //     m_tiltController.getEncoder().setPosition(0); // TODO Don't Do This

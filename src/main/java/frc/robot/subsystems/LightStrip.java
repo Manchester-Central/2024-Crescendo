@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightStrip extends SubsystemBase{
@@ -14,8 +11,6 @@ public class LightStrip extends SubsystemBase{
     private AddressableLEDBuffer m_buffer;
     private final int NumLeds = 20;
     // private Object m_mutex = new Object();
-    private Supplier<Boolean> m_intakeSupplier;
-    private Supplier<Boolean> m_feederSupplier;
 
     public enum Color {
         RED (255, 0, 0),
@@ -24,7 +19,8 @@ public class LightStrip extends SubsystemBase{
         CHAOS_ORANGE (255, 30, 0),
         OFF (0, 0, 0),
         YELLOW (255, 255, 0),
-        WHITE(255, 255, 255);
+        WHITE(255, 255, 255),
+        PURPLE(255, 0, 255);
         
         int red;
         int green;
@@ -37,9 +33,7 @@ public class LightStrip extends SubsystemBase{
         }
     }
 
-    public LightStrip(Supplier<Boolean> intakeHasNote, Supplier<Boolean> feederHasNote) {
-        m_intakeSupplier = intakeHasNote;
-        m_feederSupplier = feederHasNote;
+    public LightStrip() {
         m_leds = new AddressableLED(0);
         m_leds.setLength(NumLeds);
         m_buffer = new AddressableLEDBuffer(NumLeds);
@@ -64,14 +58,7 @@ public class LightStrip extends SubsystemBase{
                 }
             }
         } else {
-            // Logic for an enabled robot
-            if(m_intakeSupplier.get() == true) {
-                setSingleColor(Color.YELLOW);
-            } else if(m_feederSupplier.get() == true && m_intakeSupplier.get() == false) {
-                setSingleColor(Color.GREEN);
-            } else {
-                setSingleColor(Color.WHITE);
-            }
+            
         }
     }
 

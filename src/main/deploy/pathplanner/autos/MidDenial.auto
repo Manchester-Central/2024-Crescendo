@@ -1,26 +1,14 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.254860202028098,
-      "y": 4.01584572399914
-    },
-    "rotation": 129.47245984834382
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Deny Begin"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "launchWithTimeout"
+            "name": "launch"
           }
         },
         {
@@ -30,15 +18,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Push NF2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "launchSpit"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Deny NF2 To NF3"
+            "pathName": " Deny NF4 To NF3"
           }
         },
         {

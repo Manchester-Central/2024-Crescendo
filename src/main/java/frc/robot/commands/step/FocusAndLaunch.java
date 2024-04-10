@@ -69,7 +69,7 @@ public class FocusAndLaunch extends BaseLaunch {
     if (m_vision.getCamera(CameraDirection.Front).hasTarget()) {
       var currentPose = m_swerveDrive.getPose();
       var currentRotation = currentPose.getRotation();
-      var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision, currentPose, currentRotation);
+      var rotation = AngleUtil.GetEstimatedAngleToGoal(m_vision.getCamera(CameraDirection.Front), currentPose, currentRotation);
       m_swerveDrive.moveFieldRelativeAngle(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), rotation, 1.0);
     } else {
       m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());

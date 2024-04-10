@@ -42,13 +42,11 @@ public class DefaultLauncherCommand extends Command {
   @Override
   public void execute() {
     // m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
-    if(RobotContainer.PreSpinEnabled){
+    if (RobotContainer.PreSpinEnabled) {
       var launcherTarget = m_getDefaultLauncherTarget.get();
-      if(m_hasNoteInFeeder.get()) {
-        m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
-      }
+      m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
       m_launcher.setLauncherRPM(launcherTarget.getLeftLauncherSpeedRPM(), launcherTarget.getRightLauncherSpeedRPM());
-    }else{
+    } else {
       m_launcher.setLauncherPower(0.0);
       m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
     }

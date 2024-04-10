@@ -12,9 +12,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "disableOdometryUpdates"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Ampside-NC1"
+            "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enableOdometryUpdates"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SrcSide-5Ns-AroundStage-Part4"
           }
         },
         {
@@ -24,15 +42,27 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "NF2-Pickup-GBElims"
+            "name": "disableOdometryUpdates"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF2-Launch"
+            "pathName": "SrcSide-5Ns-AroundStage-Part5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enableOdometryUpdates"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SrcSide-5Ns-AroundStage-Part6"
           }
         },
         {
@@ -42,27 +72,27 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "NF1-Pickup-GBElims"
+            "name": "disableOdometryUpdates"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF1-Launch"
+            "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "launch"
+            "name": "enableOdometryUpdates"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Ampside-NC2-Pickup"
+            "pathName": "SrcSide-5Ns-AroundStage-Part2"
           }
         },
         {

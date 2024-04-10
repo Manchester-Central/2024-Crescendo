@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NC2-Pickup"
+            "pathName": "Ampside-NC1"
           }
         },
         {
@@ -26,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NF3-Pickup"
+            "pathName": "NF2-Pickup-GBElims"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NF3-Launch"
+            "pathName": "NF2-Launch"
           }
         },
         {
@@ -44,7 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NC3-Pickup"
+            "pathName": "Ampside-NF3-Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpSide-NF3-Launch"
           }
         },
         {
@@ -56,13 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NC1-Pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
+            "pathName": "Ampside-NF3-Approach"
           }
         }
       ]
