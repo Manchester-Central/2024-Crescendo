@@ -1,73 +1,67 @@
 {
-    "version": 1.0,
-    "startingPose": {
-        "position": {
-            "x": 1.412,
-            "y": 5.55
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
         },
-        "rotation": 180.0
-    },
-    "command": {
-        "type": "sequential",
-        "data": {
-            "commands": [
-                {
-                    "type": "named",
-                    "data": {
-                        "name": "launch"
-                    }
-                },
-                {
-                    "type": "path",
-                    "data": {
-                        "pathName": "Center-NC2-NF3-NF2 CenterSideStart - NC2"
-                    }
-                },
-                {
-                    "type": "named",
-                    "data": {
-                        "name": "launch"
-                    }
-                },
-                {
-                    "type": "path",
-                    "data": {
-                        "pathName": "Center-NC2-NF3-NF2 NC2 - NF3"
-                    }
-                },
-                {
-                    "type": "path",
-                    "data": {
-                        "pathName": "Center-NC2-NF3-NF2 NF3 - AmpSide-Launch"
-                    }
-                },
-                {
-                    "type": "named",
-                    "data": {
-                        "name": "launch"
-                    }
-                },
-                {
-                    "type": "path",
-                    "data": {
-                        "pathName": "Center-NC2-NF3-NF2 AmpSide-Launch - NF2"
-                    }
-                },
-                {
-                    "type": "path",
-                    "data": {
-                        "pathName": "Center-NC2-NF3-NF2 NF2 - AmpSide-Launch"
-                    }
-                },
-                {
-                    "type": "named",
-                    "data": {
-                        "name": "launch"
-                    }
-                }
-            ]
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-NC2-NF3-NF2 CenterSideStart - NC2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-NC2-NF3-NF2 NC2 - NF3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-NC2-NF3-NF2 NF3 - AmpSide-Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-NC2-NF3-NF2 AmpSide-Launch - NF2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center-NC2-NF3-NF2 NF2 - AmpSide-Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
         }
-    },
-    "folder": null,
-    "choreoAuto": false
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
 }

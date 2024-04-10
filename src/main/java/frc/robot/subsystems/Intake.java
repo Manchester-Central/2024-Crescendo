@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
 	private TalonFXConfiguration m_intakeUpperConfig = new TalonFXConfiguration();
 	private TalonFXConfiguration m_intakeLowerConfig = new TalonFXConfiguration();
 	DigitalInput m_intakeSensor = new DigitalInput(IOPorts.IntakeNoteSensor);
-	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kBoth);
+	private Debouncer m_hasNoteDebouncer = new Debouncer(0.05, DebounceType.kFalling);
 	private boolean m_hasNote = false;
 
 	private double simPower = 0;
@@ -33,14 +33,14 @@ public class Intake extends SubsystemBase {
 		m_intakeUpperConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeUpperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 60;
+		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 35;
 		m_intakeUpperConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeUpper.getConfigurator().apply(m_intakeUpperConfig);
 
 		m_intakeLowerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 		m_intakeLowerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 60;
+		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 35;
 		m_intakeLowerConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeLower.getConfigurator().apply(m_intakeLowerConfig);
 

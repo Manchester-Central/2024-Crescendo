@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.350843726596182,
-        "y": -1.2241838725169951
+        "x": 5.844454176539559,
+        "y": -0.17572954134684027
       },
       "isLocked": false,
       "linkedName": "SrcSide-5Ns-AroundStage-Part5-End"
@@ -57,7 +57,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 133.16716049405795,
+    "rotation": 133.17,
     "rotateFast": false
   },
   "reversed": false,

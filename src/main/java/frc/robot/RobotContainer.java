@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
@@ -38,17 +39,20 @@ import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
 import frc.robot.commands.defaults.DefaultLauncherCommand;
 import frc.robot.commands.defaults.DefaultLiftCommand;
+import frc.robot.commands.defaults.DefaultLightStripCommand;
 import frc.robot.commands.defaults.DefaultVisionCommand;
 import frc.robot.commands.simpledrive.DriverRelativeDrive;
 import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DropInAmp;
+import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
 import frc.robot.commands.step.PassNote;
 import frc.robot.commands.step.RunIntake;
 import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.LaunchWithOdometry;
+import frc.robot.commands.step.LaunchWithOdometryAndVision;
 import frc.robot.commands.step.LobOntoField;
 import frc.robot.commands.step.SimpleControl;
 import frc.robot.commands.step.SourceIntake;
@@ -76,6 +80,7 @@ import frc.robot.util.RumbleManager;
 public class RobotContainer {
 
   public static boolean PreSpinEnabled = true;
+  public boolean m_isPoseUpdateEnabled = true;
 
   private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
@@ -94,7 +99,7 @@ public class RobotContainer {
   private Launcher m_launcher = new Launcher();
   private PowerDistribution m_PDH = new PowerDistribution(1, ModuleType.kRev);
   private RumbleManager m_rumbleManager = new RumbleManager(m_driver, m_operator, m_feeder, m_intake);
-  private LightStrip m_leds = new LightStrip(() -> m_intake.hasNote(), () -> m_feeder.hasNote());
+  private LightStrip m_leds = new LightStrip();
   private final SendableChooser<Command> m_pathPlannerChooser;
 
   private Supplier<Command> m_getSlowCommand = () -> new StartEndCommand(
@@ -102,6 +107,8 @@ public class RobotContainer {
       () -> m_swerveDrive.updateSpeedModifier(SwerveConstants2024.DefaultSpeedModifier)
   );
 
+  private boolean m_isAutomationEnabled = true;
+  private Trigger m_isAutomationEnabledTrigger = new Trigger(() -> m_isAutomationEnabled);
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
     Zone currentZone = m_swerveDrive.getZone();
@@ -155,11 +162,13 @@ public class RobotContainer {
       return new Pose3d(limelightlocation, finalRotation);
     });
 
-    NamedCommands.registerCommand("launch", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
-    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget).withTimeout(3.0));
+    NamedCommands.registerCommand("launch", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
+    NamedCommands.registerCommand("launchWithTimeout", new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true).withTimeout(3.0));
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
+    NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -186,7 +195,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision, m_swerveDrive));
+    m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision));
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
@@ -194,6 +203,7 @@ public class RobotContainer {
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote()));
   }
 
   private void configureDriverCommands() {
@@ -218,17 +228,20 @@ public class RobotContainer {
     m_driver.leftTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake
     // m_driver.rightBumper().whileTrue(new FireIntoAmp(m_lift, m_launcher, m_feeder, m_swerveDrive, m_vision)); // Amp score
     m_driver.rightBumper().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp score
+    // m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger.negate()) // Aim and launch at speaker 
+    //   .whileTrue( 
+    //     new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
     m_driver.rightTrigger() // Aim and launch at speaker 
       .whileTrue( 
-        new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
+        new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
 
     m_driver.leftStick().whileTrue(m_getSlowCommand.get()); //
     m_driver.rightStick(); //
   }
 
   private void configureOperatorCommands() {
-    m_operator.back(); // Enable Automation (?)
-    m_operator.start(); // Disable Automation (?)
+    m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
+    m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
@@ -247,7 +260,8 @@ public class RobotContainer {
 
     m_operator.leftBumper().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.PodiumLaunch, LiftConstants.MaxHeightMeters, m_getDefaultLauncherTarget));
     m_operator.leftTrigger().whileTrue(new LaunchSetDistance(m_lift, m_launcher, m_feeder, m_intake, FieldPose2024.FenderLaunch, m_getDefaultLauncherTarget));
-    m_operator.rightBumper().whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
+    m_operator.rightBumper().and(m_isAutomationEnabledTrigger.negate()).whileTrue(new SimpleControl().feeder(m_feeder, -0.1)); // Amp & Down Trap
+    m_operator.rightBumper().and(m_isAutomationEnabledTrigger).whileTrue(new DropInTrap(m_lift, m_launcher, m_feeder));
     m_operator.rightTrigger().whileTrue(new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager)); // Intake (smart)
 
     m_operator.leftStick(); //
@@ -330,6 +344,7 @@ public class RobotContainer {
 
   public void autoAndTeleopInit(boolean isAuto) {
     PreSpinEnabled = true;
+    m_isPoseUpdateEnabled = true;
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
 
@@ -339,7 +354,10 @@ public class RobotContainer {
 
   public synchronized void updatePoseEstimator(VisionData data) {
     var pose = data.getPose2d();
-    if(pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
+    if (!m_isPoseUpdateEnabled) {
+      return;
+    }
+    if (pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
       return;
     }
 

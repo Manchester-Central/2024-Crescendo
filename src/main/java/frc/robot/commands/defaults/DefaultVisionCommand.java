@@ -6,21 +6,22 @@ package frc.robot.commands.defaults;
 
 import com.chaos131.swerve.BaseSwerveDrive;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.util.FieldPose2024;
 
 public class DefaultVisionCommand extends Command {
 
   private Vision m_vision;
-  private BaseSwerveDrive m_swerveDrive;
 
   /** Creates a new DefaultVisionCommand. */
-  public DefaultVisionCommand(Vision vision, BaseSwerveDrive swerveDrive) {
+  public DefaultVisionCommand(Vision vision) {
     m_vision = vision;
-    m_swerveDrive = swerveDrive;
     addRequirements(vision);
   }
 
@@ -32,7 +33,12 @@ public class DefaultVisionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //
+    // We are only using the front limelight for speaker tracking, so let's always make sure it's using that for tx/ty tracking
+    var priorityID = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
+    var frontCamera = m_vision.getCamera(CameraDirection.Front);
+    if(frontCamera.getPriorityID() != priorityID) {
+      frontCamera.setPriorityID(priorityID);
+    }
   }
 
   // Called once the command ends or is interrupted.

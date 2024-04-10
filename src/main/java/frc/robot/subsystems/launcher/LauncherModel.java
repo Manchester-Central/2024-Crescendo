@@ -300,7 +300,7 @@ public class LauncherModel {
     public static double getMinLiftHeightMetersForTiltAngle(Rotation2d tiltAngle) {
         double tiltAngleDegrees = tiltAngle.getDegrees();
         //=0.214-0.00602*A2-0.0000222*POW(A2,2)
-        double calculatedHeight = 0.02 + 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
+        double calculatedHeight = 0.214 + (-0.00602 * tiltAngleDegrees) + (-0.0000222 * Math.pow(tiltAngleDegrees, 2));
         return MathUtil.clamp(calculatedHeight, LiftConstants.MinHeightMeters, LiftConstants.MaxHeightMeters);
     }
 }

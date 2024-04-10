@@ -12,9 +12,57 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "disableOdometryUpdates"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "NC2-Pickup"
+            "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enableOdometryUpdates"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SrcSide-5Ns-AroundStage-Part4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disableOdometryUpdates"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enableOdometryUpdates"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SrcSide-5Ns-AroundStage-Part2"
           }
         },
         {
@@ -26,43 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NF3-Pickup"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NF3-Launch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NC3-Pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NC1-Pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch"
+            "pathName": "DCMP-SrcSide-5Ns-AroundStage-Midline"
           }
         }
       ]

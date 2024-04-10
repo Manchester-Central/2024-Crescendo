@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class Constants {
 	public static final boolean Use2022Robot = false;
 
-	public static final boolean DebugMode = true;
+	public static final boolean DebugMode = false;
 	public static final Alliance DefaultAlliance = Alliance.Blue;
 	public static final double SimUpdateFrequency = 20.0;
 
@@ -24,7 +24,7 @@ public class Constants {
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
 		public static final boolean LauncherDebugEnable = false;
-		public static final boolean LauncherModelDebugEnable = true;
+		public static final boolean LauncherModelDebugEnable = false;
 	}
 
 	public static class ControllerConstants {
@@ -194,6 +194,7 @@ public class Constants {
 		public static final double SourceIntakeHeightHighMeters = 0.59;
 		public static final double LaunchSpitHeightMeters = MinHeightMeters;
 		public static final double PassNoteHeight = 0.05;
+		public static final double AfterTrapHeight = 0.2;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
 
