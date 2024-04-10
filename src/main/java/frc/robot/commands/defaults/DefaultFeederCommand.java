@@ -7,6 +7,7 @@ package frc.robot.commands.defaults;
 import com.chaos131.gamepads.Gamepad;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder;
 
 public class DefaultFeederCommand extends Command {
@@ -27,9 +28,11 @@ public class DefaultFeederCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() { 
-    //m_feeder.grabAndHoldPiece(0.5);
-     m_feeder.setFeederPower(0);
-    // m_feeder.setFeederPower(0, m_tester.getLeftY());
+    if (RobotContainer.PreSpinEnabled) {
+      m_feeder.grabAndHoldPiece(0.0); // Position the note still if we have one
+    } else {
+      m_feeder.setFeederPower(0);
+    }
   }
 
   // Called once the command ends or is interrupted.

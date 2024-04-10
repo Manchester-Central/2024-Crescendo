@@ -16,7 +16,8 @@
         "SimpleAuto",
         "SrcSide-4Ns-ThruStage",
         "SrcSide-5Ns-AroundStage",
-        "Easy5NoteWithBuilder"
+        "Easy5NoteWithBuilder",
+        "Center-NC2-NF3-NF2"
     ],
     "autoFolders": [
         "AmpSide-5Ns-AroundStage",

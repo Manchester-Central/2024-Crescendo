@@ -97,6 +97,8 @@ public class Constants {
 		public static final int FeederTrap = 50;
 
 		public static final int TiltCANCoder = 51;
+
+		public static final int PigeonGyro = 52;
 	}
 
 	public static class IOPorts {

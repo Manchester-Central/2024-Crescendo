@@ -10,6 +10,7 @@ import com.chaos131.gamepads.Gamepad;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
@@ -18,7 +19,6 @@ public class DefaultLauncherCommand extends Command {
   private Launcher m_launcher;
   private Gamepad m_operator;
   public static double MaxTiltSpeed = 0.08;
-  public static boolean LauncherPreSpinEnabled = true;
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget;
   private Supplier<Boolean> m_hasNoteInFeeder;
@@ -42,7 +42,7 @@ public class DefaultLauncherCommand extends Command {
   @Override
   public void execute() {
     // m_launcher.setTiltSpeed(m_operator.getLeftY() * MaxTiltSpeed);
-    if(LauncherPreSpinEnabled){
+    if(RobotContainer.PreSpinEnabled){
       var launcherTarget = m_getDefaultLauncherTarget.get();
       if(m_hasNoteInFeeder.get()) {
         m_launcher.setTiltAngle(launcherTarget.getTiltAngle());
