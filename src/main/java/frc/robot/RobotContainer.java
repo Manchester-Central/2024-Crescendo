@@ -79,7 +79,7 @@ import frc.robot.util.RumbleManager;
 
 public class RobotContainer {
 
-  public static boolean PreSpinEnabled = true;
+  public static boolean PreSpinEnabled = false;//undo
   public boolean m_isPoseUpdateEnabled = true;
 
   private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
@@ -92,7 +92,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps(), () -> m_swerveDrive.getRobotRotationSpeedRadsPerSec());
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps(), () -> m_swerveDrive.getRobotRotationSpeedRadsPerSec(), () -> m_swerveDrive.getOdometryRotation());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -343,7 +343,7 @@ public class RobotContainer {
   }
 
   public void autoAndTeleopInit(boolean isAuto) {
-    PreSpinEnabled = true;
+    PreSpinEnabled = false;//undo
     m_isPoseUpdateEnabled = true;
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
@@ -359,6 +359,9 @@ public class RobotContainer {
     }
     if (pose == null || !Double.isFinite(pose.getX()) || !Double.isFinite(pose.getY()) || !Double.isFinite(pose.getRotation().getDegrees())){
       return;
+    }
+    if(DriverStation.isEnabled()){
+      pose = new Pose2d(pose.getX(), pose.getY(), m_swerveDrive.getOdometryRotation());
     }
 
     m_swerveDrive.addVisionMeasurement(pose, data.getTimestamp(), data.getDevation());

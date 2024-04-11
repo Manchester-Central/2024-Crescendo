@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.CameraInterface;
 import frc.robot.subsystems.vision.Limelight;
@@ -20,6 +21,7 @@ public class Vision extends SubsystemBase {
 	private CameraInterface m_frontLimeLightCamera;
 	private CameraInterface m_backLimeLightCamera;
 	private CameraInterface m_noteTrackingCamera;
+	private Supplier<Rotation2d> m_robotRotationSupplier;
 
 	/**
 	 * Creates a Vision table that attaches to a specific limelight that can be found in the Network Tables.
@@ -27,9 +29,15 @@ public class Vision extends SubsystemBase {
 	 * 
 	 * @param tablename - String of the device name.
 	 */
-	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+	public Vision(Supplier<Pose2d> simulatedPoseEstimation, 
+			Consumer<VisionData> poseUpdator, 
+			Supplier<Double> robotSpeedSupplier, 
+			Supplier<Double> robotRotationSpeedSupplier,
+			Supplier<Rotation2d> robotRotationSupplier
+			) {
 		m_frontLimeLightCamera = new Limelight("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
 		m_backLimeLightCamera = new Limelight("limelight-back", LimelightVersion.LL3 , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
+		m_robotRotationSupplier = robotRotationSupplier;
 		// m_noteTrackingCamera = new LimeLightCamera("limelight-notes", LimelightVersion.LL3, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 		// m_noteTrackingCamera.setMode(CameraMode.PIECE_TRACKING);
 	}
@@ -66,7 +74,15 @@ public class Vision extends SubsystemBase {
 	}
 
 	public void periodic() {
-		// TODO: Discuss if we run periodic here or in each CameraInterface
-		// It comes down to how to we "lock" the pipelines, and what's the easiest system for that
+		var rpy = new double[]{
+			m_robotRotationSupplier.get().getDegrees(),
+			0,
+			0,
+			0,
+			0,
+			0
+		};
+		m_frontLimeLightCamera.updateCameraPose(rpy);
+		m_backLimeLightCamera.updateCameraPose(rpy);
 	}
 }

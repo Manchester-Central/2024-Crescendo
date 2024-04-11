@@ -55,7 +55,7 @@ public class Constants {
 
 		public static class LL3G {
 			public static final double MinimumError = 0.02;
-			public static final double ErrorExponent = 3.0;
+			public static final double ErrorExponent = 2.0; 
 			public static final double DistanceScalar = 1/3.15;
 			public static final double TotalDeviationMultiplier = 1;
 			public static final double TagCountErrorScalar = 1.0;

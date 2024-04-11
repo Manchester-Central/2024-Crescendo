@@ -41,6 +41,7 @@ public class Limelight implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 	private NetworkTableEntry m_priorityid;
+	private NetworkTableEntry m_orientation;
 
 	public enum LimelightVersion {
 		LL2,
@@ -88,7 +89,7 @@ public class Limelight implements CameraInterface {
 	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
+		m_botpose = m_visionTable.getEntry("botpose_orb_wpiblue");
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
@@ -99,8 +100,9 @@ public class Limelight implements CameraInterface {
 		m_robotSpeedSupplier = robotSpeedSupplier;
 		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
+		m_orientation = m_visionTable.getEntry("robot_orientation_set");
 
-		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
+		m_visionTable.addListener("botpose_orb_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
 										});
@@ -116,7 +118,7 @@ public class Limelight implements CameraInterface {
 		var rotationSpeed = m_robotRotationSpeedSupplier.get();
 		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
 		var isRotatingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? rotationSpeed > 0.8 : rotationSpeed > 0.2; // TODO: change values and make constants
-		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? distance > 2.9 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
+		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? distance > 10 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
 		if (isTooFar || isMovingTooFast || isRotatingTooFast) {
 			return 0;
 		}
@@ -131,6 +133,8 @@ public class Limelight implements CameraInterface {
 
 		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
 	}
+
+	
 
 	/**
 	 * 
@@ -291,5 +295,10 @@ public class Limelight implements CameraInterface {
 
 	public void resetPriorityID() {
 		m_priorityid.setNumber(-1);
+	}
+
+	@Override
+	public void updateCameraPose(double[] rotationValues) {
+		m_orientation.setDoubleArray(rotationValues);
 	}
 }
