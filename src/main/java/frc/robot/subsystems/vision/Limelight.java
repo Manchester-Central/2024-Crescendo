@@ -153,7 +153,7 @@ public class Limelight implements CameraInterface {
 	public void recordMeasuredData() {
 		var data = m_botpose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
-		if (data == null || data[idxX] < EPSILON || DriverStation.isDisabled()) {
+		if (data == null || data[idxX] < EPSILON || DriverStation.isDisabled() || data[idxTagCount] == 0) {
 			// We bail out if the data is junk, or the robot isn't enabled
 			// This method triggers when the MegaTag2 pipeline updates
 			m_mostRecentData = Optional.empty();
