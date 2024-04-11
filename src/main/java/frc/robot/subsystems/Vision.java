@@ -82,6 +82,19 @@ public class Vision extends SubsystemBase {
 	}
 
 	public void periodic() {
+		var rpy = new double[] {
+			m_robotRotationSupplier.get().getDegrees(),
+			0,
+			0,
+			0,
+			0,
+			0
+		};
+		// This sends the robot's current rotation to the limelight.
+		// This helps megatag 2 choose a more stable position
+		m_frontLimeLightCamera.updateCameraPose(rpy);
+		m_backLimeLightCamera.updateCameraPose(rpy);
+		
 		if (DriverStation.isDisabled()) {
 			// While the robot is disabled, we pull from the megatag1 values which doesn't need any rotation information to stabilize
 			double[] pose = new double[0];
@@ -103,20 +116,6 @@ public class Vision extends SubsystemBase {
 					}
 				};
 			}
-		} else {
-			// TODO: Double check if this should only be enabled during teleop and autonomous.
-			var rpy = new double[] {
-				m_robotRotationSupplier.get().getDegrees(),
-				0,
-				0,
-				0,
-				0,
-				0
-			};
-			// This sends the robot's current rotation to the limelight.
-			// This helps megatag 2 choose a more stable position
-			m_frontLimeLightCamera.updateCameraPose(rpy);
-			m_backLimeLightCamera.updateCameraPose(rpy);
 		}
 	}
 }

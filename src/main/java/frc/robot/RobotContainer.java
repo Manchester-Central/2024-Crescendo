@@ -364,7 +364,7 @@ public class RobotContainer {
       // We choose to override the pose with whatever the gyro says while enabled
       // We trust the gyro more than the camera with rotational accuracy
       // This should be kept in mind while testing though.
-      pose = new Pose2d(pose.getX(), pose.getY(), m_swerveDrive.getOdometryRotation());
+      // pose = new Pose2d(pose.getX(), pose.getY(), m_swerveDrive.getOdometryRotation());
     }
 
     m_swerveDrive.addVisionMeasurement(pose, data.getTimestamp(), data.getDevation());
