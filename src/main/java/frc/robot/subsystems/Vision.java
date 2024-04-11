@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.CameraInterface;
 import frc.robot.subsystems.vision.Limelight;
 import frc.robot.subsystems.vision.VisionData;
@@ -81,10 +82,14 @@ public class Vision extends SubsystemBase {
 	}
 
 	public void periodic() {
-		if (!DriverStation.isEnabled()) {
+		if (DriverStation.isDisabled()) {
 			// While the robot is disabled, we pull from the megatag1 values which doesn't need any rotation information to stabilize
 			double[] pose = new double[0];
-			NetworkTableInstance.getDefault().getTable("limelight-front").getEntry("botpose_wpiblue").getDoubleArray(pose);
+			var entry = NetworkTableInstance.getDefault().getTable("limelight-front").getEntry(VisionConstants.MegaTag1);
+			if (entry == null) {
+				return;
+			}
+			pose = entry.getDoubleArray(pose);
 			if (pose.length != 0) {
 				//               (Yuck)
 				var valid_pose = Limelight.makePoseFromArray(pose);

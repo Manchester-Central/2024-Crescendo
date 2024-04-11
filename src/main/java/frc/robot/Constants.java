@@ -52,6 +52,8 @@ public class Constants {
 		public static final double ConfidenceRequirement = 0.4;
 		public static final double RobotSpeedThresholdMPS = 1.0;
 		public static final double PoseDeviationThreshold = 0.5;
+		public static final String MegaTag1 = "botpose_wpiblue";
+		public static final String MegaTag2 = "botpose_orb_wpiblue";
 
 		public static class LL3G {
 			public static final double MinimumError = 0.02;

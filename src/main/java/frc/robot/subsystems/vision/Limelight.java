@@ -90,7 +90,7 @@ public class Limelight implements CameraInterface {
 	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_botpose = m_visionTable.getEntry("botpose_orb_wpiblue");
+		m_botpose = m_visionTable.getEntry(VisionConstants.MegaTag2);
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
@@ -101,9 +101,9 @@ public class Limelight implements CameraInterface {
 		m_robotSpeedSupplier = robotSpeedSupplier;
 		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
-		m_orientation = m_visionTable.getEntry("robot_orientation_set");
+		m_orientation = m_visionTable.getEntry("robot_orientation_set"); // megatag 2 specific NT Entry
 
-		m_visionTable.addListener("botpose_orb_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
+		m_visionTable.addListener(VisionConstants.MegaTag2, EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
 										});
@@ -153,7 +153,7 @@ public class Limelight implements CameraInterface {
 	public void recordMeasuredData() {
 		var data = m_botpose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
-		if (data == null || data[idxX] < EPSILON || !DriverStation.isEnabled()) {
+		if (data == null || data[idxX] < EPSILON || DriverStation.isDisabled()) {
 			// We bail out if the data is junk, or the robot isn't enabled
 			// This method triggers when the MegaTag2 pipeline updates
 			m_mostRecentData = Optional.empty();
