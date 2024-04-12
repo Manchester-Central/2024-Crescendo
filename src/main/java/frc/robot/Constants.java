@@ -51,15 +51,18 @@ public class Constants {
 		// Scale is currently in the range of [0,1]
 		public static final double ConfidenceRequirement = 0.4;
 		public static final double RobotSpeedThresholdMPS = 1.0;
-		public static final double PoseDeviationThreshold = 1.5;
+		public static final double PoseDeviationThreshold = 0.5;
+		public static final String MegaTag1 = "botpose_wpiblue";
+		public static final String MegaTag2 = "botpose_orb_wpiblue";
 
 		public static class LL3G {
 			public static final double MinimumError = 0.02;
-			public static final double ErrorExponent = 3.0;
-			public static final double DistanceScalar = 1/3.15;
+			public static final double ErrorExponent = 2.0; 
+			public static final double DistanceScalar = 1/15.0;
 			public static final double TotalDeviationMultiplier = 1;
 			public static final double TagCountErrorScalar = 1.0;
 			public static final double RobotSpeedErrorScalar = 1.0;
+			public static final double RobotRotationSpeedErrorScalar = 2.0;
 			public static final double VFOV = 56.0;
 			public static final double HFOV = 80.0;
 		}

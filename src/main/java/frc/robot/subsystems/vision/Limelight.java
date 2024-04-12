@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -41,6 +42,7 @@ public class Limelight implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 	private NetworkTableEntry m_priorityid;
+	private NetworkTableEntry m_orientation;
 
 	public enum LimelightVersion {
 		LL2,
@@ -71,24 +73,24 @@ public class Limelight implements CameraInterface {
 		}
 	}
 
-	private final double EPSILON = 1e-8;
+	private static final double EPSILON = 1e-8;
 
-	private final int idxX = 0;
-	private final int idxY = 1;
-	private final int idxZ = 2;
-	private final int idxRoll = 3;
-	private final int idxPitch = 4;
-	private final int idxYaw = 5;
-	private final int idxLatency = 6;
-	private final int idxTagCount = 7;
-	private final int idxTagSpan = 8;
-	private final int idxTagDistance = 9;
-	private final int idxTagArea = 10;
+	private static final int idxX = 0;
+	private static final int idxY = 1;
+	private static final int idxZ = 2;
+	private static final int idxRoll = 3;
+	private static final int idxPitch = 4;
+	private static final int idxYaw = 5;
+	private static final int idxLatency = 6;
+	private static final int idxTagCount = 7;
+	private static final int idxTagSpan = 8;
+	private static final int idxTagDistance = 9;
+	private static final int idxTagArea = 10;
 
 	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
+		m_botpose = m_visionTable.getEntry(VisionConstants.MegaTag2);
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
@@ -99,8 +101,9 @@ public class Limelight implements CameraInterface {
 		m_robotSpeedSupplier = robotSpeedSupplier;
 		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
+		m_orientation = m_visionTable.getEntry("robot_orientation_set"); // megatag 2 specific NT Entry
 
-		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
+		m_visionTable.addListener(VisionConstants.MegaTag2, EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
 										});
@@ -116,20 +119,31 @@ public class Limelight implements CameraInterface {
 		var rotationSpeed = m_robotRotationSpeedSupplier.get();
 		var isMovingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? false : VisionConstants.RobotSpeedThresholdMPS < m_robotSpeedSupplier.get();
 		var isRotatingTooFast = m_limeLightVersion == LimelightVersion.LL3G ? rotationSpeed > 0.8 : rotationSpeed > 0.2; // TODO: change values and make constants
-		var isTooFar =  m_limeLightVersion == LimelightVersion.LL3G ? distance > 2.9 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
+		var isTooFar = m_limeLightVersion == LimelightVersion.LL3G ? distance > 10 : VisionConstants.AprilTagAverageDistanceThresholdMeters < distance;
 		if (isTooFar || isMovingTooFast || isRotatingTooFast) {
 			return 0;
 		}
 		return 1.0;
 	}
 
-	private double calculateTranslationalDeviations(double distance, double tagCount) {
+	// This is an example what the curve can look like
+	// https://www.desmos.com/calculator/0oji4iffeg
+	public static double calculateTranslationalDeviations(double distance, double tagCount) {
 		var stddev = Math.pow(distance*Constants.VisionConstants.LL3G.DistanceScalar, Constants.VisionConstants.LL3G.ErrorExponent);
 		// commented out for now until we know what's what
+		// stddev += m_robotRotationSpeedSupplier.get()*VisionConstants.LL3G.RobotRotationSpeedErrorScalar;
 		// stddev /= tagCount * VisionConstants.L3G.TagCountErrorScalar;
 		// stddev *= (1 + m_robotSpeedSupplier.get() * VisionConstants.LL3G.RobotSpeedErrorScalar);
 
 		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
+	}
+
+	public static Pose3d makePoseFromArray(double[] data) {
+		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
+											data[idxPitch] * Math.PI / 180,
+											data[idxYaw]  * Math.PI / 180);
+
+		return new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
 	}
 
 	/**
@@ -139,16 +153,14 @@ public class Limelight implements CameraInterface {
 	public void recordMeasuredData() {
 		var data = m_botpose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
-		if (data == null || data[idxX] < EPSILON) {
+		if (data == null || data[idxX] < EPSILON || DriverStation.isDisabled() || data[idxTagCount] == 0) {
+			// We bail out if the data is junk, or the robot isn't enabled
+			// This method triggers when the MegaTag2 pipeline updates
 			m_mostRecentData = Optional.empty();
 			return;
 		}
 
-		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
-											data[idxPitch] * Math.PI / 180,
-											data[idxYaw]  * Math.PI / 180);
-
-		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
+		var visionPose = makePoseFromArray(data);
 
 		if (m_offset != null) {
 			var cameraOffset = m_offset.get();
@@ -159,7 +171,7 @@ public class Limelight implements CameraInterface {
 								visionPose.getZ() - cameraOffset.getZ()),
 				new Rotation3d(0,//poseRotation.getX() - cameraOffset.getRotation().getX(),
 								0,//poseRotation.getY() - cameraOffset.getRotation().getY(),
-								poseRotation.getZ())//- cameraOffset.getRotation().getZ())
+								visionPose.getRotation().getZ())//- cameraOffset.getRotation().getZ())
 			);
 		}
 
@@ -291,5 +303,10 @@ public class Limelight implements CameraInterface {
 
 	public void resetPriorityID() {
 		m_priorityid.setNumber(-1);
+	}
+
+	@Override
+	public void updateCameraPose(double[] rotationValues) {
+		m_orientation.setDoubleArray(rotationValues);
 	}
 }

@@ -12,7 +12,7 @@ public class VisionData {
 
 	private Matrix <N3,N1> m_devation;
 
-	VisionData(Pose3d pose, double timestamp, Matrix <N3,N1>devation) {
+	public VisionData(Pose3d pose, double timestamp, Matrix <N3,N1>devation) {
 
 		m_pose = pose;
 		m_time = timestamp;
