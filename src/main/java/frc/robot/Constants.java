@@ -125,6 +125,8 @@ public class Constants {
 
 		public static final double NearToMidThresholdXMeters = 6;
 		public static final double MidToFarThresholdXMeters = 10;
+
+		public static final double DriverControllerRotationScalar = 1.5;
 	}	
 
 	public static class LauncherConstants {

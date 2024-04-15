@@ -8,6 +8,7 @@ import com.chaos131.gamepads.Gamepad;
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SwerveConstants2024;
 
 public class RobotRelativeDrive extends Command {
   private Gamepad m_driver;
@@ -29,7 +30,7 @@ public class RobotRelativeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveDrive.moveRobotRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX());
+    m_swerveDrive.moveRobotRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX() * SwerveConstants2024.DriverControllerRotationScalar);
     //m_swerveDrive.moveRobotRelative(m_driver.getLeftY(), 0, 0);
 
   }
