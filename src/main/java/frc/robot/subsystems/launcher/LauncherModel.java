@@ -227,7 +227,7 @@ public class LauncherModel {
     public static double interpolateDouble(double input, double x0, double x1, double y0, double y1) {
         double slope = (y1 - y0) / (x1 - x0);
         double interpolatedValue = y0 + slope * (input - x0);
-        return MathUtil.clamp(interpolatedValue, y0, y1);
+        return MathUtil.clamp(interpolatedValue, Math.min(y0, y1), Math.max(y0, y1));
     }
 
     /**
