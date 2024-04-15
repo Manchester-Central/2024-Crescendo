@@ -50,9 +50,15 @@ public class LauncherModel {
     private static final double kMaxLaunchDistanceMeters = 9.0;
 
     // Efficiency Lost Multiplier
-    private static final double kEfficiencyLossMultiplier = 0.6;
-    private static final DashboardNumber m_efficiencyLossMultiplier = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier", kEfficiencyLossMultiplier, true, (newValue) -> {});
-
+    private static final double kEfficiencyLossMultiplierClose = 0.6;
+    private static final double kEfficiencyLossMultiplierFar = 0.6; // TO-DO: tune me!
+    private static final double kCloseDistance = 4; // TO-DO: tune me!
+    private static final double kFarDistance = 8; // TO-DO: tune me!
+    private static final DashboardNumber m_efficiencyLossMultiplierClose = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier Close", kEfficiencyLossMultiplierClose, DebugConstants.LauncherModelDebugEnable, (newValue) -> {});
+    private static final DashboardNumber m_efficiencyLossMultiplierFar = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier Far", kEfficiencyLossMultiplierFar, DebugConstants.LauncherModelDebugEnable, (newValue) -> {});
+    private static final DashboardNumber m_closeDistance = new DashboardNumber("LauncherModel/Close Distance", kCloseDistance, DebugConstants.LauncherModelDebugEnable, (newValue) -> {});
+    private static final DashboardNumber m_farDistance = new DashboardNumber("LauncherModel/Far Distance", kFarDistance, DebugConstants.LauncherModelDebugEnable, (newValue) -> {});
+    
     /**
      * An enum for specifying if we're aiming for a speaker or the floor
      */
@@ -100,7 +106,8 @@ public class LauncherModel {
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
 
         // Run the calculation with a slightly lower velicty to account for energy transfer loss
-        double adjustedVelocityMps = initialVelocityMPS * m_efficiencyLossMultiplier.get();
+        double adjustedVelocityMps = initialVelocityMPS * interpolateDouble(adjustedDistanceMeters, m_closeDistance.get(), m_farDistance.get(), m_efficiencyLossMultiplierClose.get(),
+                                                                            m_efficiencyLossMultiplierFar.get());
 
         // Calculate the desired launcher angle from the calculated values
         // Using the formula Dan gave us here: https://docs.google.com/spreadsheets/d/1uqDhTsbwMxrkkyMMzWEmLbcNDx1oy95dRZYe3OpYG2s/edit?usp=sharing
@@ -210,6 +217,17 @@ public class LauncherModel {
     public static double interpolateInitialVelocityMps(double distance) {
         double interpolatedSpeed = (kLauncherSpeedSlope * (distance - kMaxDistanceForMinSpeedMeters)) + kMinLauncherSpeedMps;
         return MathUtil.clamp(interpolatedSpeed, kMinLauncherSpeedMps, kMaxLauncherSpeedMps);
+    }
+
+    // x: distance
+    // y0 = minAdjustedSpeed
+    // y1 = maxAdjustedSpeed
+    // m = slope between y0 and y1
+
+    public static double interpolateDouble(double input, double x0, double x1, double y0, double y1) {
+        double slope = (y1 - y0) / (x1 - x0);
+        double interpolatedValue = y0 + slope * (input - x0);
+        return MathUtil.clamp(interpolatedValue, Math.min(y0, y1), Math.max(y0, y1));
     }
 
     /**
