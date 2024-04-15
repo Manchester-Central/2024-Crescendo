@@ -106,8 +106,8 @@ public class LauncherModel {
         double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
 
         // Run the calculation with a slightly lower velicty to account for energy transfer loss
-        double adjustedVelocityMps = initialVelocityMPS * interpolateDouble(adjustedDistanceMeters, kCloseDistance, kFarDistance, m_efficiencyLossMultiplierClose.get(),
-                                                                            m_efficiencyLossMultiplierFar.get());
+        double adjustedVelocityMps = initialVelocityMPS * interpolateDouble(adjustedDistanceMeters, kCloseDistance, kFarDistance, m_closeDistance.get(),
+                                                                            m_farDistance.get());
 
         // Calculate the desired launcher angle from the calculated values
         // Using the formula Dan gave us here: https://docs.google.com/spreadsheets/d/1uqDhTsbwMxrkkyMMzWEmLbcNDx1oy95dRZYe3OpYG2s/edit?usp=sharing
