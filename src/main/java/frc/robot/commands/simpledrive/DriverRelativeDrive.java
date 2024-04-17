@@ -32,7 +32,8 @@ public class DriverRelativeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), ControllerUtil.getAdjustedRotationValue(m_driver.getSlewRightX(), m_driver.getSlewRightY()));
+    m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), -m_driver.getSlewRightX() * SwerveConstants2024.DriverControllerRotationScalar);
+    // m_swerveDrive.moveFieldRelative(m_driver.getSlewLeftY(), -m_driver.getSlewLeftX(), ControllerUtil.getAdjustedRotationValue(m_driver.getSlewRightX(), m_driver.getSlewRightY()));
   }
 
   // Called once the command ends or is interrupted.

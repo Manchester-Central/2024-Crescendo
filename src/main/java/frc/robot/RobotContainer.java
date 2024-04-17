@@ -44,6 +44,7 @@ import frc.robot.commands.defaults.DefaultVisionCommand;
 import frc.robot.commands.simpledrive.DriverRelativeDrive;
 import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
+import frc.robot.commands.simpledrive.RobotRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.DropInTrap;
@@ -218,8 +219,8 @@ public class RobotContainer {
     m_driver.povRight().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Right)); // -90 degrees for blue
 
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
-    m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
-    m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
+    m_driver.b().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0, true)); // Align angle to stage left (but allow translation)
+    m_driver.x().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0, true)); // Align angle to stage right (but allow translation)
     m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, true, "MidLinePass"));  // Align angle to HP (but allow translation)
     // m_driver.y().whileTrue(new LobOntoFieldSetDistance(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.PassFromSource, 8.0, LiftConstants.SourceIntakeHeightHighMeters, LauncherConstants.SourceIntakeAngleHigh, m_getdefaultLauncherTarget, true));  // Align angle to HP (but allow translation)
 
