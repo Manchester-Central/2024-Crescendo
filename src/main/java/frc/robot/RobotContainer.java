@@ -83,7 +83,7 @@ public class RobotContainer {
   public static boolean PreSpinEnabled = true;
   public boolean m_isPoseUpdateEnabled = true;
 
-  private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
+  private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 50, 50);
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
   public static Gamepad SimKeyboard;
   private Gamepad m_tester;
