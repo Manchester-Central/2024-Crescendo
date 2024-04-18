@@ -76,6 +76,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
     m_focusTimer.reset();
     m_focusTimer.start();
     m_focusTimerStarted = false;
+    m_lightStrip.setSingleColor(Color.WHITE);
     super.initialize();
   }
 
@@ -120,6 +121,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
   protected boolean isClearToLaunch() {
     var isVisionEnabled = m_isVisionEnabledSupplier.get();
     if (isVisionEnabled && m_camera.hasTarget()) {
+      m_lightStrip.setSingleColor(Color.GREEN);
       return Math.abs(m_camera.getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
     }
     var isOdometryInRange = Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
@@ -127,7 +129,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
       m_focusTimer.start();
       m_focusTimerStarted = true;
     }
-    var hasTimedOut = m_focusTimer.hasElapsed(0.1);
+    var hasTimedOut = m_focusTimer.hasElapsed(0.5);
     if (m_focusTimerStarted) {
       m_lightStrip.setSingleColor(Color.PURPLE);
     }
