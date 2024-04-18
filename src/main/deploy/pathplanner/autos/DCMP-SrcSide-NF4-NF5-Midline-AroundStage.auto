@@ -12,21 +12,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "disableOdometryUpdates"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "enableOdometryUpdates"
           }
         },
         {
@@ -42,21 +30,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "disableOdometryUpdates"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "DCMP-SrcSide-5Ns-AroundStage-GetNF5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "enableOdometryUpdates"
           }
         },
         {
