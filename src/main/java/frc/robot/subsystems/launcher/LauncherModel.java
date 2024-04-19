@@ -51,7 +51,7 @@ public class LauncherModel {
 
     // Efficiency Lost Multiplier
     private static final double kEfficiencyLossMultiplierClose = 0.70;
-    private static final double kEfficiencyLossMultiplierFar = 0.70; // TO-DO: tune me!
+    private static final double kEfficiencyLossMultiplierFar = 0.56; // TO-DO: tune me!
     private static final double kCloseDistance = 3.0; // TO-DO: tune me!
     private static final double kFarDistance = 6.0; // TO-DO: tune me!
     private static final DashboardNumber m_efficiencyLossMultiplierClose = new DashboardNumber("LauncherModel/Efficiency Loss Multiplier Close", kEfficiencyLossMultiplierClose, DebugConstants.LauncherModelDebugEnable, (newValue) -> {});
