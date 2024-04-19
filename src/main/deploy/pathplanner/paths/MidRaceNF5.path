@@ -3,52 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.289990426134699,
-        "y": 4.114515152107228
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.237666321486491,
-        "y": 4.084914323674802
-      },
-      "isLocked": false,
-      "linkedName": "MidRaceNF3"
-    },
-    {
-      "anchor": {
-        "x": 4.580019929270629,
-        "y": 3.4238291553506186
-      },
-      "prevControl": {
-        "x": 5.596315038783925,
-        "y": 4.242785408647741
-      },
-      "nextControl": {
-        "x": 4.040530661634611,
-        "y": 2.989095085313827
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 2.2119536546765417,
         "y": 3.1968894707020192
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.086672788730195,
+        "y": 1.8352513628104188
+      },
+      "isLocked": false,
+      "linkedName": "MidRaceLaunch3End"
+    },
+    {
+      "anchor": {
+        "x": 5.86272249467576,
+        "y": 0.8682909673511654
+      },
       "prevControl": {
-        "x": 3.7906645044059335,
-        "y": 2.4174009886481316
+        "x": 4.096539731541003,
+        "y": 1.815517477188801
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MidRaceLaunch3End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Intake",
+      "name": "intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -73,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 132.86,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "MidLineRace",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 132.86,
     "velocity": 0
   },
   "useDefaultConstraints": true
