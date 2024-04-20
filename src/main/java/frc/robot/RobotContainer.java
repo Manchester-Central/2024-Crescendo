@@ -207,7 +207,7 @@ public class RobotContainer {
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
-    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote()));
+    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote(), ()-> m_operator.getHID().getStartButton()));
   }
 
   private void configureDriverCommands() {
@@ -244,8 +244,10 @@ public class RobotContainer {
   }
 
   private void configureOperatorCommands() {
-    m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
-    m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
+    //m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
+    //m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
+
+    // start is used for LED's 
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
