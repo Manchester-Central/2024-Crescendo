@@ -51,6 +51,7 @@ import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
 import frc.robot.commands.step.PassNote;
 import frc.robot.commands.step.RunIntake;
+import frc.robot.commands.step.RunIntakeUntilNote;
 import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.LaunchWithOdometry;
 import frc.robot.commands.step.LaunchWithOdometryAndVision;
@@ -170,6 +171,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
     NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
+    NamedCommands.registerCommand("intakeUntilNote", new RunIntakeUntilNote(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
+    
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 

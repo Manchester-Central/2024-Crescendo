@@ -27,7 +27,7 @@ public class RunIntake extends Command {
   private Intake m_intake;
   private Lift m_lift;
   private Launcher m_launcher;
-  private Feeder m_feeder;
+  protected Feeder m_feeder;
   private RumbleManager m_rumbleManager;
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget;
