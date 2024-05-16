@@ -55,7 +55,7 @@ public class Constants {
 
 		public static class LL3G {
 			public static final double MinimumError = 0.02;
-			public static final double ErrorExponent = 3.0;
+			public static final double ErrorExponent = 2.2; // 3.0;
 			public static final double DistanceScalar = 1/3.15;
 			public static final double TotalDeviationMultiplier = 1;
 			public static final double TagCountErrorScalar = 1.0;
@@ -125,6 +125,8 @@ public class Constants {
 
 		public static final double NearToMidThresholdXMeters = 6;
 		public static final double MidToFarThresholdXMeters = 10;
+
+		public static final double DriverControllerRotationScalar = 1.0;
 	}	
 
 	public static class LauncherConstants {
@@ -180,7 +182,7 @@ public class Constants {
 		public static final double LiftG = 0.6;
 		public static final double LiftToleranceMeters = 0.01;
 
-		public static final double MinHeightMeters = 0.01;
+		public static final double MinHeightMeters = 0.0;
 		public static final double MaxHeightMeters = 0.693; 
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;
