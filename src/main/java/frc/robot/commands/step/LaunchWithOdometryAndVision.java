@@ -41,6 +41,7 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
   private Rotation2d m_lastLauncherTilt = null;
   private Supplier<Boolean> m_isVisionEnabledSupplier;
 	private Timer m_focusTimer = new Timer();
+  private boolean m_focusTimerStarted = false;
   private LightStrip m_lightStrip;
 
   /** Creates a new Lanch Partay. */
@@ -74,6 +75,8 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
     m_focusTimer.stop();
     m_focusTimer.reset();
     m_focusTimer.start();
+    m_focusTimerStarted = false;
+    m_lightStrip.setSingleColor(Color.WHITE);
     super.initialize();
   }
 
@@ -118,13 +121,19 @@ public class LaunchWithOdometryAndVision extends BaseLaunch {
   protected boolean isClearToLaunch() {
     var isVisionEnabled = m_isVisionEnabledSupplier.get();
     if (isVisionEnabled && m_camera.hasTarget()) {
+      m_lightStrip.setSingleColor(Color.GREEN);
       return Math.abs(m_camera.getTargetAzimuth(true)) < VisionConstants.TxLaunchTolerance;
     }
-    var hasTimedOut = m_focusTimer.hasElapsed(1.7);
-    if (hasTimedOut) {
+    var isOdometryInRange = Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+    if (isOdometryInRange && !m_focusTimerStarted) {
+      m_focusTimer.start();
+      m_focusTimerStarted = true;
+    }
+    var hasTimedOut = m_focusTimer.hasElapsed(0.5);
+    if (m_focusTimerStarted) {
       m_lightStrip.setSingleColor(Color.PURPLE);
     }
-    return hasTimedOut && Math.abs(getDriveAngleErrorDegrees()) < VisionConstants.TxLaunchTolerance;
+    return hasTimedOut && isOdometryInRange;
   }
 
   private double getDriveAngleErrorDegrees() {

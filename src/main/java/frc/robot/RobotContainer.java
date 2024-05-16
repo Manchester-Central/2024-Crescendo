@@ -44,12 +44,14 @@ import frc.robot.commands.defaults.DefaultVisionCommand;
 import frc.robot.commands.simpledrive.DriverRelativeDrive;
 import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
+import frc.robot.commands.simpledrive.RobotRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
 import frc.robot.commands.step.PassNote;
 import frc.robot.commands.step.RunIntake;
+import frc.robot.commands.step.RunIntakeUntilNote;
 import frc.robot.commands.step.LaunchSpit;
 import frc.robot.commands.step.LaunchWithOdometry;
 import frc.robot.commands.step.LaunchWithOdometryAndVision;
@@ -82,7 +84,7 @@ public class RobotContainer {
   public static boolean PreSpinEnabled = true;
   public boolean m_isPoseUpdateEnabled = true;
 
-  private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 10, 10);
+  private Gamepad m_driver = new Gamepad(ControllerConstants.DriverPort, 50, 50);
   private Gamepad m_operator = new Gamepad(ControllerConstants.OperatorPort);
   public static Gamepad SimKeyboard;
   private Gamepad m_tester;
@@ -169,6 +171,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
     NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
     NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
+    NamedCommands.registerCommand("intakeUntilNote", new RunIntakeUntilNote(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
+    
     // Build an auto chooser. This will use Commands.none() as the default option.
     m_pathPlannerChooser = AutoBuilder.buildAutoChooser();
 
@@ -203,7 +207,7 @@ public class RobotContainer {
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
     m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
-    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote()));
+    m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote(), ()-> m_operator.getHID().getStartButton()));
   }
 
   private void configureDriverCommands() {
@@ -218,8 +222,8 @@ public class RobotContainer {
     m_driver.povRight().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Right)); // -90 degrees for blue
 
     m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
-    m_driver.b().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0)); // Align angle to stage left (but allow translation)
-    m_driver.x().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0)); // Align angle to stage right (but allow translation)
+    m_driver.b().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0, true)); // Align angle to stage left (but allow translation)
+    m_driver.x().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0, true)); // Align angle to stage right (but allow translation)
     m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, true, "MidLinePass"));  // Align angle to HP (but allow translation)
     // m_driver.y().whileTrue(new LobOntoFieldSetDistance(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.PassFromSource, 8.0, LiftConstants.SourceIntakeHeightHighMeters, LauncherConstants.SourceIntakeAngleHigh, m_getdefaultLauncherTarget, true));  // Align angle to HP (but allow translation)
 
@@ -240,8 +244,10 @@ public class RobotContainer {
   }
 
   private void configureOperatorCommands() {
-    m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
-    m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
+    //m_operator.back().onTrue(new InstantCommand(() -> m_isAutomationEnabled = false)); // Disable Automation (?)
+    //m_operator.start().onTrue(new InstantCommand(() -> m_isAutomationEnabled = true)); // Enable Automation (?)
+
+    // start is used for LED's 
 
     m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin

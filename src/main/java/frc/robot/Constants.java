@@ -181,7 +181,7 @@ public class Constants {
 		public static final double LiftG = 0.6;
 		public static final double LiftToleranceMeters = 0.01;
 
-		public static final double MinHeightMeters = 0.01;
+		public static final double MinHeightMeters = 0.0;
 		public static final double MaxHeightMeters = 0.693; 
 		public static final double MaxSpeedBeforeBottom = 0.15;
 		public static final double MaxSpeed = 0.3;

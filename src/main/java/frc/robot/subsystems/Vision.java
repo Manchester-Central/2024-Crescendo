@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.CameraInterface;
 import frc.robot.subsystems.vision.Limelight;
 import frc.robot.subsystems.vision.VisionData;
+import frc.robot.subsystems.vision.CameraInterface.CameraMode;
 import frc.robot.subsystems.vision.Limelight.LimelightVersion;
 
 public class Vision extends SubsystemBase {
@@ -31,7 +32,7 @@ public class Vision extends SubsystemBase {
 		m_frontLimeLightCamera = new Limelight("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
 		m_backLimeLightCamera = new Limelight("limelight-back", LimelightVersion.LL3 , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
 		// m_noteTrackingCamera = new LimeLightCamera("limelight-notes", LimelightVersion.LL3, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
-		// m_noteTrackingCamera.setMode(CameraMode.PIECE_TRACKING);
+		m_backLimeLightCamera.setMode(CameraMode.PIECE_TRACKING);
 	}
 
 	public void setOffsetHandler(Supplier<Pose3d> offsetHandler, CameraDirection direction) {
