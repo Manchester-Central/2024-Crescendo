@@ -1,5 +1,9 @@
 package frc.robot.commands.auto;
 
+import java.nio.Buffer;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.chaos131.swerve.BaseSwerveDrive;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,6 +21,7 @@ import frc.robot.subsystems.vision.CameraInterface;
 import frc.robot.subsystems.vision.CameraInterface.CameraMode;
 
 public class AimForNote extends Command {
+	private final int minDataPoints = 5; // rough guess
 	private BaseSwerveDrive m_swerveDrive;
 	private Vision m_vision;
 	private Intake m_intake;
@@ -26,6 +31,7 @@ public class AimForNote extends Command {
 	private Feeder m_feeder;
 	private double m_startime;
 	private final double m_minDurationSeconds = 1.0;
+	private LinkedList<Double> m_queue = new LinkedList<>(); // fix this
 
 	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Intake intake, Launcher launcher, Feeder feeder){
 		m_swerveDrive = swerveDrive;
@@ -52,9 +58,15 @@ public class AimForNote extends Command {
 			// lets protect ourselves from targetting an april tag and moving to it
 			return;
 		}
+
+
 		Double tx = m_camera.getTargetAzimuth(true);
 		Double ty = m_camera.getTargetElevation(true);
-		if(!m_camera.hasTarget()) return;
+		m_queue.add(ty);
+		if (m_queue.size() >= minDataPoints) {
+			m_queue.getLast();
+		}
+
 
 		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
 		var speedModifier = MathUtil.clamp(ty/50, 0.1, 1.0);
