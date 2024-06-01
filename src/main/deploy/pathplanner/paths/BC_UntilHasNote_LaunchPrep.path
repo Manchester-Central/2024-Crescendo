@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.017604189054533,
-        "y": 5.436685488755594
+        "x": 8.305389050150424,
+        "y": 7.424670370025476
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.942107422676385,
-        "y": 5.4564193743772105
+        "x": 8.255389050150425,
+        "y": 7.424670370025476
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BC_UntilHasNote_LaunchPrep"
     },
     {
       "anchor": {
-        "x": 1.8863445419198543,
-        "y": 5.703092944647428
+        "x": 6.69,
+        "y": 1.21
       },
       "prevControl": {
-        "x": 2.912506594243959,
-        "y": 5.446552431566402
+        "x": 8.690000000000001,
+        "y": 1.21
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BC_UntilHasNote_LaunchPrep_End"
     }
   ],
   "rotationTargets": [],
@@ -38,15 +38,15 @@
     "maxAngularAcceleration": 544.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -179.10482628978895,
+    "velocity": 1.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "IntakeUntilHasNote",
   "previewStartingState": {
-    "rotation": -178.46634031733973,
-    "velocity": 0
+    "rotation": -90.0,
+    "velocity": 2.0
   },
   "useDefaultConstraints": true
 }

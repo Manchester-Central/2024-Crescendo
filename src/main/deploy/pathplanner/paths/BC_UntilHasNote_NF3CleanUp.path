@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.29985736894551,
+        "y": 4.084914323674803
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.288114822148389,
+        "y": 4.849397809989427
+      },
+      "isLocked": false,
+      "linkedName": "BC_UntilhadNote_NF3Start_End"
+    },
+    {
+      "anchor": {
+        "x": 8.319591254567126,
+        "y": 7.429807936538951
+      },
+      "prevControl": {
+        "x": 8.309724311756318,
+        "y": 5.3577499462691245
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.98776039963973,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "IntakeUntilHasNote",
+  "previewStartingState": {
+    "rotation": -120.19999999999999,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
