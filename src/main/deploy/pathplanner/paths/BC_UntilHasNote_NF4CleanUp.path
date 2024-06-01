@@ -43,7 +43,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeUntilHasNote",
+  "folder": "SrcSideMidlineSweep",
   "previewStartingState": {
     "rotation": -163.18,
     "velocity": 0

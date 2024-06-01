@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2252593735956716,
-        "y": 3.956644067134288
+        "x": 1.185791602352437,
+        "y": 6.926593853187707
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2323913165328815,
-        "y": 2.7972712491019185
+        "x": 2.1034172837576453,
+        "y": 6.403645884214845
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.281967377058862,
-        "y": 0.7846260485673593
+        "x": 2.882905765811533,
+        "y": 6.9956624528633675
       },
       "prevControl": {
-        "x": 3.0472234410945274,
-        "y": 1.1476619814865876
+        "x": 2.093550340946837,
+        "y": 6.551650026376976
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "UntillHasNote_NF5"
+      "linkedName": "BC_MidlineSweep_AmpSide_NC1_End"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.0451587461278,
-    "rotateFast": false
+    "rotation": -152.09297981489888,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "SrcSideMidlineSweep",
+  "folder": "AmpSideMidlineSweep",
   "previewStartingState": {
-    "rotation": 122.6994611210019,
+    "rotation": -125.5376777919744,
     "velocity": 0
   },
   "useDefaultConstraints": true

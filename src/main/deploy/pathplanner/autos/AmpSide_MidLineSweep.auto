@@ -1,0 +1,111 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_NC1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_NF1Start"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC_MidlineSweep_AmpSide_NF1CleanUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUntilNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_LaunchPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_NF2Start"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC_MidlineSweep_AmpSide_NF2CleanUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUntilNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_LaunchPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_MidlineSweep_AmpSide_Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
