@@ -6,6 +6,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BC_UntilhasNote_NF5Start"

@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BC_MidlineSweep_AmpSide_NF1Start"

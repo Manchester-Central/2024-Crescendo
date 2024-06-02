@@ -14,32 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BC_UntilhasNote_NF5Start"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "BC_UntilHasNote_NF5-4CleanUp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeUntilNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BC_UntilHasNote_Close_Launch"
+            "pathName": "NC2-Pickup"
           }
         },
         {
@@ -51,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BC_UntilhasNote_NF4Start"
+            "pathName": "NF3-Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BC_UntilHasNote_Close_Launch"
+            "pathName": "NF3-Launch"
           }
         },
         {
@@ -69,7 +44,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BC_UntilhasNote_C3"
+            "pathName": "NC3-Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NC1-Pickup"
           }
         },
         {
