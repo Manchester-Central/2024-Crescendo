@@ -45,8 +45,8 @@ public class DropInAmp extends Command {
     if (m_spitTimer.hasElapsed(0.25)) {
       m_lift.moveToHeight(LiftConstants.BattleCryAmpMeters);
       m_launcher.setTiltAngle(LauncherConstants.BattleCryAmpAngle);
-      m_feeder.setFeederPower(0.5);
-      m_launcher.setLauncherPower(0.5);
+      // m_feeder.setFeederPower(0.5);
+      // m_launcher.setLauncherPower(0.5);
       return;
     }
     m_lift.moveToHeight(LiftConstants.AmpMeters);
