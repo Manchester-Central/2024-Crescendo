@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.086223403216037,
-        "y": 1.8451183056212277
+        "x": 3.9288017037572533,
+        "y": 0.1776049705945561
       },
       "isLocked": false,
       "linkedName": "BC_UntilHasNote_LaunchPrep_End"
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "SrcSideMidlineSweep",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -155.65891006330733,
     "velocity": 2.0
   },
   "useDefaultConstraints": true
