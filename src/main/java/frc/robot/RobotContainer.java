@@ -249,7 +249,7 @@ public class RobotContainer {
 
     // start is used for LED's 
 
-    m_operator.povUp().whileTrue(new PassNote(m_intake, m_lift, m_feeder, m_launcher)); // Reverse Intake (dumb)
+    m_operator.povUp().whileTrue(new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher)); // change back to PassNote
     m_operator.povDown().whileTrue(new InstantCommand(() -> PreSpinEnabled = false).alongWith(new SimpleControl().flywheel(m_launcher, -0.05))); // Disable launcher prespin
     m_operator.povLeft().whileTrue(new SimpleControl().feeder(m_feeder, 0.3, 0)); // Position note for trap 
     m_operator.povRight().whileTrue(new InstantCommand(() -> PreSpinEnabled = true)); // Re-enable launcher prespin
