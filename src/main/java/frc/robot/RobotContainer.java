@@ -258,7 +258,7 @@ public class RobotContainer {
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
     Function<Rotation2d, StartEndCommand> createGetTiltCommand = (Rotation2d angle) -> new StartEndCommand(() -> m_launcher.setTiltAngle(angle), () -> m_launcher.setTiltSpeed(0), m_launcher);
     m_operator.a().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // Min height
-    m_operator.b().whileTrue(new BattleCryAmp(m_lift, m_launcher, m_feeder)); // Amp Height
+    m_operator.b().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp Height
     m_operator.x().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher)); // HP Intake
     m_operator.y().whileTrue(
       createGetHeightCommand.apply(LiftConstants.MaxHeightMeters)
