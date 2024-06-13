@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.185791602352437,
+        "y": 6.926593853187707
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1034172837576453,
+        "y": 6.403645884214845
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.882905765811533,
+        "y": 6.9956624528633675
+      },
+      "prevControl": {
+        "x": 2.093550340946837,
+        "y": 6.551650026376976
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BC_MidlineSweep_AmpSide_NC1_End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -152.09297981489888,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "AmpSideMidlineSweep",
+  "previewStartingState": {
+    "rotation": -125.5376777919744,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

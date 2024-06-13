@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.281967377058862,
-        "y": 0.7846260485673593
+        "x": 8.29985736894551,
+        "y": 4.084914323674803
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.270256540513081,
-        "y": 1.5491100212969666
+        "x": 8.288114822148389,
+        "y": 4.849397809989427
       },
       "isLocked": false,
-      "linkedName": "UntillHasNote_NF5"
+      "linkedName": "BC_UntilhadNote_NF3Start_End"
     },
     {
       "anchor": {
@@ -30,18 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 3.5,
@@ -54,9 +43,9 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "IntakeUntilHasNote",
+  "folder": "SrcSideMidlineSweep",
   "previewStartingState": {
-    "rotation": -178.80079275756373,
+    "rotation": -120.19999999999999,
     "velocity": 0
   },
   "useDefaultConstraints": true
