@@ -32,7 +32,7 @@ public class DefaultFeederCommand extends Command {
   @Override
   public void execute() { 
     if (RobotContainer.PreSpinEnabled) {
-      m_feeder.grabAndHoldPiece(m_intakeHasNoteSupplier.get() ? 1.0 : 0.0); // Position the note still if we have one
+      m_feeder.grabAndHoldPiece(m_intakeHasNoteSupplier.get() ? 0.35 : 0.0); // Position the note still if we have one
     } else {
       m_feeder.setFeederPower(0);
     }
