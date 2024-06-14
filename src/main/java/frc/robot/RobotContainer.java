@@ -203,11 +203,11 @@ public class RobotContainer {
     m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision));
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
-    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake, () -> m_feeder.hasNote()));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester, () -> m_intake.hasNote()));
     m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote(), ()-> m_operator.getHID().getStartButton()));
   }
 

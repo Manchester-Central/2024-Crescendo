@@ -4,6 +4,8 @@
 
 package frc.robot.commands.defaults;
 
+import java.util.function.Supplier;
+
 import com.chaos131.gamepads.Gamepad;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,11 +15,12 @@ import frc.robot.subsystems.Feeder;
 public class DefaultFeederCommand extends Command {
   private Feeder m_feeder;
   private Gamepad m_tester;
-
+  private Supplier<Boolean> m_intakeHasNoteSupplier;
   /** Creates a new DefaultFeederCommand. */
-  public DefaultFeederCommand(Feeder feeder, Gamepad operator) {
+  public DefaultFeederCommand(Feeder feeder, Gamepad operator, Supplier<Boolean> intakeHasNoteSupplier) {
     m_feeder = feeder;
     m_tester = operator;
+    m_intakeHasNoteSupplier = intakeHasNoteSupplier;
     addRequirements(feeder);
   }
 
@@ -29,7 +32,7 @@ public class DefaultFeederCommand extends Command {
   @Override
   public void execute() { 
     if (RobotContainer.PreSpinEnabled) {
-      m_feeder.grabAndHoldPiece(0.0); // Position the note still if we have one
+      m_feeder.grabAndHoldPiece(m_intakeHasNoteSupplier.get() ? 1.0 : 0.0); // Position the note still if we have one
     } else {
       m_feeder.setFeederPower(0);
     }
