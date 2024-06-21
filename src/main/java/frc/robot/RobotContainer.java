@@ -355,6 +355,12 @@ public class RobotContainer {
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
 
+  public void demoInit(){
+    PreSpinEnabled = false;
+    m_isPoseUpdateEnabled = true;
+    m_lift.changeNeutralMode(NeutralModeValue.Brake);
+  }
+
   public void delayedDisableInit() {
     m_lift.changeNeutralMode(NeutralModeValue.Coast);
   }
