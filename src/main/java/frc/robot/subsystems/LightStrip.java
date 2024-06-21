@@ -18,7 +18,7 @@ public class LightStrip extends SubsystemBase{
         BLUE (0, 0, 255),
         CHAOS_ORANGE (255, 30, 0),
         OFF (0, 0, 0),
-        YELLOW (255, 255, 0),
+        YELLOW (32, 32, 0),
         WHITE(255, 255, 255),
         PURPLE(255, 0, 255);
         
