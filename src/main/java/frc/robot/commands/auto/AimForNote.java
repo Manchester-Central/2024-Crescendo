@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
@@ -28,18 +29,19 @@ public class AimForNote extends Command {
 	private CameraInterface m_camera;
 	private final double m_speed = -0.5; // needs to be in range [-1.0, 1.0] negative values are backwards
 	private Launcher m_launcher;
+	private Lift m_lift;
 	private Feeder m_feeder;
 	private double m_startime;
-	private final double m_minDurationSeconds = 1.0;
-	private LinkedList<Double> m_queue = new LinkedList<>(); // fix this
+	private final double m_minDurationSeconds = 5;
 
-	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Intake intake, Launcher launcher, Feeder feeder){
+	public AimForNote(BaseSwerveDrive swerveDrive, Vision vision, Intake intake, Launcher launcher, Feeder feeder, Lift lift){
 		m_swerveDrive = swerveDrive;
 		m_intake = intake;
 		m_vision = vision;
 		m_camera = m_vision.getCamera(CameraDirection.Back);
 		m_launcher = launcher;
 		m_feeder = feeder;
+		m_lift = lift;
 		addRequirements(swerveDrive, intake, vision, launcher, feeder);
 	}
 
@@ -53,6 +55,7 @@ public class AimForNote extends Command {
 	public void execute() {
 		m_feeder.grabAndHoldPiece(0.35);
 		m_launcher.setTiltAngle(Constants.LauncherConstants.VisionIntakeAngle);
+		m_lift.moveToHeight(Constants.LiftConstants.MinHeightMeters);
 
 		if (!m_camera.isCorrectPipeline()) {
 			// lets protect ourselves from targetting an april tag and moving to it
@@ -62,13 +65,9 @@ public class AimForNote extends Command {
 
 		Double tx = m_camera.getTargetAzimuth(true);
 		Double ty = m_camera.getTargetElevation(true);
-		m_queue.add(ty);
-		if (m_queue.size() >= minDataPoints) {
-			m_queue.getLast();
-		}
 
 
-		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy( Rotation2d.fromDegrees(-tx) );
+		Rotation2d noteAngle = m_swerveDrive.getOdometryRotation().rotateBy(Rotation2d.fromDegrees(-tx));
 		var speedModifier = MathUtil.clamp(ty/50, 0.1, 1.0);
 		Translation2d speed = new Translation2d(m_speed * speedModifier, noteAngle);
 		m_swerveDrive.moveFieldRelativeAngle(speed.getX(), speed.getY(), noteAngle, 0.75);
