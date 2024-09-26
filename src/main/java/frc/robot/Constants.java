@@ -156,6 +156,7 @@ public class Constants {
 		public static final Rotation2d LaunchSpitAngle = Rotation2d.fromDegrees(41.5);
 		public static final Rotation2d PassNoteAngle = Rotation2d.fromDegrees(7);
 		public static final Rotation2d AmpAngle = Rotation2d.fromDegrees(7);
+		public static final Rotation2d BattleCryAmpAngle = MaxAngle; // TODO get proper value
 		public static final Rotation2d BumperShotAngle = Rotation2d.fromDegrees(10);
 		public static final Rotation2d TrapAngle = Rotation2d.fromDegrees(19.5);
 
@@ -189,6 +190,7 @@ public class Constants {
 
 		public static final double DefaultLaunchMeters = 0.5;
 		public static final double AmpMeters = 0.532; // 0.64
+		public static final double BattleCryAmpMeters = 0.45; // TODO get proper value
 		public static final double SourceMeters = 0.3;
 
 		public static final double DefaultHoldMeters = MinHeightMeters + 0.25;

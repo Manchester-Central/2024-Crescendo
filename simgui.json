@@ -16,6 +16,11 @@
       "/SmartDashboard/vision field": "Field2d"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/SwerveDrive": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -45,6 +50,12 @@
       }
     },
     "transitory": {
+      "Shuffleboard": {
+        "Logging": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "Robot2024": {
           "open": true

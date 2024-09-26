@@ -16,15 +16,13 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.launcher.Launcher;
 
 // TODO: Implement actual control logic
-public class DropInAmp extends Command {
+public class BattleCryAmp extends Command {
   private Lift m_lift;
   private Launcher m_launcher;
   private Feeder m_feeder;
-  private Timer m_spitTimer = new Timer();
-  private boolean m_hasLostNote = false;
 
   /** Creates a new DropInAmp. */
-  public DropInAmp(Lift lift, Launcher launcher, Feeder feeder) {
+  public BattleCryAmp(Lift lift, Launcher launcher, Feeder feeder) {
     m_lift = lift;
     m_launcher = launcher;
     m_feeder = feeder;
@@ -34,37 +32,24 @@ public class DropInAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_spitTimer.reset();
-    m_spitTimer.stop();
-    m_hasLostNote = false;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_spitTimer.hasElapsed(0.25)) {
-      m_lift.moveToHeight(LiftConstants.IntakeHeightMeters);
-      // m_feeder.setFeederPower(0.5);
-      // m_launcher.setLauncherPower(0.5);
-      return;
-    }
-    m_lift.moveToHeight(LiftConstants.AmpMeters);
-    m_launcher.setLauncherPower(0.0);
-    m_launcher.setTiltAngle(LauncherConstants.AmpAngle);
-    if (m_lift.atTargetHeight(LiftConstants.AmpMeters) && m_launcher.atTargetAngle(LauncherConstants.AmpAngle)) {
-      m_feeder.setFeederPower(-1.0);
-    }else{
-      m_feeder.grabAndHoldPiece(0.0);
-    }
-    if (!m_hasLostNote && !m_feeder.hasNote()) {
-      m_hasLostNote = true;
-      m_spitTimer.start();
-    }
+    m_lift.moveToHeight(LiftConstants.BattleCryAmpMeters);
+    m_launcher.setTiltAngle(LauncherConstants.BattleCryAmpAngle);
+    m_feeder.setFeederPower(0.5);
+    m_launcher.setLauncherPower(0.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_feeder.setFeederPower(0);
+    m_launcher.setLauncherPower(0);
+  }
 
   // Returns true when the command should end.
   @Override

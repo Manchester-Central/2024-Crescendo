@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.28012348332389,
+        "y": 7.449541822160567
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.280123483329021,
+        "y": 5.120943318812966
+      },
+      "isLocked": false,
+      "linkedName": "BC_MidlineSweep_AmpSide_NF1Start_End"
+    },
+    {
+      "anchor": {
+        "x": 8.28999042613983,
+        "y": 0.7696215392463288
+      },
+      "prevControl": {
+        "x": 8.280123483329021,
+        "y": 4.933471405407602
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BC_MidlineSweep_AmpSide_NF1CleanUp_End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 680.0,
+    "maxAngularAcceleration": 544.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "AmpSideMidlineSweep",
+  "previewStartingState": {
+    "rotation": -179.09061955074407,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

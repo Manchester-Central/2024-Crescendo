@@ -1,0 +1,148 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilhasNote_NF5Start"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC_UntilHasNote_NF5CleanUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUntilNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_LaunchPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilhasNote_NF4Start"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC_UntilHasNote_NF4CleanUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUntilNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_LaunchPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilhasNote_NF3Start"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BC_UntilHasNote_NF3CleanUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUntilNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_LaunchPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BC_UntilHasNote_Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

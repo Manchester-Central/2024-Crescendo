@@ -47,6 +47,7 @@ import frc.robot.commands.simpledrive.DriverRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.RobotRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
+import frc.robot.commands.step.BattleCryAmp;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
@@ -203,11 +204,11 @@ public class RobotContainer {
     m_vision.setDefaultCommand(new DefaultVisionCommand(m_vision));
     m_swerveDrive.setDefaultCommand(new DriverRelativeDrive(m_driver, m_swerveDrive));
     // m_swerveDrive.setDefaultCommand(robotRelativeDrive);
-    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake, () -> m_feeder.hasNote()));
     m_lift.setDefaultCommand(new DefaultLiftCommand(m_lift, m_operator));
     m_launcher.setDefaultCommand(new DefaultLauncherCommand(m_launcher, m_operator, m_getDefaultLauncherTarget, () -> 
     m_feeder.hasNote()));
-    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester));
+    m_feeder.setDefaultCommand(new DefaultFeederCommand(m_feeder, m_tester, () -> m_intake.hasNote()));
     m_leds.setDefaultCommand(new DefaultLightStripCommand(m_leds, () -> m_intake.hasNote(), () -> m_feeder.hasNote(), ()-> m_operator.getHID().getStartButton()));
   }
 
@@ -258,7 +259,7 @@ public class RobotContainer {
     Function<Double, StartEndCommand> createGetHeightCommand = (Double height) -> new StartEndCommand(() -> m_lift.moveToHeight(height), () -> m_lift.setSpeed(0), m_lift);
     Function<Rotation2d, StartEndCommand> createGetTiltCommand = (Rotation2d angle) -> new StartEndCommand(() -> m_launcher.setTiltAngle(angle), () -> m_launcher.setTiltSpeed(0), m_launcher);
     m_operator.a().whileTrue(createGetHeightCommand.apply(LiftConstants.MinHeightMeters)); // Min height
-    m_operator.b().whileTrue(createGetHeightCommand.apply(LiftConstants.AmpMeters)); // Amp Height
+    m_operator.b().whileTrue(new DropInAmp(m_lift, m_launcher, m_feeder)); // Amp Height
     m_operator.x().whileTrue(new SourceIntake(m_lift, m_feeder, m_launcher)); // HP Intake
     m_operator.y().whileTrue(
       createGetHeightCommand.apply(LiftConstants.MaxHeightMeters)
@@ -352,6 +353,12 @@ public class RobotContainer {
 
   public void autoAndTeleopInit(boolean isAuto) {
     PreSpinEnabled = true;
+    m_isPoseUpdateEnabled = true;
+    m_lift.changeNeutralMode(NeutralModeValue.Brake);
+  }
+
+  public void demoInit(){
+    PreSpinEnabled = false;
     m_isPoseUpdateEnabled = true;
     m_lift.changeNeutralMode(NeutralModeValue.Brake);
   }
