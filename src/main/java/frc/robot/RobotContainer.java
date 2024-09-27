@@ -170,7 +170,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
-    NamedCommands.registerCommand("AimForNote", new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder));
+    NamedCommands.registerCommand("AimForNote", new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder, m_lift));
     NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
     NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
     NamedCommands.registerCommand("intakeUntilNote", new RunIntakeUntilNote(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
@@ -280,7 +280,7 @@ public class RobotContainer {
   }
 
   private void configureTesterCommands() {
-    m_tester.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder));
+    m_tester.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder, m_lift));
     // m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
