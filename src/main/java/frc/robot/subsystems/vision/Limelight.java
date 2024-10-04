@@ -10,12 +10,14 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
@@ -33,7 +35,8 @@ public class Limelight implements CameraInterface {
 	private Supplier<Double> m_robotRotationSpeedSupplier;
 
 	private NetworkTable m_visionTable;
-	private NetworkTableEntry m_botpose;
+	private NetworkTableEntry m_botPose;
+	private NetworkTableEntry m_demoPose;
 	private NetworkTableEntry m_pipelineID;
 
 	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
@@ -62,7 +65,8 @@ public class Limelight implements CameraInterface {
 		RED_APRIL_TAGS(1),
 		RETROREFLECTIVE(2),
 		BLUE_SPEAKER(3),
-		RED_SPEAKER(4);
+		RED_SPEAKER(4),
+		DEMO(5);
 
 		public final Integer pipelineId;
 
@@ -88,7 +92,8 @@ public class Limelight implements CameraInterface {
 	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
+		m_demoPose = m_visionTable.getEntry("targetpose_cameraspace");
+		m_botPose = m_visionTable.getEntry("botpose_wpiblue");
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
@@ -103,6 +108,18 @@ public class Limelight implements CameraInterface {
 		m_visionTable.addListener("botpose_wpiblue", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
+										});
+
+		m_visionTable.addListener("targetpose_cameraspace", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
+										(NetworkTable table, String key, NetworkTableEvent event) -> {
+											var initialPose = new Pose3d();
+											var targetPose = initialPose.plus(new Transform3d(0, 1, 0, new Rotation3d()));
+											double[] poseData = {
+												targetPose.getX(),
+												targetPose.getY(),
+												targetPose.getZ()
+											  };
+											  SmartDashboard.putNumberArray("Demo Target Pose", poseData);
 										});
 
 		m_mostRecentData = Optional.empty();
@@ -137,7 +154,7 @@ public class Limelight implements CameraInterface {
 	 */
 	@Override
 	public void recordMeasuredData() {
-		var data = m_botpose.getValue().getDoubleArray();
+		var data = m_botPose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
 		if (data == null || data[idxX] < EPSILON) {
 			m_mostRecentData = Optional.empty();
@@ -201,6 +218,10 @@ public class Limelight implements CameraInterface {
 
 			case PIECE_TRACKING:
 				m_mode = Mode.RETROREFLECTIVE;
+				break;
+
+			case DEMO:
+				m_mode = Mode.DEMO;
 				break;
 		
 			default:

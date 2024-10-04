@@ -310,7 +310,7 @@ public class RobotContainer {
       m_launcher.getEncoderTiltAngle().getDegrees(),
       m_feeder.getCurrentFeederPower(),
       m_launcher.getLeftLauncherRPM(),
-      m_feeder.hasNoteAtPrimary() ? 1 : 0, 
+      m_feeder.hasNoteAtPrimary() ? 1 : 0,
       m_feeder.hasNoteAtSecondary() ? 1 : 0,
       m_feeder.hasNoteAtTertiary() ? 1 : 0,
       m_intake.hasNote() ? 1 : 0,
