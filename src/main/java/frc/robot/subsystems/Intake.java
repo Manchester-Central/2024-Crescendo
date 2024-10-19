@@ -34,6 +34,8 @@ public class Intake extends SubsystemBase {
 		m_intakeUpperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		m_intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 35;
+		m_intakeUpperConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+		m_intakeUpperConfig.CurrentLimits.StatorCurrentLimit = 75;
 		m_intakeUpperConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeUpper.getConfigurator().apply(m_intakeUpperConfig);
 
@@ -41,6 +43,8 @@ public class Intake extends SubsystemBase {
 		m_intakeLowerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		m_intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 35;
+		m_intakeLowerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+		m_intakeLowerConfig.CurrentLimits.StatorCurrentLimit = 75;
 		m_intakeLowerConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.1;
 		m_intakeLower.getConfigurator().apply(m_intakeLowerConfig);
 
