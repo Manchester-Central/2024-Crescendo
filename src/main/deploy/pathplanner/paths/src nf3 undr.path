@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7807975615951244,
-        "y": 6.571383911998593
+        "x": 1.9258123131630895,
+        "y": 3.5422324690803233
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.787225728297611,
-        "y": 6.768722768214768
+        "x": 6.237666321486491,
+        "y": 2.575272073621071
       },
       "isLocked": false,
-      "linkedName": "NF1-Launch-End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.44
+        "x": 8.288663034725174,
+        "y": 4.1046482092964185
       },
       "prevControl": {
-        "x": 5.369375354135325,
-        "y": 6.887451202594713
+        "x": 2.6362321955413157,
+        "y": 4.1638498661612715
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF1-Pickup-End"
+      "linkedName": "NF3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
+      "name": "intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -57,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -170.04937331204832,
-    "rotateFast": false
+    "rotation": 180.0,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "AmpSide-NC1-NF1-NF2-NF3",
+  "folder": "new",
   "previewStartingState": {
-    "rotation": -172.72499504211075,
+    "rotation": 140.52754015165618,
     "velocity": 0
   },
   "useDefaultConstraints": true
