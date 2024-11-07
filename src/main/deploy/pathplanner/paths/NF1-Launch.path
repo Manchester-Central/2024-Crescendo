@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.28012348332389,
-        "y": 7.54
+        "y": 7.44
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.0832340126218725,
-        "y": 6.977584259783903
+        "y": 6.877584259783903
       },
       "isLocked": false,
       "linkedName": "NF1-Pickup-End"

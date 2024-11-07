@@ -3,36 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7807975615951244,
-        "y": 6.571383911998593
+        "x": 8.288663034725174,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.787225728297611,
-        "y": 6.768722768214768
+        "x": 4.658901827853658,
+        "y": 4.104648209296418
       },
       "isLocked": false,
-      "linkedName": "NF1-Launch-End"
+      "linkedName": "NF3"
     },
     {
       "anchor": {
-        "x": 8.28012348332389,
-        "y": 7.44
+        "x": 2.4783611105683763,
+        "y": 3.1771555850804014
       },
       "prevControl": {
-        "x": 5.369375354135325,
-        "y": 6.887451202594713
+        "x": 3.4354545632168203,
+        "y": 2.6640745589183488
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NF1-Pickup-End"
+      "linkedName": "srcund shot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
+      "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -57,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -170.04937331204832,
+    "rotation": 135.57408679465783,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide-NC1-NF1-NF2-NF3",
+  "folder": "new",
   "previewStartingState": {
-    "rotation": -172.72499504211075,
+    "rotation": -177.94967017981855,
     "velocity": 0
   },
   "useDefaultConstraints": true
