@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,10 +19,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Robot;
 
 public class Limelight implements CameraInterface {
 	private String m_name;
@@ -44,6 +45,13 @@ public class Limelight implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 	private NetworkTableEntry m_priorityid;
+
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/RawCameraPose")
+	private Pose3d m_demoRawCameraPose = new Pose3d();
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/AprilTagPose")
+	private Pose3d m_demoAprilTagPose = new Pose3d();
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/TargetPose")
+	private Pose3d m_demoTargetPose = new Pose3d();
 
 	public enum LimelightVersion {
 		LL2,
@@ -112,15 +120,26 @@ public class Limelight implements CameraInterface {
 
 		m_visionTable.addListener("targetpose_cameraspace", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
-											var initialPose = new Pose3d();
-											var targetPose = initialPose.plus(new Transform3d(0, 1, 0, new Rotation3d()));
-											double[] poseData = {
-												targetPose.getX(),
-												targetPose.getY(),
-												targetPose.getZ()
-											  };
-											  SmartDashboard.putNumberArray("Demo Target Pose", poseData);
+											recordDemoPoseData();
 										});
+										
+
+		if (Robot.isSimulation()) {
+			// Fake demo target data in sim
+			var simVisionTask = new Thread(() -> {
+				while(true) {
+					m_demoPose.setDoubleArray(new double[]{1, 1, 1, 45, 0, 0});
+					recordDemoPoseData();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			simVisionTask.start();
+		}
 
 		m_mostRecentData = Optional.empty();
 	}
@@ -149,6 +168,25 @@ public class Limelight implements CameraInterface {
 		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
 	}
 
+	private Pose3d convertNTEntryToPose3D(double[] limelightPoseData) {
+		var poseRotation = new Rotation3d(	limelightPoseData[idxRoll] * Math.PI / 180, 
+											limelightPoseData[idxPitch] * Math.PI / 180,
+											limelightPoseData[idxYaw]  * Math.PI / 180);
+
+		return new Pose3d(limelightPoseData[idxX], limelightPoseData[idxY], limelightPoseData[idxZ], poseRotation);
+	}
+
+	private void recordDemoPoseData() {
+		var data = m_demoPose.getValue().getDoubleArray(); // TODO: we probably want robot space target to simplify math here?
+		if (data == null || data.length == 0) {
+			return;
+		}
+		var robotPose = m_simPoseSupplier.get();
+		m_demoRawCameraPose = convertNTEntryToPose3D(data);
+		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
+		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 2), new Rotation3d()));
+	}
+
 	/**
 	 * 
 	 */
@@ -161,11 +199,7 @@ public class Limelight implements CameraInterface {
 			return;
 		}
 
-		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
-											data[idxPitch] * Math.PI / 180,
-											data[idxYaw]  * Math.PI / 180);
-
-		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
+		var visionPose = convertNTEntryToPose3D(data);
 
 		if (m_offset != null) {
 			var cameraOffset = m_offset.get();
@@ -176,7 +210,7 @@ public class Limelight implements CameraInterface {
 								visionPose.getZ() - cameraOffset.getZ()),
 				new Rotation3d(0,//poseRotation.getX() - cameraOffset.getRotation().getX(),
 								0,//poseRotation.getY() - cameraOffset.getRotation().getY(),
-								poseRotation.getZ())//- cameraOffset.getRotation().getZ())
+								visionPose.getRotation().getZ())//- cameraOffset.getRotation().getZ())
 			);
 		}
 

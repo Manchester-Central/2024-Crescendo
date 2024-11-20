@@ -6,6 +6,8 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.chaos131.swerve.BaseSwerveDrive;
 import com.chaos131.swerve.BaseSwerveModule;
 import com.chaos131.swerve.SwerveConfigs;
@@ -99,7 +101,7 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     @Override
     public void periodic() {
         super.periodic();
-        
+        Logger.recordOutput("SwervePose", getPose());
     }
 
     public double getDistanceToSpeakerMeters() {

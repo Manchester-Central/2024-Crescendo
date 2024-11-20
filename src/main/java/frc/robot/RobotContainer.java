@@ -100,7 +100,7 @@ public class RobotContainer {
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
   private Launcher m_launcher = new Launcher();
-  private PowerDistribution m_PDH = new PowerDistribution(1, ModuleType.kRev);
+  private PowerDistribution m_PDH;
   private RumbleManager m_rumbleManager = new RumbleManager(m_driver, m_operator, m_feeder, m_intake);
   private LightStrip m_leds = new LightStrip();
   private final SendableChooser<Command> m_pathPlannerChooser;
@@ -135,7 +135,8 @@ public class RobotContainer {
   };
 
 
-  public RobotContainer() {
+  public RobotContainer(PowerDistribution pdh) {
+    m_PDH = pdh;
     m_PDH.setSwitchableChannel(true);
     m_swerveDrive.resetPose(FieldPose2024.TestStart.getCurrentAlliancePose());
     configureBindings();
