@@ -21,4 +21,9 @@ public class Pose2dUtil {
     public static Pose2d getTranslatedPose(Pose2d originalPose, double forwardMeters, double leftMeters) {
         return originalPose.plus(new Transform2d(new Translation2d(forwardMeters, leftMeters), Rotation2d.fromDegrees(0)));
     }
+
+    public static double getDistanceMeters(Pose2d startPose, Pose2d endPose) {
+        return startPose.getTranslation().getDistance(endPose.getTranslation());
+    }
 }
+

@@ -47,6 +47,7 @@ import frc.robot.commands.simpledrive.RobotRelativeDrive;
 import frc.robot.commands.simpledrive.RobotRelativeSetAngleDrive;
 import frc.robot.commands.simpledrive.UpdateHeading;
 import frc.robot.commands.step.BattleCryAmp;
+import frc.robot.commands.step.DemoLaunch;
 import frc.robot.commands.step.DropInAmp;
 import frc.robot.commands.step.DropInTrap;
 import frc.robot.commands.step.LaunchSetDistance;
@@ -78,6 +79,7 @@ import frc.robot.subsystems.swerve.SwerveDrive.Zone;
 import frc.robot.subsystems.vision.VisionData;
 import frc.robot.util.DriveDirection;
 import frc.robot.util.FieldPose2024;
+import frc.robot.util.Pose2dUtil;
 import frc.robot.util.RumbleManager;
 
 public class RobotContainer {
@@ -95,7 +97,7 @@ public class RobotContainer {
     ? SwerveDrive2022.createSwerveDrive() 
     : SwerveDrive2024.createSwerveDrive();
 
-  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), () -> m_swerveDrive.getRobotSpeedMps(), () -> m_swerveDrive.getRobotRotationSpeedRadsPerSec());
+  private Vision m_vision = new Vision(() -> m_swerveDrive.getPose(), (data) -> updatePoseEstimator(data), (targetPose) -> updateDemoTarget(targetPose), () -> m_swerveDrive.getRobotSpeedMps(), () -> m_swerveDrive.getRobotRotationSpeedRadsPerSec());
   private Intake m_intake = new Intake();
   private Lift m_lift = new Lift();
   private Feeder m_feeder = new Feeder();
@@ -113,6 +115,9 @@ public class RobotContainer {
   private boolean m_isAutomationEnabled = true;
   private Trigger m_isAutomationEnabledTrigger = new Trigger(() -> m_isAutomationEnabled);
 
+  private Trigger m_isDemoModeTrigger = new Trigger(() -> DriverStation.isTest());
+  private Pose3d m_demoTargetPose = new Pose3d();
+
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
     Zone currentZone = m_swerveDrive.getZone();
     Optional<LauncherTarget> launcherTargetsOptional = Optional.empty();
@@ -125,6 +130,9 @@ public class RobotContainer {
         break;
       case FAR:
         launcherTargetsOptional = LauncherModel.getLauncherTargetWithAngle(LauncherHeightTarget.Floor, m_lift.getCurrentHeightMeters(), FieldPose2024.MidLinePass.getDistanceFromLocation(m_swerveDrive.getPose()), Rotation2d.fromDegrees(45));
+        break;
+      case DEMO: 
+        launcherTargetsOptional = LauncherModel.getLauncherTarget(m_demoTargetPose.getZ(), m_lift.getCurrentHeightMeters(), Pose2dUtil.getDistanceMeters(m_demoTargetPose.toPose2d(), m_swerveDrive.getPose()), m_launcher.getEncoderTiltAngle(), TargetAngleMode.Lower);
         break;
     }
     if (launcherTargetsOptional.isEmpty()) {
@@ -237,9 +245,12 @@ public class RobotContainer {
     // m_driver.rightTrigger().and(m_isOdometryAndLaunchModeEnabledTrigger.negate()) // Aim and launch at speaker 
     //   .whileTrue( 
     //     new LaunchWithOdometry(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_getDefaultLauncherTarget));
-    m_driver.rightTrigger() // Aim and launch at speaker 
+    m_driver.rightTrigger().and(m_isDemoModeTrigger.negate()) // Aim and launch at speaker 
       .whileTrue( 
         new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
+    m_driver.rightTrigger().and(m_isDemoModeTrigger) // Aim and launch at demo target 
+      .whileTrue( 
+        new DemoLaunch(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_leds, () -> m_demoTargetPose, m_getDefaultLauncherTarget));
 
     m_driver.leftStick().whileTrue(m_getSlowCommand.get()); //
     m_driver.rightStick(); //
@@ -376,6 +387,10 @@ public class RobotContainer {
     }
 
     m_swerveDrive.addVisionMeasurement(pose, data.getTimestamp(), data.getDevation());
+  }
+
+  public synchronized void updateDemoTarget(Pose3d targetPose) {
+    m_demoTargetPose = targetPose;
   }
 }
 

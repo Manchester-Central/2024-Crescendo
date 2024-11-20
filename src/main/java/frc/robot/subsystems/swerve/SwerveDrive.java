@@ -29,7 +29,7 @@ import frc.robot.util.FieldPose2024;
 
 public abstract class SwerveDrive extends BaseSwerveDrive {
     public enum Zone {
-        NEAR, MID, FAR
+        NEAR, MID, FAR, DEMO,
     }
 
     public SwerveDrive(BaseSwerveModule[] swerveModules, SwerveConfigs swerveConfigs,
@@ -160,6 +160,9 @@ public abstract class SwerveDrive extends BaseSwerveDrive {
     }
 
     public Zone getZone() {
+        if (DriverStation.isTest()) {
+            return Zone.DEMO;
+        }
         double xDistance = Math.abs(FieldPose2024.Speaker.getCurrentAlliancePose().getX() - getPose().getX());
         if(xDistance < SwerveConstants2024.NearToMidThresholdXMeters) {
             return Zone.NEAR;

@@ -18,6 +18,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
@@ -30,6 +31,7 @@ public class Limelight implements CameraInterface {
 
 	private Supplier<Pose2d> m_simPoseSupplier; // supplies data when in simulation
 	private Consumer<VisionData> m_poseUpdator; // sends the data back to the swerve pose estimator
+	private Consumer<Pose3d> m_demoTargetUpdater; // sends the target pose to back to Robot Container
 	private Optional<VisionData> m_mostRecentData; // caches the most recent data, including no-datas
 	private Supplier<Pose3d> m_offset;
 	private Supplier<Double> m_robotSpeedSupplier;
@@ -97,7 +99,7 @@ public class Limelight implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Consumer<Pose3d> demoTargetUpdater, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
 		m_demoPose = m_visionTable.getEntry("targetpose_cameraspace");
@@ -109,6 +111,7 @@ public class Limelight implements CameraInterface {
 		m_priorityid = m_visionTable.getEntry("priorityid");
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
+		m_demoTargetUpdater = demoTargetUpdater;
 		m_robotSpeedSupplier = robotSpeedSupplier;
 		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
@@ -128,8 +131,10 @@ public class Limelight implements CameraInterface {
 			// Fake demo target data in sim
 			var simVisionTask = new Thread(() -> {
 				while(true) {
-					m_demoPose.setDoubleArray(new double[]{1, 1, 1, 45, 0, 0});
-					recordDemoPoseData();
+					if (DriverStation.isDisabled()) {
+						m_demoPose.setDoubleArray(new double[]{1, 1, 1, 45, 0, 0});
+						recordDemoPoseData();
+					}
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
@@ -185,6 +190,7 @@ public class Limelight implements CameraInterface {
 		m_demoRawCameraPose = convertNTEntryToPose3D(data);
 		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
 		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 2), new Rotation3d()));
+		m_demoTargetUpdater.accept(m_demoTargetPose);
 	}
 
 	/**
