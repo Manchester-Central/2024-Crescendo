@@ -231,7 +231,7 @@ public class RobotContainer {
     m_driver.povLeft().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Left)); // 90 degrees for blue
     m_driver.povRight().onTrue(new UpdateHeading(m_swerveDrive, DriveDirection.Right)); // -90 degrees for blue
 
-    m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, FieldPose2024.Speaker, 1.0)); // Align angle to amp (but allow translation)
+    m_driver.a().whileTrue(new DriverRelativeSetAngleDrive(m_driver, m_swerveDrive, Rotation2d.fromDegrees(-90), 1.0)); // Align angle to amp (but allow translation)
     m_driver.b().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageRight, 1.0, true)); // Align angle to stage left (but allow translation)
     m_driver.x().whileTrue(new RobotRelativeSetAngleDrive(m_driver, m_swerveDrive, DriveDirection.FacingStageLeft, 1.0, true)); // Align angle to stage right (but allow translation)
     m_driver.y().whileTrue(new LobOntoField(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, FieldPose2024.MidLinePass, LiftConstants.IntakeHeightMeters, Rotation2d.fromDegrees(45), m_getDefaultLauncherTarget, true, "MidLinePass"));  // Align angle to HP (but allow translation)
