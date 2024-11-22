@@ -173,12 +173,20 @@ public class Limelight implements CameraInterface {
 		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
 	}
 
-	private Pose3d convertNTEntryToPose3D(double[] limelightPoseData) {
+	private Pose3d convertFieldPoseNTEntryToPose3D(double[] limelightPoseData) {
 		var poseRotation = new Rotation3d(	limelightPoseData[idxRoll] * Math.PI / 180, 
 											limelightPoseData[idxPitch] * Math.PI / 180,
 											limelightPoseData[idxYaw]  * Math.PI / 180);
 
 		return new Pose3d(limelightPoseData[idxX], limelightPoseData[idxY], limelightPoseData[idxZ], poseRotation);
+	}
+
+	private Pose3d convertCameraPoseNTEntryToPose3D(double[] limelightPoseData) {
+		var poseRotation = new Rotation3d(	limelightPoseData[idxRoll] * Math.PI / 180, 
+											limelightPoseData[idxPitch] * Math.PI / 180,
+											limelightPoseData[idxYaw]  * Math.PI / 180);
+
+		return new Pose3d(limelightPoseData[idxZ], limelightPoseData[idxX], limelightPoseData[idxY], poseRotation);
 	}
 
 	private void recordDemoPoseData() {
@@ -187,7 +195,7 @@ public class Limelight implements CameraInterface {
 			return;
 		}
 		var robotPose = m_simPoseSupplier.get();
-		m_demoRawCameraPose = convertNTEntryToPose3D(data);
+		m_demoRawCameraPose = convertCameraPoseNTEntryToPose3D(data);
 		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
 		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 2), new Rotation3d()));
 		m_demoTargetUpdater.accept(m_demoTargetPose);
@@ -205,7 +213,7 @@ public class Limelight implements CameraInterface {
 			return;
 		}
 
-		var visionPose = convertNTEntryToPose3D(data);
+		var visionPose = convertFieldPoseNTEntryToPose3D(data);
 
 		if (m_offset != null) {
 			var cameraOffset = m_offset.get();
