@@ -116,6 +116,7 @@ public class RobotContainer {
   private Trigger m_isAutomationEnabledTrigger = new Trigger(() -> m_isAutomationEnabled);
 
   private Trigger m_isDemoModeTrigger = new Trigger(() -> DriverStation.isTest());
+  private Trigger m_hasDemoTargetTrigger = new Trigger(() -> m_vision.getCamera(CameraDirection.Front).hasTarget());
   private Pose3d m_demoTargetPose = new Pose3d();
 
   private Supplier<LauncherTarget> m_getDefaultLauncherTarget = () -> {
@@ -248,7 +249,7 @@ public class RobotContainer {
     m_driver.rightTrigger().and(m_isDemoModeTrigger.negate()) // Aim and launch at speaker 
       .whileTrue( 
         new LaunchWithOdometryAndVision(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_vision, m_leds, m_getDefaultLauncherTarget, () -> true));
-    m_driver.rightTrigger().and(m_isDemoModeTrigger) // Aim and launch at demo target 
+    m_driver.rightTrigger().and(m_isDemoModeTrigger).and(m_hasDemoTargetTrigger) // Aim and launch at demo target 
       .whileTrue( 
         new DemoLaunch(m_lift, m_launcher, m_feeder, m_swerveDrive, m_driver, m_intake, m_leds, () -> m_demoTargetPose, m_getDefaultLauncherTarget));
 
