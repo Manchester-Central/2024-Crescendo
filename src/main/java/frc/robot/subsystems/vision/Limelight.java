@@ -102,7 +102,7 @@ public class Limelight implements CameraInterface {
 	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Consumer<Pose3d> demoTargetUpdater, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_demoPose = m_visionTable.getEntry("targetpose_cameraspace");
+		m_demoPose = m_visionTable.getEntry("targetpose_robotspace");
 		m_botPose = m_visionTable.getEntry("botpose_wpiblue");
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
@@ -182,9 +182,9 @@ public class Limelight implements CameraInterface {
 	}
 
 	private Pose3d convertCameraPoseNTEntryToPose3D(double[] limelightPoseData) {
-		var poseRotation = new Rotation3d(	limelightPoseData[idxYaw] * Math.PI / 180, 
+		var poseRotation = new Rotation3d(	-1 * limelightPoseData[idxYaw] * Math.PI / 180, 
 											limelightPoseData[idxRoll] * Math.PI / 180,
-											(limelightPoseData[idxPitch]  * Math.PI / 180) + Math.PI
+											-1 * (limelightPoseData[idxPitch]  * Math.PI / 180) + Math.PI
 											);
 
 		return new Pose3d(limelightPoseData[idxZ], -limelightPoseData[idxX], -limelightPoseData[idxY], poseRotation);
@@ -198,7 +198,7 @@ public class Limelight implements CameraInterface {
 		var robotPose = m_simPoseSupplier.get();
 		m_demoRawCameraPose = convertCameraPoseNTEntryToPose3D(data);
 		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
-		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 2), new Rotation3d()));
+		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 0.5), new Rotation3d()));
 		m_demoTargetUpdater.accept(m_demoTargetPose);
 	}
 
