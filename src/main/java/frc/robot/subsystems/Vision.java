@@ -28,9 +28,9 @@ public class Vision extends SubsystemBase {
 	 * 
 	 * @param tablename - String of the device name.
 	 */
-	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
-		m_frontLimeLightCamera = new Limelight("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
-		m_backLimeLightCamera = new Limelight("limelight-back", LimelightVersion.LL3 , simulatedPoseEstimation, poseUpdator, robotSpeedSupplier, robotRotationSpeedSupplier);
+	public Vision(Supplier<Pose2d> simulatedPoseEstimation, Consumer<VisionData> poseUpdator, Consumer<Pose3d> demoTargetUpdater, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+		m_frontLimeLightCamera = new Limelight("limelight-front", LimelightVersion.LL3G, simulatedPoseEstimation, poseUpdator, demoTargetUpdater, robotSpeedSupplier, robotRotationSpeedSupplier);
+		m_backLimeLightCamera = new Limelight("limelight-back", LimelightVersion.LL3 , simulatedPoseEstimation, poseUpdator, demoTargetUpdater, robotSpeedSupplier, robotRotationSpeedSupplier);
 		// m_noteTrackingCamera = new LimeLightCamera("limelight-notes", LimelightVersion.LL3, simulatedPoseEstimation, poseUpdator, robotSpeedSupplier);
 		m_backLimeLightCamera.setMode(CameraMode.PIECE_TRACKING);
 	}

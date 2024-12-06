@@ -91,6 +91,20 @@ public class LauncherModel {
      * @return An empty Optional if the resultant angles are not in the launcher range - otherwise, the resultant launcher target
      */
     public static Optional<LauncherTarget> getLauncherTarget(LauncherHeightTarget heightTarget, double currentLiftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d currentTiltAngle, TargetAngleMode targetAngleMode) {
+        return getLauncherTarget(heightTarget.heightMeters, currentLiftHeightMeters, distanceToTargetFromBotCenterMeters, currentTiltAngle, targetAngleMode);
+    }
+
+    /**
+     * Gets the launcher target for aiming at a height target (floor or speaker) for a given distance.
+     * NOTE: This is working well for the speaker, but the velocity values are more sensitive for the floor, so it's recommended to use getLauncherTargetWithAngle for launching to the floor.
+     * @param heightTargetMeters The height in meters (measured from the floor) to aim for.
+     * @param currentLiftHeightMeters The current (or min) height for the lift
+     * @param distanceToTargetFromBotCenterMeters the distance in meters from the bot center to the target
+     * @param currentTiltAngle the current tilt of the launcher
+     * @param targetAngleMode whether to prefer the possible higher or lower angle for the launcher target
+     * @return An empty Optional if the resultant angles are not in the launcher range - otherwise, the resultant launcher target
+     */
+    public static Optional<LauncherTarget> getLauncherTarget(double heightTargetMeters, double currentLiftHeightMeters, double distanceToTargetFromBotCenterMeters, Rotation2d currentTiltAngle, TargetAngleMode targetAngleMode) {
         // Calculate the distance from the launch point to the target
         double adjustedDistanceMeters = distanceToTargetFromBotCenterMeters + kDistanceFromBotCenterToPivotMeters - getLauncherDistanceToPivotMeters(currentTiltAngle) + getLiftDistanceOffsetMeters(currentLiftHeightMeters);
 
@@ -103,7 +117,7 @@ public class LauncherModel {
         double initialVelocityMPS = interpolateInitialVelocityMps(adjustedDistanceMeters);
 
         // Calculate the height difference from the launch point to the target (positive for speaker, negative for floor)
-        double launchHeightDifferenceMeters = heightTarget.heightMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
+        double launchHeightDifferenceMeters = heightTargetMeters - kLauncherPivotHeightMeters - getLiftHeightOffsetMeters(adjustedLiftHeightMeters) - getLauncherHeightAbovePivotMeters(currentTiltAngle);
 
         // Run the calculation with a slightly lower velicty to account for energy transfer loss
         double adjustedVelocityMps = initialVelocityMPS * interpolateDouble(adjustedDistanceMeters, m_closeDistance.get(), m_farDistance.get(), m_efficiencyLossMultiplierClose.get(),

@@ -153,8 +153,8 @@ public abstract class BaseLaunch extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // If teleop, run the launch command until the user releases the button
-    if (DriverStation.isTeleop()) {
+    // If teleop or demo mode, run the launch command until the user releases the button
+    if (DriverStation.isTeleop() || DriverStation.isTest()) {
       return false;
     }
     return m_launchTimer.hasElapsed(0.05);

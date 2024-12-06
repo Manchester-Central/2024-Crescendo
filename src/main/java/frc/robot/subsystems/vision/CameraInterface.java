@@ -9,7 +9,8 @@ public interface CameraInterface {
 	
 	public enum CameraMode {
 		LOCALIZATION,
-		PIECE_TRACKING
+		PIECE_TRACKING,
+		DEMO
 	};
 
 	public void recordMeasuredData();
