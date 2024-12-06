@@ -182,11 +182,12 @@ public class Limelight implements CameraInterface {
 	}
 
 	private Pose3d convertCameraPoseNTEntryToPose3D(double[] limelightPoseData) {
-		var poseRotation = new Rotation3d(	limelightPoseData[idxRoll] * Math.PI / 180, 
-											limelightPoseData[idxPitch] * Math.PI / 180,
-											limelightPoseData[idxYaw]  * Math.PI / 180);
+		var poseRotation = new Rotation3d(	limelightPoseData[idxYaw] * Math.PI / 180, 
+											limelightPoseData[idxRoll] * Math.PI / 180,
+											(limelightPoseData[idxPitch]  * Math.PI / 180) + Math.PI
+											);
 
-		return new Pose3d(limelightPoseData[idxZ], limelightPoseData[idxX], limelightPoseData[idxY], poseRotation);
+		return new Pose3d(limelightPoseData[idxZ], -limelightPoseData[idxX], -limelightPoseData[idxY], poseRotation);
 	}
 
 	private void recordDemoPoseData() {

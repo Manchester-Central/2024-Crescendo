@@ -37,7 +37,8 @@ public class DefaultVisionCommand extends Command {
     var frontCamera = m_vision.getCamera(CameraDirection.Front);
     if (DriverStation.isTest()) {
       frontCamera.setMode(CameraMode.DEMO);
-      frontCamera.setPriorityID(15);
+      //frontCamera.setPriorityID(8);
+      frontCamera.resetPriorityID();
       return;
     }
     // We are only using the front limelight for speaker tracking, so let's always make sure it's using that for tx/ty tracking
