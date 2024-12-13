@@ -199,7 +199,7 @@ public class Limelight implements CameraInterface {
 		m_demoRawCameraPose = convertCameraPoseNTEntryToPose3D(data);
 		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
 		//0.476 distance to middle of the net in meters
-		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 0.476), new Rotation3d()));
+		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 0.316), new Rotation3d()));
 		m_demoTargetUpdater.accept(m_demoTargetPose);
 	}
 
