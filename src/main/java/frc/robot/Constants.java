@@ -24,7 +24,7 @@ public class Constants {
 		public static final boolean FeederDebugEnable = false;
 		public static final boolean LiftDebugEnable = false;
 		public static final boolean LauncherDebugEnable = false;
-		public static final boolean LauncherModelDebugEnable = false;
+		public static final boolean LauncherModelDebugEnable = true;
 	}
 
 	public static class ControllerConstants {

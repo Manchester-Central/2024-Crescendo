@@ -5,20 +5,24 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Robot;
 
 public class Limelight implements CameraInterface {
 	private String m_name;
@@ -27,13 +31,15 @@ public class Limelight implements CameraInterface {
 
 	private Supplier<Pose2d> m_simPoseSupplier; // supplies data when in simulation
 	private Consumer<VisionData> m_poseUpdator; // sends the data back to the swerve pose estimator
+	private Consumer<Pose3d> m_demoTargetUpdater; // sends the target pose to back to Robot Container
 	private Optional<VisionData> m_mostRecentData; // caches the most recent data, including no-datas
 	private Supplier<Pose3d> m_offset;
 	private Supplier<Double> m_robotSpeedSupplier;
 	private Supplier<Double> m_robotRotationSpeedSupplier;
 
 	private NetworkTable m_visionTable;
-	private NetworkTableEntry m_botpose;
+	private NetworkTableEntry m_botPose;
+	private NetworkTableEntry m_demoPose;
 	private NetworkTableEntry m_pipelineID;
 
 	// An overloaded variable, this stores targetting info from any pipeline in a double value for the focus point's azimuth.
@@ -41,6 +47,13 @@ public class Limelight implements CameraInterface {
 	private NetworkTableEntry m_ty;
 	private NetworkTableEntry m_tv;
 	private NetworkTableEntry m_priorityid;
+
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/RawCameraPose")
+	private Pose3d m_demoRawCameraPose = new Pose3d();
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/AprilTagPose")
+	private Pose3d m_demoAprilTagPose = new Pose3d();
+	@AutoLogOutput(key = "Limelight/{m_name}/Demo/TargetPose")
+	private Pose3d m_demoTargetPose = new Pose3d();
 
 	public enum LimelightVersion {
 		LL2,
@@ -62,7 +75,8 @@ public class Limelight implements CameraInterface {
 		RED_APRIL_TAGS(1),
 		RETROREFLECTIVE(2),
 		BLUE_SPEAKER(3),
-		RED_SPEAKER(4);
+		RED_SPEAKER(4),
+		DEMO(5);
 
 		public final Integer pipelineId;
 
@@ -85,10 +99,11 @@ public class Limelight implements CameraInterface {
 	private final int idxTagDistance = 9;
 	private final int idxTagArea = 10;
 
-	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
+	public Limelight(String name, LimelightVersion limelightVersion, Supplier<Pose2d> poseSupplier, Consumer<VisionData> poseConsumer, Consumer<Pose3d> demoTargetUpdater, Supplier<Double> robotSpeedSupplier, Supplier<Double> robotRotationSpeedSupplier) {
 		m_name = name;
 		m_visionTable = NetworkTableInstance.getDefault().getTable(m_name);
-		m_botpose = m_visionTable.getEntry("botpose_wpiblue");
+		m_demoPose = m_visionTable.getEntry("targetpose_robotspace");
+		m_botPose = m_visionTable.getEntry("botpose_wpiblue");
 		m_pipelineID = m_visionTable.getEntry("getpipe");
 		m_tx = m_visionTable.getEntry("tx");
 		m_ty = m_visionTable.getEntry("ty");
@@ -96,6 +111,7 @@ public class Limelight implements CameraInterface {
 		m_priorityid = m_visionTable.getEntry("priorityid");
 		m_simPoseSupplier = poseSupplier;
 		m_poseUpdator = poseConsumer;
+		m_demoTargetUpdater = demoTargetUpdater;
 		m_robotSpeedSupplier = robotSpeedSupplier;
 		m_robotRotationSpeedSupplier = robotRotationSpeedSupplier;
 		m_limeLightVersion = limelightVersion;
@@ -104,6 +120,31 @@ public class Limelight implements CameraInterface {
 										(NetworkTable table, String key, NetworkTableEvent event) -> {
 											recordMeasuredData();
 										});
+
+		m_visionTable.addListener("targetpose_cameraspace", EnumSet.of(NetworkTableEvent.Kind.kValueRemote),
+										(NetworkTable table, String key, NetworkTableEvent event) -> {
+											recordDemoPoseData();
+										});
+										
+
+		if (Robot.isSimulation()) {
+			// Fake demo target data in sim
+			var simVisionTask = new Thread(() -> {
+				while(true) {
+					if (DriverStation.isDisabled()) {
+						m_demoPose.setDoubleArray(new double[]{1, 1, 1, 45, 0, 0});
+						recordDemoPoseData();
+					}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			simVisionTask.start();
+		}
 
 		m_mostRecentData = Optional.empty();
 	}
@@ -132,23 +173,49 @@ public class Limelight implements CameraInterface {
 		return VisionConstants.LL3G.TotalDeviationMultiplier * stddev + VisionConstants.LL3G.MinimumError;
 	}
 
+	private Pose3d convertFieldPoseNTEntryToPose3D(double[] limelightPoseData) {
+		var poseRotation = new Rotation3d(	limelightPoseData[idxRoll] * Math.PI / 180, 
+											limelightPoseData[idxPitch] * Math.PI / 180,
+											limelightPoseData[idxYaw]  * Math.PI / 180);
+
+		return new Pose3d(limelightPoseData[idxX], limelightPoseData[idxY], limelightPoseData[idxZ], poseRotation);
+	}
+
+	private Pose3d convertCameraPoseNTEntryToPose3D(double[] limelightPoseData) {
+		var poseRotation = new Rotation3d(	-1 * limelightPoseData[idxYaw] * Math.PI / 180, 
+											limelightPoseData[idxRoll] * Math.PI / 180,
+											-1 * (limelightPoseData[idxPitch]  * Math.PI / 180) + Math.PI
+											);
+
+		return new Pose3d(limelightPoseData[idxZ], -limelightPoseData[idxX], -limelightPoseData[idxY], poseRotation);
+	}
+
+	private void recordDemoPoseData() {
+		var data = m_demoPose.getValue().getDoubleArray(); // TODO: we probably want robot space target to simplify math here?
+		if (data == null || data.length == 0) {
+			return;
+		}
+		var robotPose = m_simPoseSupplier.get();
+		m_demoRawCameraPose = convertCameraPoseNTEntryToPose3D(data);
+		m_demoAprilTagPose = new Pose3d(robotPose).plus(new Transform3d(m_demoRawCameraPose.getTranslation(), m_demoRawCameraPose.getRotation()));
+		//0.476 distance to middle of the net in meters
+		m_demoTargetPose = m_demoAprilTagPose.plus(new Transform3d(new Translation3d(0, 0, 0.316), new Rotation3d()));
+		m_demoTargetUpdater.accept(m_demoTargetPose);
+	}
+
 	/**
 	 * 
 	 */
 	@Override
 	public void recordMeasuredData() {
-		var data = m_botpose.getValue().getDoubleArray();
+		var data = m_botPose.getValue().getDoubleArray();
 		double timestampSeconds = Timer.getFPGATimestamp() - data[idxLatency] / 1000;
 		if (data == null || data[idxX] < EPSILON) {
 			m_mostRecentData = Optional.empty();
 			return;
 		}
 
-		var poseRotation = new Rotation3d(	data[idxRoll] * Math.PI / 180, 
-											data[idxPitch] * Math.PI / 180,
-											data[idxYaw]  * Math.PI / 180);
-
-		var visionPose = new Pose3d(data[idxX], data[idxY], data[idxZ], poseRotation);
+		var visionPose = convertFieldPoseNTEntryToPose3D(data);
 
 		if (m_offset != null) {
 			var cameraOffset = m_offset.get();
@@ -159,7 +226,7 @@ public class Limelight implements CameraInterface {
 								visionPose.getZ() - cameraOffset.getZ()),
 				new Rotation3d(0,//poseRotation.getX() - cameraOffset.getRotation().getX(),
 								0,//poseRotation.getY() - cameraOffset.getRotation().getY(),
-								poseRotation.getZ())//- cameraOffset.getRotation().getZ())
+								visionPose.getRotation().getZ())//- cameraOffset.getRotation().getZ())
 			);
 		}
 
@@ -201,6 +268,10 @@ public class Limelight implements CameraInterface {
 
 			case PIECE_TRACKING:
 				m_mode = Mode.RETROREFLECTIVE;
+				break;
+
+			case DEMO:
+				m_mode = Mode.DEMO;
 				break;
 		
 			default:
