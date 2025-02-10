@@ -282,7 +282,8 @@ public class Limelight implements CameraInterface {
 		return this;
 	}
 
-	private boolean isCorrectPipeline() {
+	@Override
+	public boolean isCorrectPipeline() {
 		return getPipeline() == m_mode.pipelineId;
 	}
 
@@ -326,7 +327,7 @@ public class Limelight implements CameraInterface {
 
 	@Override
 	public double getTargetAzimuth(boolean cameraRelative) {
-		if (Robot.isSimulation()) {
+		if (Robot.isSimulation() || !m_tx.exists()) {
 			return 0.0;
 		}
 		Double temptx = m_tx.getDouble(-100);

@@ -34,6 +34,7 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.SwerveConstants2024;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.auto.AimForNote;
 import frc.robot.commands.complex.FireIntoAmp;
 import frc.robot.commands.defaults.DefaultFeederCommand;
 import frc.robot.commands.defaults.DefaultIntakeCommand;
@@ -68,7 +69,6 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Vision.CameraDirection;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherModel;
-import frc.robot.subsystems.launcher.LauncherSpeeds;
 import frc.robot.subsystems.launcher.LauncherTarget;
 import frc.robot.subsystems.launcher.LauncherModel.LauncherHeightTarget;
 import frc.robot.subsystems.launcher.LauncherModel.TargetAngleMode;
@@ -156,7 +156,7 @@ public class RobotContainer {
       var launcherRotation = -(m_launcher.getEncoderTiltAngle().minus(LauncherConstants.MinAngle).getRadians());
 
       Translation3d LiftOffset = new Translation3d(-0.082, 0, 0.425);
-      Translation3d LauncherOffset = new Translation3d(0.18, 0, 0.177);
+      Translation3d LauncherOffset = new Translation3d(0.186, 0, 0.177);
       Translation3d StaticOffset = new Translation3d(-0.299, 0, 0.277);
 
       LiftOffset = LiftOffset.div(LiftOffset.getNorm());
@@ -180,6 +180,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
     NamedCommands.registerCommand("intakeWait", new RunIntake(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager).withTimeout(0.25));
     NamedCommands.registerCommand("launchSpit", new LaunchSpit(m_intake, m_lift, m_feeder, m_launcher));
+    NamedCommands.registerCommand("AimForNote", new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder, m_lift));
     NamedCommands.registerCommand("disableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = false));
     NamedCommands.registerCommand("enableOdometryUpdates", new InstantCommand(() -> m_isPoseUpdateEnabled = true));
     NamedCommands.registerCommand("intakeUntilNote", new RunIntakeUntilNote(m_intake, m_lift, m_feeder, m_launcher, m_getDefaultLauncherTarget, m_rumbleManager));
@@ -292,6 +293,7 @@ public class RobotContainer {
   }
 
   private void configureTesterCommands() {
+    m_tester.rightBumper().whileTrue(new AimForNote(m_swerveDrive, m_vision, m_intake, m_launcher, m_feeder, m_lift));
     // m_tester.a().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(15)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.b().whileTrue(new StartEndCommand(() -> m_launcher.setTiltAngle(Rotation2d.fromDegrees(40)), () -> m_launcher.setTiltSpeed(0), m_launcher));
     // m_tester.x().whileTrue(new StartEndCommand(() -> m_lift.moveToHeight(0.2), () -> m_lift.setSpeed(0), m_lift));
