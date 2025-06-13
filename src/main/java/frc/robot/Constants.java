@@ -4,6 +4,7 @@ import com.chaos131.pid.PIDFValue;
 import com.chaos131.pid.PIDValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -201,6 +202,10 @@ public class Constants {
 		public static final double AfterTrapHeight = 0.2;
 
 		public static final double StartClimbHeight = MaxHeightMeters;
+	}
 
+	public static class QuestConstants {
+		public static final Transform2d QuestToRobot = new Transform2d(0, 0, Rotation2d.fromDegrees(0));
+		
 	}
 }
